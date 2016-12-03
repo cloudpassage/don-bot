@@ -2,6 +2,8 @@
 
 ## Halo Slackbot
 
+[![Build Status](https://travis-ci.org/ashmastaflash/don-bot.svg?branch=master)](https://travis-ci.org/ashmastaflash/don-bot)
+
 beta, beta, beta....
 
 Use a read-only CloudPassage Halo API key...
