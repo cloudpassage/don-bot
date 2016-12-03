@@ -1,0 +1,5 @@
+sudo: required
+language: python
+services:
+  - docker
+script: docker build -t don-bot .

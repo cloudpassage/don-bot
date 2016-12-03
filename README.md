@@ -31,7 +31,7 @@ Use a read-only CloudPassage Halo API key...
         don-bot
 
 ```
-You can add the optional variables in if needed with \
+You can add the optional variables in if needed with
 `-e OPTIONAL_VAR=$OPTIONAL_VAR`
 
 
