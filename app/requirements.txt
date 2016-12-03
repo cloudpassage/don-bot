@@ -1,0 +1,5 @@
+pytest==2.8.0
+pytest-flake8==0.1
+pytest-cover==3.0.0
+cloudpassage==1.0.1
+slackclient==1.0.2
