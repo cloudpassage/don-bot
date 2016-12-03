@@ -11,6 +11,7 @@ RUN apk add --no-cache \
     py-pip=8.1.2-r0
 
 COPY app/ /app/
+COPY .git/ /.git/
 
 WORKDIR /app
 
