@@ -93,7 +93,7 @@ class Halo(object):
         else:
             try:
                 report = report + self.report_server_by_id(server_id)
-            except:
+            except cloudpassage.CloudPassageResourceExistence:
                 report = report + "\nis unable to be found as id or hostname"
         return report
 
@@ -156,13 +156,14 @@ class Halo(object):
     def get_server_facts(self, server_id):
         """Return server facts after sending through formatter"""
         server = cloudpassage.Server(self.session)
-        report = Formatter.server_facts(server.describe(server_id))
+        report = Formatter.format_item(server.describe(server_id),
+                                       "server_facts")
         return report
 
     def get_group_facts(self, group_id):
         """Return group facts after sending through formatter"""
         group = cloudpassage.ServerGroup(self.session)
-        report = Formatter.group_facts(group.describe(group_id))
+        report = Formatter.format_item(group.describe(group_id), "group_facts")
         return report
 
     def get_group_policies(self, group_id):
@@ -194,20 +195,26 @@ class Halo(object):
     def list_all_servers(self):
         """Return server list after sending through formatter"""
         server = cloudpassage.Server(self.session)
-        report = Formatter.server_list(server.list_all())
+        report = Formatter.format_list(server.list_all(), "server_facts")
+        if report == "":
+            report = "No servers in group!"
         return report
 
     def list_all_groups(self):
         """Return group list after sending through formatter"""
         group = cloudpassage.ServerGroup(self.session)
-        report = Formatter.group_list(group.list_all())
+        report = Formatter.format_list(group.list_all(), "group_facts")
         return report
 
     def list_servers_in_group(self, target):
         """Return a list of servers in group after sending through formatter"""
         group = cloudpassage.ServerGroup(self.session)
         group_id = self.get_id_for_group_target(target)
-        report = Formatter.server_list(group.list_members(group_id))
+        if "Not a group name" in group_id:
+            return group_id
+        else:
+            report = Formatter.format_list(group.list_members(group_id),
+                                           "server_facts")
         return report
 
     def get_server_issues(self, server_id):
@@ -216,19 +223,21 @@ class Halo(object):
         url = '/v2/issues'
         params = {'agent_id': server_id}
         hh = cloudpassage.HttpHelper(self.session)
-        report = Formatter.server_issues(hh.get_paginated(url,
-                                                          pagination_key,
-                                                          5,
-                                                          params=params))
+        report = Formatter.format_list(hh.get_paginated(url,
+                                                        pagination_key,
+                                                        5,
+                                                        params=params),
+                                       "issue")
         return report
 
     def get_server_events(self, server_id):
         """Return server events after sending through formatter"""
         event = cloudpassage.Event(self.session)
         since = Utility.iso8601_today()
-        report = Formatter.server_events(event.list_all(10,
-                                                        server_id=server_id,
-                                                        since=since))
+        report = Formatter.format_list(event.list_all(10,
+                                                      server_id=server_id,
+                                                      since=since),
+                                       "event")
         return report
 
     def get_csm_policy_meta(self, policy_id):
