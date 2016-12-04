@@ -1,6 +1,6 @@
 import cloudpassage
 import os
-from string import Template
+from formatter import Formatter
 from utility import Utility
 
 
@@ -156,13 +156,13 @@ class Halo(object):
     def get_server_facts(self, server_id):
         """Return server facts after sending through formatter"""
         server = cloudpassage.Server(self.session)
-        report = Halo.format_server_facts(server.describe(server_id))
+        report = Formatter.server_facts(server.describe(server_id))
         return report
 
     def get_group_facts(self, group_id):
         """Return group facts after sending through formatter"""
         group = cloudpassage.ServerGroup(self.session)
-        report = Halo.format_group_facts(group.describe(group_id))
+        report = Formatter.group_facts(group.describe(group_id))
         return report
 
     def get_group_policies(self, group_id):
@@ -194,20 +194,20 @@ class Halo(object):
     def list_all_servers(self):
         """Return server list after sending through formatter"""
         server = cloudpassage.Server(self.session)
-        report = Halo.format_server_list(server.list_all())
+        report = Formatter.server_list(server.list_all())
         return report
 
     def list_all_groups(self):
         """Return group list after sending through formatter"""
         group = cloudpassage.ServerGroup(self.session)
-        report = Halo.format_group_list(group.list_all())
+        report = Formatter.group_list(group.list_all())
         return report
 
     def list_servers_in_group(self, target):
         """Return a list of servers in group after sending through formatter"""
         group = cloudpassage.ServerGroup(self.session)
         group_id = self.get_id_for_group_target(target)
-        report = Halo.format_server_list(group.list_members(group_id))
+        report = Formatter.server_list(group.list_members(group_id))
         return report
 
     def get_server_issues(self, server_id):
@@ -216,134 +216,44 @@ class Halo(object):
         url = '/v2/issues'
         params = {'agent_id': server_id}
         hh = cloudpassage.HttpHelper(self.session)
-        report = Halo.format_server_issues(hh.get_paginated(url,
-                                                            pagination_key,
-                                                            5,
-                                                            params=params))
+        report = Formatter.server_issues(hh.get_paginated(url,
+                                                          pagination_key,
+                                                          5,
+                                                          params=params))
         return report
 
     def get_server_events(self, server_id):
         """Return server events after sending through formatter"""
         event = cloudpassage.Event(self.session)
         since = Utility.iso8601_today()
-        report = Halo.format_server_events(event.list_all(10,
-                                                          server_id=server_id,
-                                                          since=since))
+        report = Formatter.server_events(event.list_all(10,
+                                                        server_id=server_id,
+                                                        since=since))
         return report
 
     def get_csm_policy_meta(self, policy_id):
         retval = ""
         if policy_id is not None:
             pol = cloudpassage.ConfigurationPolicy(self.session)
-            retval = Halo.format_policy_meta(pol.describe(policy_id),
-                                             "Configuration")
+            retval = Formatter.policy_meta(pol.describe(policy_id),
+                                           "Configuration")
         return retval
 
     def get_firewall_policy_meta(self, policy_id):
         retval = ""
         if policy_id is not None:
             pol = cloudpassage.FirewallPolicy(self.session)
-            retval = Halo.format_policy_meta(pol.describe(policy_id),
-                                             "Firewall")
+            retval = Formatter.policy_meta(pol.describe(policy_id),
+                                           "Firewall")
         return retval
 
     def get_fim_policy_meta(self, policy_id):
         retval = ""
         if policy_id is not None:
             pol = cloudpassage.FimPolicy(self.session)
-            retval = Halo.format_policy_meta(pol.describe(policy_id),
-                                             "File Integrity Monitoring")
+            retval = Formatter.policy_meta(pol.describe(policy_id),
+                                           "File Integrity Monitoring")
         return retval
-
-    @classmethod
-    def format_server_events(cls, events):
-        """Return list of all events after sending each through formatter"""
-        retval = ""
-        for event in events:
-            retval = retval + Halo.format_single_event(event) + "\n"
-        return retval
-
-    @classmethod
-    def format_server_list(cls, servers):
-        """Return list of all servers after sending each through formatter"""
-        if servers == []:
-            retval = "No servers in group!"
-        else:
-            retval = ""
-        for server in servers:
-            retval = retval + Halo.format_server_facts(server) + "\n"
-        return retval
-
-    @classmethod
-    def format_group_list(cls, groups):
-        """Return list of all servers after sending each through formatter"""
-        retval = ""
-        for group in groups:
-            retval = retval + Halo.format_group_facts(group) + "\n"
-        return retval
-
-    @classmethod
-    def format_server_facts(cls, body):
-        """Return one server in friendly text"""
-        t = Template("---------------------------\n" +
-                     "Server Hostname     $hostname\n" +
-                     "  Server ID         $id\n" +
-                     "  Platform          $platform\n" +
-                     "  Platform version  $platform_version\n" +
-                     "  OS version        $os_version\n" +
-                     "  Group             $group_name\n" +
-                     "  Primary IP        $primary_ip_address\n" +
-                     "  Connecting IP     $connecting_ip_address\n" +
-                     "  State             $state\n" +
-                     "  State Change      $last_state_change\n")
-        return t.safe_substitute(body)
-
-    @classmethod
-    def format_group_facts(cls, body):
-        """Return one group in friendly text"""
-        t = Template("---------------------------\n" +
-                     "Group name $name\n" +
-                     "  Group ID      $id\n" +
-                     "  Description   $description\n" +
-                     "  Tag           $tag\n")
-        return t.safe_substitute(body)
-
-    @classmethod
-    def format_policy_meta(cls, body, poltype):
-        """Return one policy in friendly text"""
-        t = Template("    Policy name $name\n" +
-                     "      Policy type   " + poltype + "\n" +
-                     "      Policy ID     $id\n" +
-                     "      Description   $description\n" +
-                     "      -----------------------------------------------\n")
-        return t.safe_substitute(body)
-
-    @classmethod
-    def format_server_issues(cls, issues):
-        """Return list of all issues after sending each through formatter"""
-        retval = ""
-        for issue in issues:
-            retval = retval + Halo.format_single_server_issue(issue)
-        return retval
-
-    @classmethod
-    def format_single_event(cls, body):
-        """Return one event in friendly text"""
-        t = Template("  Event $type\n" +
-                     "    Critical $critical\n" +
-                     "    Created  $created_at\n" +
-                     "    Message  $message\n" +
-                     "      -----------------------------------------------\n")
-        return t.safe_substitute(body)
-
-    @classmethod
-    def format_single_server_issue(cls, body):
-        """Return one issue in friendly text"""
-        t = Template("  Issue $rule_key\n" +
-                     "    Status $status\n" +
-                     "    Type     $issue_type\n" +
-                     "    Created  $created_at\n")
-        return t.safe_substitute(body)
 
     @classmethod
     def take_selfie(cls):
