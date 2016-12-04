@@ -176,20 +176,21 @@ class Halo(object):
         print("Getting meta for FW policies")
         for fwp in firewall_keys:
             print(grp_struct[fwp])
-            retval = retval + self.get_firewall_policy_meta(grp_struct[fwp])
+            retval = retval + self.get_policy_meta(grp_struct[fwp], "FW")
         print("Getting meta for CSM policies")
         for csm in csm_keys:
-            print(csm)
-            for csm_id in grp_struct[csm]:
-                print(csm_id)
-                retval = retval + self.get_csm_policy_meta(csm_id)
+            retval = retval + self.get_policy_list(grp_struct[csm], "CSM")
         print("Getting meta for FIM policies")
         for fim in fim_keys:
-            print(fim)
-            for fim_id in grp_struct[fim]:
-                print(fim_id)
-                retval = retval + self.get_fim_policy_meta(fim_id)
+            retval = retval + self.get_policy_list(grp_struct[fim], "FIM")
         print("Gathered all policy metadata successfully")
+        return retval
+
+    def get_policy_list(self, policy_ids, policy_type):
+        retval = ""
+        for policy_id in policy_ids:
+            print(policy_id)
+            retval = retval + self.get_policy_meta(policy_id, policy_type)
         return retval
 
     def list_all_servers(self):
@@ -240,28 +241,23 @@ class Halo(object):
                                        "event")
         return report
 
-    def get_csm_policy_meta(self, policy_id):
-        retval = ""
-        if policy_id is not None:
-            pol = cloudpassage.ConfigurationPolicy(self.session)
-            retval = Formatter.policy_meta(pol.describe(policy_id),
-                                           "Configuration")
-        return retval
-
-    def get_firewall_policy_meta(self, policy_id):
-        retval = ""
-        if policy_id is not None:
-            pol = cloudpassage.FirewallPolicy(self.session)
-            retval = Formatter.policy_meta(pol.describe(policy_id),
-                                           "Firewall")
-        return retval
-
-    def get_fim_policy_meta(self, policy_id):
-        retval = ""
-        if policy_id is not None:
+    def get_policy_meta(self, policy_id, policy_type):
+        if policy_id is None:
+            retval = ""
+        elif policy_type == "FIM":
             pol = cloudpassage.FimPolicy(self.session)
             retval = Formatter.policy_meta(pol.describe(policy_id),
                                            "File Integrity Monitoring")
+        elif policy_type == "CSM":
+            pol = cloudpassage.ConfigurationPolicy(self.session)
+            retval = Formatter.policy_meta(pol.describe(policy_id),
+                                           "Configuration")
+        elif policy_type == "FW":
+            pol = cloudpassage.FirewallPolicy(self.session)
+            retval = Formatter.policy_meta(pol.describe(policy_id),
+                                           "Firewall")
+        else:
+            retval = ""
         return retval
 
     @classmethod
