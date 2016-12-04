@@ -2,6 +2,17 @@
 
 ## Halo Slackbot
 
+This is a chatbot that allows you to query your CloudPassage Halo account
+without leaving the comfort of your Slack client.  No need to log into the
+web portal to find out the status of a server- just
+`donbot tell me about server XYZ`.
+
+It lives in a Docker container, so you can deploy pretty much anywhere.  
+No listening ports, it just establishes a connection to Slack and listens
+for messages where it's name is mentioned. Then it reaches out to the
+CloudPassage Halo API to gather information, and drops a report back into the
+channel where it was requested.
+
 [![Build Status](https://travis-ci.org/ashmastaflash/don-bot.svg?branch=master)](https://travis-ci.org/ashmastaflash/don-bot)
 
 beta, beta, beta....
@@ -9,6 +20,13 @@ beta, beta, beta....
 Use a read-only CloudPassage Halo API key...
 
 ### Running Don-Bot
+
+Requirements:
+
+* CloudPassage Halo READ-ONLY API key
+* Slack chatbot token
+
+Doing the thing:
 
 1. Clone it `git clone https://github.com/ashmastaflash/don-bot`
 1. Descend into the repo root `cd don-bot`
