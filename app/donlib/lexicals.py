@@ -30,6 +30,6 @@ class Lexicals(object):
             s = re.search(match, message)
             if s:
                 retval = (name, s.group('target'))
-        print message
-        print retval
+        print(message)
+        print(retval)
         return retval

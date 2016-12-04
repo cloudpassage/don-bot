@@ -30,7 +30,7 @@ def main():
     halo_enricher.start()
     msg = "Starting Don-Bot v%s\nName is set to %s" % (donlib.__version__,
                                                        config.slack_username)
-    print msg
+    print(msg)
 
     while True:
         time.sleep(60)
