@@ -14,6 +14,10 @@ CloudPassage Halo API to gather information, and drops a report back into the
 channel where it was requested.
 
 [![Build Status](https://travis-ci.org/ashmastaflash/don-bot.svg?branch=master)](https://travis-ci.org/ashmastaflash/don-bot)
+[![Code Climate](https://codeclimate.com/github/ashmastaflash/don-bot/badges/gpa.svg)](https://codeclimate.com/github/ashmastaflash/don-bot)
+[![Issue Count](https://codeclimate.com/github/ashmastaflash/don-bot/badges/issue_count.svg)](https://codeclimate.com/github/ashmastaflash/don-bot)
+[![Test Coverage](https://codeclimate.com/github/ashmastaflash/don-bot/badges/coverage.svg)](https://codeclimate.com/github/ashmastaflash/don-bot/coverage)
+
 
 beta, beta, beta....
 
