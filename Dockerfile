@@ -23,6 +23,8 @@ RUN py.test --cov=donlib /app
 
 RUN cat /.coverage | sed -e 's/"\/app/"app/g' > /.coverage-fixed
 
+RUN git branch -v
+
 WORKDIR /app
 
 CMD /app/runner.py
