@@ -8,7 +8,7 @@ class Lexicals(object):
     def parse(cls, message):
         """At some point, this should call two methods, one for getting
         the message type, the other for parsing targets from the message"""
-        body = message["text"]
+        body = message["text"].replace('\'', '')
         query_type = Lexicals.get_message_type(body)
         target = Lexicals.get_target(body)
         return(query_type, target)
@@ -62,4 +62,6 @@ class Lexicals(object):
             retval = matcher.group('target')
         else:
             retval = ""
+        t_string = "TARGET>> " + retval
+        print t_string
         return retval
