@@ -173,7 +173,7 @@ class Halo(object):
             obj_getter = cloudpassage.ServerGroup(self.session)
         else:
             msg = "Unsupported facts query_type: " + query_type
-            print msg
+            print(msg)
             return {}
         retval = Formatter.format_item(obj_getter.describe(obj_id), query_type)
         return retval
@@ -254,22 +254,21 @@ class Halo(object):
         return report
 
     def get_policy_meta(self, policy_id, policy_type):
+        p_ref = {"FW": " Firewall",
+                 "CSM": "Configuration",
+                 "FIM": "File Integrity Monitoring"}
         if policy_id is None:
-            retval = ""
+            return ""
         elif policy_type == "FIM":
             pol = cloudpassage.FimPolicy(self.session)
-            retval = Formatter.policy_meta(pol.describe(policy_id),
-                                           "File Integrity Monitoring")
         elif policy_type == "CSM":
             pol = cloudpassage.ConfigurationPolicy(self.session)
-            retval = Formatter.policy_meta(pol.describe(policy_id),
-                                           "Configuration")
         elif policy_type == "FW":
             pol = cloudpassage.FirewallPolicy(self.session)
-            retval = Formatter.policy_meta(pol.describe(policy_id),
-                                           "Firewall")
         else:
-            retval = ""
+            return ""
+        retval = Formatter.policy_meta(pol.describe(policy_id),
+                                       p_ref[policy_type])
         return retval
 
     @classmethod

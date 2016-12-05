@@ -63,5 +63,5 @@ class Lexicals(object):
         else:
             retval = ""
         t_string = "TARGET>> " + retval
-        print t_string
+        print(t_string)
         return retval
