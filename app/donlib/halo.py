@@ -124,12 +124,14 @@ class Halo(object):
             try:
                 result = group.describe(target)["id"]
             except cloudpassage.CloudPassageResourceExistence:
-                result = "Not a group name or ID: " + target
+                result = "Not a group name or ID (404): " + target
+            except KeyError:
+                result = "Not a group name or ID (KeyError): " + target
         return result
 
     def report_server_by_id(self, server_id):
         """Creates a server report from facts and issues"""
-        report = self.get_server_facts(server_id)
+        report = self.get_facts(server_id, "server_facts")
         report = report + self.get_server_issues(server_id)
         report = report + self.get_server_events(server_id)
         return report
@@ -137,7 +139,7 @@ class Halo(object):
     def report_group_by_id(self, group_id):
         """Creates a group report"""
         print("Getting group facts")
-        report = self.get_group_facts(group_id)
+        report = self.get_facts(group_id, "group_facts")
         print("Getting group policies")
         report = report + self.get_group_policies(group_id)
         return report
@@ -153,18 +155,28 @@ class Halo(object):
             pass
         return report
 
-    def get_server_facts(self, server_id):
-        """Return server facts after sending through formatter"""
-        server = cloudpassage.Server(self.session)
-        report = Formatter.format_item(server.describe(server_id),
-                                       "server_facts")
-        return report
+    def get_facts(self, obj_id, query_type):
+        """Gets facts for servers and groups.
 
-    def get_group_facts(self, group_id):
-        """Return group facts after sending through formatter"""
-        group = cloudpassage.ServerGroup(self.session)
-        report = Formatter.format_item(group.describe(group_id), "group_facts")
-        return report
+        Args:
+            obj_id (str): ID of object to retrieve facts for.
+
+            query_type (str): "server_facts" or "group_facts"
+
+        Returns:
+            dict: object facts representation
+
+        """
+        if query_type == "server_facts":
+            obj_getter = cloudpassage.Server(self.session)
+        elif query_type == "group_facts":
+            obj_getter = cloudpassage.ServerGroup(self.session)
+        else:
+            msg = "Unsupported facts query_type: " + query_type
+            print msg
+            return {}
+        retval = Formatter.format_item(obj_getter.describe(obj_id), query_type)
+        return retval
 
     def get_group_policies(self, group_id):
         retval = "  Policies\n"
