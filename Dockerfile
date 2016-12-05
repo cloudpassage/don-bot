@@ -17,9 +17,7 @@ WORKDIR /app
 
 RUN pip install -r requirements.txt
 
-WORKDIR /
-
-RUN py.test --cov=donlib /app
+RUN py.test --cov=donlib 
 
 RUN cat /.coverage | sed -e 's/"\/app/"app/g' > /.coverage-fixed
 
