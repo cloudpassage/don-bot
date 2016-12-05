@@ -21,6 +21,8 @@ WORKDIR /
 
 RUN py.test --cov=donlib /app
 
+RUN cat /.coverage | sed -e 's/"\/app/"app/g' > /.coverage-fixed
+
 WORKDIR /app
 
 CMD /app/runner.py

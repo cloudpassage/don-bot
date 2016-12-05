@@ -3,7 +3,7 @@ language: python
 services:
 - docker
 script: docker build -t don-bot .
-after_script: docker run -it --rm -w "/" don-bot codeclimate-test-reporter --file=/.coverage --token $CODECLIMATE_REPO_TOKEN --debug
+after_script: docker run -it --rm -w "/" don-bot codeclimate-test-reporter --file=/.coverage-fixed --token $CODECLIMATE_REPO_TOKEN --debug
 env:
   global:
     secure: oFN4l/ECfwW0As3+ZPkDyHyk0PsK06oCsBnzyJtM6JKoSJowVyY1MnCyvccQ0ipJRNN/8Wmu1uLzHxnnnGqLQC5YXAT1QuqWsU9QmunCe6QQ9IibUoiSgdn41Lho+KzeX1ICDal+LDW2sJaIVM8ecGzczp3fUoFL88uiLXkJiRcdU2mFcvxh9q76tzfGx/pq4s7lM83Q1o4HqhspM0Y5Tz3dbQEJl5LbUrDjbzIruX58cGUiO1XXS7cs5O7kgwSZvq7elz/jtoUflFZ3NnJPt4tt1qb8JBb07n6AiiOLDtiPQVmwNQkHGAUnlNEi0AoKxkHOlElrRwlHeR3p3AQuXqE9VShV6CO2RC3pFencsLgS9JVBlXfj3lXr6peNplas96u+0shDIkSpIXYNKkT9LRA2H7T66hR9I/OjfAu3aPUgoqIoG9sdQyI3Ut0UM5fp5MN0Iu9lsFsL3e7TE46oX8g6HkX4Tnvo1HdCz1KCSCavaT+zu0Zmfy3CC6Vl+eCorzsuc3LnjWpE5B/VvZYI6LkCBL1qRAL8uyo85gxYDi43K9oP4jygHf3/QpHvTnTX4ZFNBJZUx0d7gAqXRVfTnMlRvWj56+ySpl6CqZw5XqwEWQcwKUt1DVoDJ4auphZe17hkujfpwWfFs/alMiVkY7NM2dSlitGHt1GprxV1QgY=
