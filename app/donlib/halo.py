@@ -183,6 +183,7 @@ class Halo(object):
         firewall_keys = ["firewall_policy_id", "windows_firewall_policy_id"]
         csm_keys = ["policy_ids", "windows_policy_ids"]
         fim_keys = ["fim_policy_ids", "windows_fim_policy_ids"]
+        lids_keys = ["lids_policy_ids"]
         group = cloudpassage.ServerGroup(self.session)
         grp_struct = group.describe(group_id)
         print("Getting meta for FW policies")
@@ -195,6 +196,9 @@ class Halo(object):
         print("Getting meta for FIM policies")
         for fim in fim_keys:
             retval = retval + self.get_policy_list(grp_struct[fim], "FIM")
+        print("Getting meta for LIDS policies")
+        for lids in lids_keys:
+            retval = retval + self.get_policy_list(grp_struct[lids], "LIDS")
         print("Gathered all policy metadata successfully")
         return retval
 
@@ -256,7 +260,8 @@ class Halo(object):
     def get_policy_meta(self, policy_id, policy_type):
         p_ref = {"FW": " Firewall",
                  "CSM": "Configuration",
-                 "FIM": "File Integrity Monitoring"}
+                 "FIM": "File Integrity Monitoring",
+                 "LIDS": "Log-Based IDS"}
         if policy_id is None:
             return ""
         elif policy_type == "FIM":
@@ -265,6 +270,8 @@ class Halo(object):
             pol = cloudpassage.ConfigurationPolicy(self.session)
         elif policy_type == "FW":
             pol = cloudpassage.FirewallPolicy(self.session)
+        elif policy_type == "LIDS":
+            pol = cloudpassage.LidsPolicy(self.session)
         else:
             return ""
         retval = Formatter.policy_meta(pol.describe(policy_id),
