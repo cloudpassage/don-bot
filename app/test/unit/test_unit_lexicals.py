@@ -14,84 +14,90 @@ class TestUnitLexicals:
     def test_unit_lexical_parse(self):
         message = {"text": "You'll never make anything out of this message"}
         result_1, result_2 = donlib.Lexicals.parse(message)
-        assert result_1 == result_2 == "unknown"
+        assert result_1 == "unknown"
 
     def test_unit_lexical_get_message_type_server_report_1(self):
         message = "donbot tell me about server xyz"
-        target = "xyz"
         report_type = "server_report"
-        r_type, tgt = donlib.Lexicals.get_message_type(message)
+        r_type = donlib.Lexicals.get_message_type(message)
         assert r_type == report_type
-        assert tgt == target
 
     def test_unit_lexical_get_message_type_server_report_2(self):
         message = "donbot tell me about server \"xyz zyx\" "
-        target = "xyz zyx"
         report_type = "server_report"
-        r_type, tgt = donlib.Lexicals.get_message_type(message)
+        r_type = donlib.Lexicals.get_message_type(message)
         assert r_type == report_type
-        assert tgt == target
 
     def test_unit_lexical_get_message_type_group_report_1(self):
         message = "donbot tell me about group xyz"
-        target = "xyz"
         report_type = "group_report"
-        r_type, tgt = donlib.Lexicals.get_message_type(message)
+        r_type = donlib.Lexicals.get_message_type(message)
         assert r_type == report_type
-        assert tgt == target
 
     def test_unit_lexical_get_message_type_group_report_2(self):
         message = "donbot tell me about group \"xyz zyx\" "
-        target = "xyz zyx"
         report_type = "group_report"
-        r_type, tgt = donlib.Lexicals.get_message_type(message)
+        r_type = donlib.Lexicals.get_message_type(message)
         assert r_type == report_type
-        assert tgt == target
 
     def test_unit_lexical_get_message_type_ip_report(self):
         message = "donbot tell me about ip 1.2.3.4"
-        target = "1.2.3.4"
         report_type = "ip_report"
-        r_type, tgt = donlib.Lexicals.get_message_type(message)
+        r_type = donlib.Lexicals.get_message_type(message)
         assert r_type == report_type
-        assert tgt == target
 
     def test_unit_lexical_get_message_type_all_servers(self):
         message = "donbot list all servers"
         report_type = "all_servers"
-        r_type, tgt = donlib.Lexicals.get_message_type(message)
+        r_type = donlib.Lexicals.get_message_type(message)
         assert r_type == report_type
 
     def test_unit_lexical_get_message_type_all_server_groups(self):
         message = "donbot list server groups"
         report_type = "all_groups"
-        r_type, tgt = donlib.Lexicals.get_message_type(message)
+        r_type = donlib.Lexicals.get_message_type(message)
         assert r_type == report_type
 
     def test_unit_lexical_get_message_type_servers_in_group_report_1(self):
         message = "donbot tell me about servers in group xyz"
-        target = "xyz"
         report_type = "servers_in_group"
-        r_type, tgt = donlib.Lexicals.get_message_type(message)
+        r_type = donlib.Lexicals.get_message_type(message)
         assert r_type == report_type
-        assert tgt == target
 
     def test_unit_lexical_get_message_type_serers_in_group_report_2(self):
         message = "donbot tell me about servers in group \"xyz zyx\" "
-        target = "xyz zyx"
         report_type = "servers_in_group"
-        r_type, tgt = donlib.Lexicals.get_message_type(message)
+        r_type = donlib.Lexicals.get_message_type(message)
         assert r_type == report_type
-        assert tgt == target
 
     def test_unit_lexical_get_message_type_selfie(self):
         message = "donbot selfie"
         report_type = "selfie"
-        r_type, tgt = donlib.Lexicals.get_message_type(message)
+        r_type = donlib.Lexicals.get_message_type(message)
         assert r_type == report_type
 
     def test_unit_lexical_get_message_type_help(self):
         message = "donbot help"
         report_type = "help"
-        r_type, tgt = donlib.Lexicals.get_message_type(message)
+        r_type = donlib.Lexicals.get_message_type(message)
         assert r_type == report_type
+
+    def test_unit_lexical_get_single_quoted_value(self):
+        message = 'test message "with a target"'
+        expected = "with a target"
+        assert donlib.Lexicals.get_target(message) == expected
+
+    def test_unit_lexical_get_single_quoted_value_fail(self):
+        message = 'test message with no valid target.'
+        expected = ""
+        assert donlib.Lexicals.get_target(message) == expected
+
+    def test_unit_lexical_get_last_unquoted_value(self):
+        message = 'test message with a target'
+        expected = "target"
+        assert donlib.Lexicals.get_target(message) == expected
+
+    def test_unit_lexical_get_last_unquoted_value_fail(self):
+        message = 'test message with no target '
+        expected = ""
+        assert donlib.Lexicals.get_target(message) == expected
