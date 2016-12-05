@@ -1,8 +1,16 @@
 Changelog
 =========
 
-v0.10
+v0.11
 -----
+
+New
+~~~
+
+- Added LIDS policies to group report. [Ash Wilson]
+
+v0.10 (2016-12-04)
+------------------
 
 Changes
 ~~~~~~~
