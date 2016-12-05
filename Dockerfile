@@ -17,6 +17,10 @@ WORKDIR /app
 
 RUN pip install -r requirements.txt
 
-RUN py.test --cov=donlib
+WORKDIR /
+
+RUN py.test --cov=donlib /app/test
+
+WORKDIR /app
 
 CMD /app/runner.py
