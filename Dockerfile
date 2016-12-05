@@ -17,9 +17,9 @@ WORKDIR /app
 
 RUN pip install -r requirements.txt
 
-RUN py.test --cov=donlib 
+RUN py.test --cov=donlib
 
-RUN cat /.coverage | sed -e 's/"\/app/"app/g' > /.coverage-fixed
+RUN cat /.coverage | sed -e 's/"donlib/"app\/donlib/g' > /.coverage-fixed
 
 RUN git branch -v
 
