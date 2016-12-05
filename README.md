@@ -1,6 +1,12 @@
-# Don-Bot
+# Don-Bot, the Halo Slackbot
 
-## Halo Slackbot
+[![Build Status](https://travis-ci.org/ashmastaflash/don-bot.svg?branch=master)](https://travis-ci.org/ashmastaflash/don-bot)
+[![Code Climate](https://codeclimate.com/github/ashmastaflash/don-bot/badges/gpa.svg)](https://codeclimate.com/github/ashmastaflash/don-bot)
+[![Issue Count](https://codeclimate.com/github/ashmastaflash/don-bot/badges/issue_count.svg)](https://codeclimate.com/github/ashmastaflash/don-bot)
+[![Test Coverage](https://codeclimate.com/github/ashmastaflash/don-bot/badges/coverage.svg)](https://codeclimate.com/github/ashmastaflash/don-bot/coverage)
+
+
+## Summary
 
 This is a chatbot that allows you to query your CloudPassage Halo account
 without leaving the comfort of your Slack client.  No need to log into the
@@ -13,13 +19,6 @@ for messages where it's name is mentioned. Then it reaches out to the
 CloudPassage Halo API to gather information, and drops a report back into the
 channel where it was requested.
 
-[![Build Status](https://travis-ci.org/ashmastaflash/don-bot.svg?branch=master)](https://travis-ci.org/ashmastaflash/don-bot)
-[![Code Climate](https://codeclimate.com/github/ashmastaflash/don-bot/badges/gpa.svg)](https://codeclimate.com/github/ashmastaflash/don-bot)
-[![Issue Count](https://codeclimate.com/github/ashmastaflash/don-bot/badges/issue_count.svg)](https://codeclimate.com/github/ashmastaflash/don-bot)
-[![Test Coverage](https://codeclimate.com/github/ashmastaflash/don-bot/badges/coverage.svg)](https://codeclimate.com/github/ashmastaflash/don-bot/coverage)
-
-
-beta, beta, beta....
 
 Use a read-only CloudPassage Halo API key...
 
@@ -53,9 +52,9 @@ Doing the thing:
         -e HALO_API_SECRET_KEY=$HALO_API_SECRET_KEY \
         -e SLACK_API_TOKEN=$SLACK_API_TOKEN \
         don-bot
-
 ```
-You can add the optional variables in if needed with
+
+You can add the optional variables, if needed, with:
 `-e OPTIONAL_VAR=$OPTIONAL_VAR`
 
 
@@ -66,7 +65,7 @@ is useful for understanding how users are interacting with it and how it
 interprets messages.
 
 
-### Extending functionality
+Extending Don-Bot
 
 * `app/donlib/lexicals.py` contains `Lexicals.get_messsage_type()`.  
 That's where the interpretation and extraction happen.  If you want to
@@ -77,3 +76,12 @@ test-driven approach.  Don't even think about offering up a PR for extending
 `Lexicals.get_messsage_type()` without having test cases to cover the new work.
 Unit testing isn't the highest on this project, but `app/donlib/lexicals.py`
 is at 100% and needs to stay that way.
+
+### Author
+
+This tool was written by Ash Wilson (@ashmastaflash).  Feedback should go to
+<toolbox@cloudpassage.com>.
+
+### License
+
+See LICENSE.txt
