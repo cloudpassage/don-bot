@@ -69,8 +69,7 @@ interprets messages.
 ### Extending functionality
 
 * `app/donlib/lexicals.py` contains `Lexicals.get_messsage_type()`.  
-That's where the interpretation and extraction happen.  Likely, that'll be
-refactored into two functions later on... we'll see...  Anyhow, if you want to
+That's where the interpretation and extraction happen.  If you want to
 add functionality, that's where you should start.
 * There are already some unit tests in `app/test/unit/test_unit_lexicals.py`
 to exercise the matching process.  That's a great place to start, and take a
