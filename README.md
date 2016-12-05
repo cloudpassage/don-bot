@@ -27,7 +27,7 @@ Use a read-only CloudPassage Halo API key...
 Requirements:
 
 * CloudPassage Halo READ-ONLY API key
-* Slack chatbot token
+* Slack chatbot token (don-operator.png included in repo for bot profile image)
 
 Doing the thing:
 
