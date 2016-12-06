@@ -1,7 +1,7 @@
 FROM alpine:3.4
 MAINTAINER toolbox@cloudpassage.com
 
-ENV SLACK_ICON_URL=https://pbs.twimg.com/profile_images/803676842599157760/JULYcky5_400x400.jpg
+ENV SLACK_ICON_URL=http://www.cloudpassage.com/wp-content/uploads/2016/12/don-operator.png
 ENV HALO_API_HOSTNAME=api.cloudpassage.com
 ENV HALO_API_PORT=443
 
