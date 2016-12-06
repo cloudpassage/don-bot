@@ -52,7 +52,7 @@ class Halo(object):
         elif query_type == "servers_in_group":
             report = self.list_servers_in_group(target)
         elif query_type == "selfie":
-            report = self.take_selfie()
+            report = Halo.take_selfie()
         elif query_type == "help":
             report = Halo.help_text()
         return(report)
@@ -241,9 +241,7 @@ class Halo(object):
         url = '/v2/issues'
         params = {'agent_id': server_id}
         hh = cloudpassage.HttpHelper(self.session)
-        report = Formatter.format_list(hh.get_paginated(url,
-                                                        pagination_key,
-                                                        5,
+        report = Formatter.format_list(hh.get_paginated(url, pagination_key, 5,
                                                         params=params),
                                        "issue")
         return report
@@ -252,8 +250,7 @@ class Halo(object):
         """Return server events after sending through formatter"""
         event = cloudpassage.Event(self.session)
         since = Utility.iso8601_today()
-        report = Formatter.format_list(event.list_all(10,
-                                                      server_id=server_id,
+        report = Formatter.format_list(event.list_all(10, server_id=server_id,
                                                       since=since),
                                        "event")
         return report
