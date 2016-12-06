@@ -30,5 +30,8 @@ class TestUnitHalo:
         cfg = self.instantiate_config_helper(monkeypatch)
         assert donlib.Halo(cfg)
 
+    def test_unit_help_text(self):
+        assert donlib.Halo.help_text()
+
     def test_unit_selfie(self):
         assert donlib.Halo.take_selfie()

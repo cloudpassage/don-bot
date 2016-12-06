@@ -54,10 +54,11 @@ class Halo(object):
         elif query_type == "selfie":
             report = self.take_selfie()
         elif query_type == "help":
-            report = self.help_text()
+            report = Halo.help_text()
         return(report)
 
-    def help_text(self):
+    @classmethod
+    def help_text(cls):
         """This is the help output"""
         ret = ("I currently answer these burning questions, " +
                "but only when you address me by name:\n " +
