@@ -11,7 +11,7 @@ donlib = imp.load_module(module_name, fp, pathname, description)
 
 api_key_id = "APIKEYSAMPLE000"
 api_secret_key = "APISECRETKEYSAMPLE000"
-api_hostname = "api.nonexist.cloudpassage.com"
+api_hostname = "api.cloudpassage.com"
 api_port = "443"
 slack_token = "hello-i-am-a-slack-token"
 
@@ -45,3 +45,8 @@ class TestUnitHalo:
         cfg = self.instantiate_config_helper(monkeypatch)
         h_obj = donlib.Halo(cfg)
         assert h_obj.interrogate("selfie", "selfie")
+
+    def test_unit_credentials_work(self, monkeypatch):
+        cfg = self.instantiate_config_helper(monkeypatch)
+        h_obj = donlib.Halo(cfg)
+        assert h_obj.credentials_work() is False

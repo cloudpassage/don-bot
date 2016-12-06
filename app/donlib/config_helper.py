@@ -1,4 +1,5 @@
 import os
+import re
 
 
 class ConfigHelper(object):
@@ -25,6 +26,17 @@ class ConfigHelper(object):
         self.slack_api_token = os.getenv("SLACK_API_TOKEN", "HARDSTOP")
         self.slack_username = os.getenv("SLACK_USERNAME", "donbot")
         self.slack_icon_url = os.getenv("SLACK_ICON_URL", "")
+        self.ua = ConfigHelper.get_ua_string()
+
+    @classmethod
+    def get_ua_string(cls):
+        product = "HaloSlackbot"
+        init = open(os.path.join(os.path.dirname(__file__),
+                    "__init__.py")).read()
+        rx_compiled = re.compile(r"\s*__version__\s*=\s*\"(\S+)\"")
+        version = rx_compiled.search(init).group(1)
+        ua_string = product + "/" + version
+        return ua_string
 
     def sane(self):
         """Tests to make sure that required config items are set.

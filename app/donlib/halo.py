@@ -17,7 +17,8 @@ class Halo(object):
         self.session = cloudpassage.HaloSession(config.halo_api_key,
                                                 config.halo_api_secret_key,
                                                 api_host=config.halo_api_host,
-                                                api_port=config.halo_api_port)
+                                                api_port=config.halo_api_port,
+                                                integration_string=config.ua)
         return
 
     def credentials_work(self):
