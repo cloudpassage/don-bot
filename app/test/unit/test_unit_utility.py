@@ -22,3 +22,6 @@ class TestUnitUtility:
 
     def test_unit_utility_8601_one_week_ago(self):
         assert isinstance(donlib.Utility.iso8601_one_week_ago(), str)
+
+    def test_unit_utility_8601_now(self):
+        assert isinstance(donlib.Utility.iso8601_now(), str)

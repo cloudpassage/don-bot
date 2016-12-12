@@ -19,13 +19,14 @@ class Slack(object):
         self.botname = config.slack_username
         self.bot_avatar = config.slack_icon_url
         self.client = SlackClient(self.token)
+        self.channel = config.slack_channel
 
     def __iter__(self):
         """This wraps the RTM client, and yields messages"""
         if self.client.rtm_connect():
             time.sleep(1)
             woke_message = "Just got WOKE!"
-            self.client.rtm_send_message("general", woke_message)
+            self.client.rtm_send_message(self.channel, woke_message)
         else:
             print("Can't get WOKE")
         while True:

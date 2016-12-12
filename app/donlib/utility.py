@@ -16,6 +16,10 @@ class Utility(object):
                                        datetime.timedelta(days=days_ago))
 
     @classmethod
+    def iso8601_now(cls):
+        return Utility.date_to_iso8601(datetime.datetime.utcnow())
+
+    @classmethod
     def iso8601_today(cls):
         return Utility.date_to_iso8601(datetime.date.today())
 
@@ -31,3 +35,7 @@ class Utility(object):
     def iso8601_one_month_ago(cls):
         """In this case, we assume 30 days"""
         return Utility.iso8601_arbitrary_days_ago(30)
+
+    @classmethod
+    def event_is_critical(cls, event):
+        return event["critical"]

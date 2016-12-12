@@ -26,6 +26,10 @@ class ConfigHelper(object):
         self.slack_api_token = os.getenv("SLACK_API_TOKEN", "HARDSTOP")
         self.slack_username = os.getenv("SLACK_USERNAME", "donbot")
         self.slack_icon_url = os.getenv("SLACK_ICON_URL", "")
+        self.slack_channel = os.getenv("SLACK_CHANNEL", "halo")
+        self.monitor_events = os.getenv("MONITOR_EVENTS", "no")
+        self.max_threads = 5  # Max thresds to be used by event collector
+        self.halo_batch_size = 10  # Pagination depth for event collector
         self.ua = ConfigHelper.get_ua_string()
 
     @classmethod
