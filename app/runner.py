@@ -31,9 +31,26 @@ def main():
     msg = "Starting Don-Bot v%s\nName is set to %s" % (donlib.__version__,
                                                        config.slack_username)
     print(msg)
+    msg = "Don-Bot sends general notifications to #%s" % config.slack_channel
+    print(msg)
+    if config.monitor_events == "yes":
+        print("Starting Halo event monitor")
+        halo_collector = threading.Thread(target=event_connector, args=[config])
+        halo_collector.daemon = True
+        halo_collector.start()
 
     while True:
         time.sleep(60)
+
+
+def event_connector(config):
+    events = donlib.HaloEvents(config)
+    while True:
+        for event in events:
+            if donlib.Utility.event_is_critical(event):
+                print("Critical event detected!")
+                event_fmt = donlib.Formatter.format_item(event, "event")
+                slack_outbound.append((config.slack_channel, event_fmt))
 
 
 def daemon_speaker(config):
