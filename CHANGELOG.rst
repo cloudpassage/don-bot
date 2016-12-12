@@ -1,8 +1,26 @@
 Changelog
 =========
 
-v0.11
+v0.12
 -----
+
+New
+~~~
+
+- Added "config" and "version" to bot commands. [Ash Wilson]
+
+- Bot can monitor Halo API for critical events. [Ash Wilson]
+
+Changes
+~~~~~~~
+
+- Added health checker and more meaningful application logs. [Ash
+  Wilson]
+
+- Adding bot profile image. [Ash Wilson]
+
+v0.11 (2016-12-05)
+------------------
 
 New
 ~~~
