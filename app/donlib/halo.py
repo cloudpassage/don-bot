@@ -19,6 +19,9 @@ class Halo(object):
                                                 api_host=config.halo_api_host,
                                                 api_port=config.halo_api_port,
                                                 integration_string=config.ua)
+        self.product_version = config.product_version
+        self.monitor_events = config.monitor_events
+        self.slack_channel = config.slack_channel
         return
 
     def credentials_work(self):
@@ -56,6 +59,10 @@ class Halo(object):
             report = Halo.take_selfie()
         elif query_type == "help":
             report = Halo.help_text()
+        elif query_type == "version":
+            report = Halo.version_info(self.product_version)
+        elif query_type == "config":
+            report = self.running_config()
         return(report)
 
     @classmethod
@@ -68,8 +75,22 @@ class Halo(object):
                "\"tell me about group `(group_id|group_name)`\"\n" +
                "\"list all servers\"\n" +
                "\"list server groups\"\n" +
-               "\"servers in group `(group_id|group_name)`\"\n")
+               "\"servers in group `(group_id|group_name)`\"\n" +
+               "\"version\"\n" +
+               "\"config\"\n")
         return ret
+
+    @classmethod
+    def version_info(cls, product_version):
+        return "v%s" % product_version
+
+    def running_config(self):
+        if self.monitor_events == 'yes':
+            events = "Monitoring Halo events"
+        else:
+            events = "NOT monitoring Halo events"
+        retval = "%s\nHalo channel: #%s" % (events, self.slack_channel)
+        return retval
 
     def get_group_report(self, target):
         """This is the wrapper method for producing a group report."""

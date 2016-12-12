@@ -29,18 +29,24 @@ class ConfigHelper(object):
         self.slack_channel = os.getenv("SLACK_CHANNEL", "halo")
         self.monitor_events = os.getenv("MONITOR_EVENTS", "no")
         self.max_threads = 5  # Max thresds to be used by event collector
-        self.halo_batch_size = 10  # Pagination depth for event collector
+        self.halo_batch_size = 5  # Pagination depth for event collector
         self.ua = ConfigHelper.get_ua_string()
+        self.product_version = ConfigHelper.get_product_version()
 
     @classmethod
     def get_ua_string(cls):
         product = "HaloSlackbot"
+        version = ConfigHelper.get_product_version()
+        ua_string = product + "/" + version
+        return ua_string
+
+    @classmethod
+    def get_product_version(cls):
         init = open(os.path.join(os.path.dirname(__file__),
                     "__init__.py")).read()
         rx_compiled = re.compile(r"\s*__version__\s*=\s*\"(\S+)\"")
         version = rx_compiled.search(init).group(1)
-        ua_string = product + "/" + version
-        return ua_string
+        return version
 
     def sane(self):
         """Tests to make sure that required config items are set.

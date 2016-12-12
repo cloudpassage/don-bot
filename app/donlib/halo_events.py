@@ -14,18 +14,17 @@ class HaloEvents(object):
     def __init__(self, config):
         self.halo_key = config.halo_api_key
         self.halo_secret = config.halo_api_secret_key
-        self.halo_api_host = config.halo_api_host
-        self.halo_api_port = config.halo_api_port
         self.start_timestamp = utility.Utility.iso8601_now()
-        self.stop_timestamp = None
         self.max_threads = config.max_threads
         self.halo_batch_size = config.halo_batch_size
         self.last_event_timestamp = None
         self.events = []
         self.halo_session = None
+        self.ua = config.ua
 
     def __iter__(self):
         while True:
+            print "Last event timestamp: %s" % str(self.last_event_timestamp)
             for event in self.get_next_batch():
                 yield event
 
@@ -37,21 +36,22 @@ class HaloEvents(object):
         self.last_event_timestamp = last_event_timestamp
         return events
 
-    @classmethod
-    def events_from_pages(cls, pages):
+    def events_from_pages(self, pages):
         events = []
         for page in pages:
             for event in page["events"]:
                 events.append(event)
-        return HaloEvents.order_events(events, "created_at")
+        result = self.order_events(events, "created_at")
+        return result
+
+    def order_events(self, events, sort_key):
+        sorted_list = sorted(events, key=operator.itemgetter(sort_key))
+        return sorted_list
 
     def build_halo_session(self):
-        user_agent = "Halo Collector Prorotype for Reactor v0.9.0"
         halo_session = cloudpassage.HaloSession(self.halo_key,
                                                 self.halo_secret,
-                                                api_host=self.halo_api_host,
-                                                api_port=self.halo_api_port,
-                                                user_agent=user_agent)
+                                                integration_string=self.ua)
         return halo_session
 
     def create_url_list(self):
@@ -68,8 +68,6 @@ class HaloEvents(object):
             modifiers["since"] = self.start_timestamp
         if self.last_event_timestamp is not None:
             modifiers["since"] = self.last_event_timestamp
-        if self.stop_timestamp is not None:
-            modifiers["until"] = self.stop_timestamp
         for page in range(1, self.halo_batch_size + 1):
             url = None
             modifiers["page"] = page
@@ -91,8 +89,3 @@ class HaloEvents(object):
         pool.close()
         pool.join()
         return results
-
-    @classmethod
-    def order_events(cls, events, sort_key):
-        sorted_list = sorted(events, key=operator.itemgetter(sort_key))
-        return sorted_list

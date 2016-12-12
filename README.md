@@ -18,7 +18,10 @@ It lives in a Docker container, so you can deploy pretty much anywhere.
 No listening ports, it just establishes a connection to Slack and listens
 for messages where it's name is mentioned. Then it reaches out to the
 CloudPassage Halo API to gather information, and drops a report back into the
-channel where it was requested.
+channel where it was requested.  
+
+This bot can optionally poll the Halo API events endpoint, and post all
+critical events into the configured channel.  See below for details...
 
 
 Use a read-only CloudPassage Halo API key...
@@ -46,7 +49,7 @@ Doing the thing:
 | SLACK_API_TOKEN     | Slack token for bot                                   |
 | SLACK_USERNAME      | OPTIONAL- defaults to `donbot`                        |
 | SLACK_ICON_URL      | OPTIONAL- Link to avatar image for bot                |
-| SLACK_CHANNEL       | Notifications got o this channel.  Defaults to `halo` |
+| SLACK_CHANNEL       | Notifications got to this channel.  Defaults to `halo`|
 | MONITOR_EVENTS      | Set to `yes` to send critical events to SLACK_CHANNEL |
 
 
@@ -55,6 +58,8 @@ Doing the thing:
         -e HALO_API_KEY=$HALO_API_KEY \
         -e HALO_API_SECRET_KEY=$HALO_API_SECRET_KEY \
         -e SLACK_API_TOKEN=$SLACK_API_TOKEN \
+        -e SLACK_CHANNEL=$SLACK_CHANNEL \
+        -e MONITOR_EVENTS=$MONITOR_EVENTS \
         don-bot
 ```
 
