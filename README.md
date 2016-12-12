@@ -37,15 +37,18 @@ Doing the thing:
 1. Build the container `docker build -t don-bot .`
 1. Set the following env vars, and then run:
 
-| var                 | purpose                                      |
-|---------------------|----------------------------------------------|
-| HALO_API_KEY        | Halo API key ID                              |
-| HALO_API_SECRET_KEY | Halo API secret                              |
-| HALO_API_HOSTNAME   | OPTIONAL- defaults to api.cloudpassage.com   |
-| HALO_API_PORT       | OPTIONAL- defaults to 443                    |
-| SLACK_API_TOKEN     | Slack token for bot                          |
-| SLACK_USERNAME      | OPTIONAL- defaults to `donbot`               |
-| SLACK_ICON_URL      | OPTIONAL- Link to avatar image for bot       |
+| var                 | purpose                                               |
+|---------------------|-------------------------------------------------------|
+| HALO_API_KEY        | Halo API key ID                                       |
+| HALO_API_SECRET_KEY | Halo API secret                                       |
+| HALO_API_HOSTNAME   | OPTIONAL- defaults to api.cloudpassage.com            |
+| HALO_API_PORT       | OPTIONAL- defaults to 443                             |
+| SLACK_API_TOKEN     | Slack token for bot                                   |
+| SLACK_USERNAME      | OPTIONAL- defaults to `donbot`                        |
+| SLACK_ICON_URL      | OPTIONAL- Link to avatar image for bot                |
+| SLACK_CHANNEL       | Notifications got o this channel.  Defaults to `halo` |
+| MONITOR_EVENTS      | Set to `yes` to send critical events to SLACK_CHANNEL |
+
 
 ```
     docker run -it --rm \
