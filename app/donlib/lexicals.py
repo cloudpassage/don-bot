@@ -26,7 +26,9 @@ class Lexicals(object):
                     (r'(?!\sin)\s+group\s+(?!\")\S+', "group_report"),
                     (r'(?!\sin)\s+group\s+\"[^\"]+\"', "group_report"),
                     (r'(?P<target>selfie)', "selfie"),
-                    (r'(?P<target>help)', "help")]
+                    (r'(?P<target>help)', "help"),
+                    (r'(?P<target>version)', "version"),
+                    (r'(?P<target>config)', "config")]
         for match, name in matchers:
             s = re.search(match, message)
             if s:

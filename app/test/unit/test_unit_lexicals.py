@@ -101,3 +101,13 @@ class TestUnitLexicals:
         message = 'test message with no target '
         expected = ""
         assert donlib.Lexicals.get_target(message) == expected
+
+    def test_unit_lexical_get_version(self):
+        message = 'donbot version'
+        expected = "version"
+        assert donlib.Lexicals.get_target(message) == expected
+
+    def test_unit_lexical_get_config(self):
+        message = 'donbot config'
+        expected = "config"
+        assert donlib.Lexicals.get_target(message) == expected
