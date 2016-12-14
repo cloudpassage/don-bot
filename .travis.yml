@@ -3,4 +3,8 @@ language: python
 services:
 - docker
 script: docker build -t don-bot .
-after_script: docker run -it --rm don-bot /bin/sh -c "git checkout master; codeclimate-test-reporter --token $CODECLIMATE_REPO_TOKEN --debug"
+after_script: docker run -it --rm don-bot /bin/sh -c "git checkout master; codeclimate-test-reporter
+  --token $CODECLIMATE_REPO_TOKEN --debug"
+env:
+  global:
+    secure: uKZaGivAgi+/YL/R2/ettbxvVghU5BMkDPKDkjVlJZcFDIeTHckn9tQLhakdFXN8uyR7odb06MnPfMMLyKkEjnMrgW1rB/BF/J1Qrz95CLPJNryqrb+yLSTd1VnfjUlp8662adLTSVOqGeLD7CG9W4PFfA26L1ZOGUk3jH1bz6MQg5Xj72F7AHD6wULJDdUAtyGIx/Xcee2v42kr91jKlPiUfTEHfmS/vv13m3WeiPd9wygNUaI2CSBfouzXIEsXyq788jcHaUoy1hqZyuR3/tF41HOB5LLyn3U9XhOch6OnzMBgQ7NM5ejkiAgTMa+j346oUQ32jjwLoyIthcXSW/eoUqyjYTaKYgmzJESEh/53q/DNM2Jm4WuE8BhsAo0OseE72dPe6JvHbYO5Z57w08F8fkv6E8RKn5GXxb4s6NTO5sMf6pZj8TyjsjexmqWqmPga3slmKSXFhDGPsqYQqAk9/gufQy51/sGZzP1SyJ+8ajOQw2iC6FT166Oj0H1Yua8qCVmON37hsGVKGzAK3q5bG0s5rMgtAZaUhHo4YcmxgRudEHrihCT9jSF3Lz5Cz33vX9B9lUXvLXvhxemd4hqImmD/xADLTrueS1E5JdWuL7mejRqskm/ro5DOcHa/LtNv1w0p2pM4gTMI2LckDibSEl7Se0Sv17Nta6EjGJ8=

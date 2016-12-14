@@ -35,10 +35,7 @@ Requirements:
 
 Doing the thing:
 
-1. Clone it `git clone https://github.com/cloudpassage/don-bot`
-1. Descend into the repo root `cd don-bot`
-1. Build the container `docker build -t don-bot .`
-1. Set the following env vars, and then run:
+Set the following env vars, and then run:
 
 | var                 | purpose                                               |
 |---------------------|-------------------------------------------------------|
@@ -60,7 +57,7 @@ Doing the thing:
         -e SLACK_API_TOKEN=$SLACK_API_TOKEN \
         -e SLACK_CHANNEL=$SLACK_CHANNEL \
         -e MONITOR_EVENTS=$MONITOR_EVENTS \
-        don-bot
+        docker.io/halotools/don-bot
 ```
 
 You can add the optional variables, if needed, with:
