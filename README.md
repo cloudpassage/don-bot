@@ -1,9 +1,9 @@
 # Don-Bot, the Halo Slackbot
 
-[![Build Status](https://travis-ci.org/ashmastaflash/don-bot.svg?branch=master)](https://travis-ci.org/ashmastaflash/don-bot)
-[![Code Climate](https://codeclimate.com/github/ashmastaflash/don-bot/badges/gpa.svg)](https://codeclimate.com/github/ashmastaflash/don-bot)
-[![Issue Count](https://codeclimate.com/github/ashmastaflash/don-bot/badges/issue_count.svg)](https://codeclimate.com/github/ashmastaflash/don-bot)
-[![Test Coverage](https://codeclimate.com/github/ashmastaflash/don-bot/badges/coverage.svg)](https://codeclimate.com/github/ashmastaflash/don-bot/coverage)
+[![Build Status](https://travis-ci.org/cloudpassage/don-bot.svg?branch=master)](https://travis-ci.org/cloudpassage/don-bot)
+[![Code Climate](https://codeclimate.com/github/cloudpassage/don-bot/badges/gpa.svg)](https://codeclimate.com/github/cloudpassage/don-bot)
+[![Issue Count](https://codeclimate.com/github/cloudpassage/don-bot/badges/issue_count.svg)](https://codeclimate.com/github/cloudpassage/don-bot)
+[![Test Coverage](https://codeclimate.com/github/cloudpassage/don-bot/badges/coverage.svg)](https://codeclimate.com/github/cloudpassage/don-bot/coverage)
 
 ![Don Bot](http://www.cloudpassage.com/wp-content/uploads/2016/12/don-operator.png)
 
@@ -35,7 +35,7 @@ Requirements:
 
 Doing the thing:
 
-1. Clone it `git clone https://github.com/ashmastaflash/don-bot`
+1. Clone it `git clone https://github.com/cloudpassage/don-bot`
 1. Descend into the repo root `cd don-bot`
 1. Build the container `docker build -t don-bot .`
 1. Set the following env vars, and then run:
@@ -49,7 +49,7 @@ Doing the thing:
 | SLACK_API_TOKEN     | Slack token for bot                                   |
 | SLACK_USERNAME      | OPTIONAL- defaults to `donbot`                        |
 | SLACK_ICON_URL      | OPTIONAL- Link to avatar image for bot                |
-| SLACK_CHANNEL       | Notifications got to this channel.  Defaults to `halo`|
+| SLACK_CHANNEL       | Notifications go to this channel.  Defaults to `#halo`|
 | MONITOR_EVENTS      | Set to `yes` to send critical events to SLACK_CHANNEL |
 
 
