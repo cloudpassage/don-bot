@@ -93,3 +93,9 @@ This tool was written by Ash Wilson (@ashmastaflash).  Feedback should go to
 ### License
 
 See LICENSE.txt
+
+
+<!---
+#CPTAGS:community-supported integration automation
+#TBICON:images/python_icon.png
+-->
