@@ -5,7 +5,6 @@ import sys
 import threading
 import time
 from collections import deque
-from multiprocessing import Pool
 
 
 def main():
@@ -41,7 +40,7 @@ def main():
 
     while True:
         time.sleep(600)
-        print(health_check)
+        print(health_check())
 
 
 def health_check():
@@ -57,6 +56,8 @@ def health_check():
 
 def event_connector(config):
     events = donlib.HaloEvents(config)
+    # We add a short delay in case of time drift between container and API
+    time.sleep(10)
     while True:
         for event in events:
             if donlib.Utility.event_is_critical(event):
