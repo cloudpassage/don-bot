@@ -5,6 +5,8 @@
 [![Issue Count](https://codeclimate.com/github/cloudpassage/don-bot/badges/issue_count.svg)](https://codeclimate.com/github/cloudpassage/don-bot)
 [![Test Coverage](https://codeclimate.com/github/cloudpassage/don-bot/badges/coverage.svg)](https://codeclimate.com/github/cloudpassage/don-bot/coverage)
 
+https://store.docker.com/community/images/halotools/don-bot
+
 ![Don Bot](http://www.cloudpassage.com/wp-content/uploads/2016/12/don-operator.png)
 
 ## Summary
