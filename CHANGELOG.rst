@@ -1,6 +1,15 @@
 Changelog
 =========
 
+v0.12.1
+-------
+
+Changes
+~~~~~~~
+
+- Updated instructions to pull container from Dockerhub directly,
+  instead of building locally. [Ash Wilson]
+
 v0.12 (2016-12-12)
 ------------------
 
