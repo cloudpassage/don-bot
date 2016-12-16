@@ -4,6 +4,7 @@ been ordered correctly."""
 
 import cloudpassage
 import operator
+import time
 import urllib
 import utility
 from multiprocessing.dummy import Pool as ThreadPool
@@ -25,8 +26,11 @@ class HaloEvents(object):
     def __iter__(self):
         while True:
             print "Last event timestamp: %s" % str(self.last_event_timestamp)
-            for event in self.get_next_batch():
-                yield event
+            try:
+                for event in self.get_next_batch():
+                    yield event
+            except IndexError:
+                time.sleep(5)
 
     def get_next_batch(self):
         url_list = self.create_url_list()
