@@ -21,6 +21,7 @@ class HaloEvents(object):
         self.last_event_timestamp = None
         self.events = []
         self.halo_session = None
+        self.last_event_id = ""
         self.ua = config.ua
 
     def __iter__(self):
@@ -36,8 +37,15 @@ class HaloEvents(object):
         url_list = self.create_url_list()
         pages = self.get_pages(url_list)
         events = self.events_from_pages(pages)
-        last_event_timestamp = events[-1]['created_at']
-        self.last_event_timestamp = last_event_timestamp
+        if events[0]["id"] == self.last_event_id:
+            del events[0]
+        try:
+            last_event_timestamp = events[-1]['created_at']
+            last_event_id = events[-1]['id']
+            self.last_event_id = last_event_id
+            self.last_event_timestamp = last_event_timestamp
+        except IndexError:
+            pass
         return events
 
     def events_from_pages(self, pages):
