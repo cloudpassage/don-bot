@@ -28,7 +28,7 @@ class TestUnitHalo:
 
     def test_unit_halo_init(self, monkeypatch):
         cfg = self.instantiate_config_helper(monkeypatch)
-        assert donlib.Halo(cfg)
+        assert donlib.Halo(cfg, "")
 
     def test_unit_help_text(self):
         assert donlib.Halo.help_text()
@@ -38,15 +38,15 @@ class TestUnitHalo:
 
     def test_unit_interrogate_help_text(self, monkeypatch):
         cfg = self.instantiate_config_helper(monkeypatch)
-        h_obj = donlib.Halo(cfg)
+        h_obj = donlib.Halo(cfg, "")
         assert h_obj.interrogate("help", "help")
 
     def test_unit_interrogate_selfie(self, monkeypatch):
         cfg = self.instantiate_config_helper(monkeypatch)
-        h_obj = donlib.Halo(cfg)
+        h_obj = donlib.Halo(cfg, "")
         assert h_obj.interrogate("selfie", "selfie")
 
     def test_unit_credentials_work(self, monkeypatch):
         cfg = self.instantiate_config_helper(monkeypatch)
-        h_obj = donlib.Halo(cfg)
+        h_obj = donlib.Halo(cfg, "")
         assert h_obj.credentials_work() is False
