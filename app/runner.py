@@ -108,7 +108,7 @@ def check_configs(config):
         print("Configuration is bad!  Exiting!")
         sys.exit(1)
 
-    halo = donlib.Halo(config)
+    halo = donlib.Halo(config, "")
     if halo.credentials_work() is False:
         print("Halo credentials are bad!  Exiting!")
         sys.exit(1)
