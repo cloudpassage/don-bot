@@ -39,15 +39,17 @@ def main():
         halo_collector.start()
 
     while True:
-        time.sleep(600)
-        s_consumer = "Slack consumer: %s" % str(slack_consumer.is_alive())
-        s_emitter = "Slack emitter: %s" % str(slack_emitter.is_alive())
-        h_enricher = "Halo enricher: %s" % str(halo_enricher.is_alive())
+        print("Bot Health Report:")
+        s_consumer = "  Slack consumer: %s" % str(slack_consumer.is_alive())
+        s_emitter = "  Slack emitter: %s" % str(slack_emitter.is_alive())
+        h_enricher = "  Halo enricher: %s" % str(halo_enricher.is_alive())
         if config.monitor_events == "yes":
-            h_events = "Halo event monitor: %s" % (halo_collector.is_alive())
+            h_events = "  Halo event monitor: %s" % (halo_collector.is_alive())
         else:
             h_events = ""
-        print("\n".join([s_consumer, s_emitter, h_enricher, h_events]))
+        health_string = "\n".join([s_consumer, s_emitter, h_enricher, h_events])
+        print(health_string)
+        time.sleep(600)
 
 
 def event_connector(config):
