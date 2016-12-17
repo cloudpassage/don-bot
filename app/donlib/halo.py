@@ -12,7 +12,7 @@ class Halo(object):
 
     """
 
-    def __init__(self, config):
+    def __init__(self, config, health_string):
         """Initialization only instantiates the session object."""
         self.session = cloudpassage.HaloSession(config.halo_api_key,
                                                 config.halo_api_secret_key,
@@ -22,6 +22,7 @@ class Halo(object):
         self.product_version = config.product_version
         self.monitor_events = config.monitor_events
         self.slack_channel = config.slack_channel
+        self.health_string = health_string
         return
 
     def credentials_work(self):
@@ -63,6 +64,8 @@ class Halo(object):
             report = Halo.version_info(self.product_version)
         elif query_type == "config":
             report = self.running_config()
+        elif query_type == "health":
+            report = self.health_string
         return(report)
 
     @classmethod

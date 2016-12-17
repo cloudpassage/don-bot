@@ -10,6 +10,7 @@ from collections import deque
 def main():
     global slack_inbound
     global slack_outbound
+    global health_string
     slack_inbound = deque([])
     slack_outbound = deque([])
     config = donlib.ConfigHelper()
@@ -66,7 +67,7 @@ def event_connector(config):
 
 def daemon_speaker(config):
     while True:
-        halo = donlib.Halo(config)
+        halo = donlib.Halo(config, health_string)
         try:
             message = slack_inbound.popleft()
             channel = message["channel"]

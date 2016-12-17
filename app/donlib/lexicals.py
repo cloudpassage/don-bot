@@ -28,7 +28,8 @@ class Lexicals(object):
                     (r'(?P<target>selfie)', "selfie"),
                     (r'(?P<target>help)', "help"),
                     (r'(?P<target>version)', "version"),
-                    (r'(?P<target>config)', "config")]
+                    (r'(?P<target>config)', "config"),
+                    (r'(?P<target>health)', "health")]
         for match, name in matchers:
             s = re.search(match, message)
             if s:
