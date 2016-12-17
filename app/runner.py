@@ -11,6 +11,8 @@ def main():
     global slack_inbound
     global slack_outbound
     global health_string
+    global health_last_event_timestamp
+    health_last_event_timestamp = ""
     slack_inbound = deque([])
     slack_outbound = deque([])
     config = donlib.ConfigHelper()
@@ -48,7 +50,8 @@ def main():
             h_events = "  Halo event monitor: %s" % (halo_collector.is_alive())
         else:
             h_events = ""
-        health_string = "\n".join([s_consumer, s_emitter, h_enricher, h_events])
+        health_string = "\n".join([s_consumer, s_emitter, h_enricher,
+                                   h_events, health_last_event_timestamp])
         print(health_string)
         time.sleep(600)
 
@@ -59,6 +62,7 @@ def event_connector(config):
     time.sleep(10)
     while True:
         for event in events:
+            health_last_event_timestamp = event["created_at"]
             if donlib.Utility.event_is_critical(event):
                 print("Critical event detected!")
                 event_fmt = donlib.Formatter.format_item(event, "event")
