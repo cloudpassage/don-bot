@@ -8,6 +8,7 @@ import time
 import urllib
 import utility
 from multiprocessing.dummy import Pool as ThreadPool
+from requests.exceptions import ConnectionError
 
 
 class HaloEvents(object):
