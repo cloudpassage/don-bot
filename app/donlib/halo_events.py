@@ -35,7 +35,10 @@ class HaloEvents(object):
 
     def get_next_batch(self):
         url_list = self.create_url_list()
-        pages = self.get_pages(url_list)
+        try:
+            pages = self.get_pages(url_list)
+        except ConnectionError:  # Sometimes connection abort happens
+            pages = [{"events": []}]
         events = self.events_from_pages(pages)
         if events[0]["id"] == self.last_event_id:
             del events[0]
