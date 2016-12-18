@@ -52,12 +52,13 @@ def main():
         else:
             h_events = ""
         health_string = "\n".join([s_consumer, s_emitter, h_enricher,
-                                   h_events, health_last_event_timestamp])
+                                   h_events, str(health_last_event_timestamp)])
         print(health_string)
         time.sleep(600)
 
 
 def event_connector(config):
+    global health_last_event_timestamp
     events = donlib.HaloEvents(config)
     # We add a short delay in case of time drift between container and API
     time.sleep(10)
