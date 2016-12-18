@@ -87,6 +87,6 @@ class Slack(object):
         is_for_me = False
         if "text" not in message:
             pass
-        elif myname in message['text'].split():
+        elif myname in message['text'].lower().split():
             is_for_me = True
         return is_for_me
