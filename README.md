@@ -85,6 +85,18 @@ test-driven approach.  Don't even think about offering up a PR for extending
 Unit testing isn't the highest on this project, but `app/donlib/lexicals.py`
 is at 100% and needs to stay that way.
 
+Troubleshooting Don-Bot
+
+* `donbot health` will get you a report of the current availability of all
+components.  If `MONITOR_EVENTS` is set to `yes`, you'll also get the timestamp
+of the last observed event from the API.
+* Failed thread? Use `docker logs CONTAINER_NAME` to ascertain if there's a
+stack trace in the bot's logs.
+* Not getting the response you expect from interacting with the bot? Have a
+look at the test cases for lexicals, found in 
+`app/test/unit/test_unit_lexicals.py`, to see how your statements align with
+ the intended interaction samples in the unit tests.
+
 ### Author
 
 This tool was written by Ash Wilson (@ashmastaflash).  Feedback should go to
