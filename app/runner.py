@@ -44,17 +44,18 @@ def main():
 
     while True:
         print("Bot Health Report:")
-        s_consumer = "  Slack consumer: %s" % str(slack_consumer.is_alive())
-        s_emitter = "  Slack emitter: %s" % str(slack_emitter.is_alive())
-        h_enricher = "  Halo enricher: %s" % str(halo_enricher.is_alive())
+        s_consumer = " Slack consumer alive: %s" % str(slack_consumer.is_alive())
+        s_emitter = "  Slack emitter alive: %s" % str(slack_emitter.is_alive())
+        h_enricher = "  Halo enricher alive: %s" % str(halo_enricher.is_alive())
         if config.monitor_events == "yes":
-            h_events = "  Halo event monitor: %s" % (halo_collector.is_alive())
+            h_events = "  Halo event monitor alive: %s\n  Last event: %s" % (
+                halo_collector.is_alive(), health_last_event_timestamp)
         else:
             h_events = ""
         health_string = "\n".join([s_consumer, s_emitter, h_enricher,
-                                   h_events, str(health_last_event_timestamp)])
+                                   h_events])
         print(health_string)
-        time.sleep(60)
+        time.sleep(5)
 
 
 def event_connector(config):
