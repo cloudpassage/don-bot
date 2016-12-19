@@ -1,8 +1,36 @@
 Changelog
 =========
 
-v0.12.1
--------
+v0.13
+-----
+
+New
+~~~
+
+- Added last event timestamp to health query response. [Ash Wilson]
+
+- Added health query. [Ash Wilson]
+
+Changes
+~~~~~~~
+
+- Improved API error handling for connection errors. [Ash Wilson]
+
+Fix
+~~~
+
+- Case-insensitive match for bot name  closes #1. [Ash Wilson]
+
+- Corrected issue with repeated messages delivered to Slack because
+  timestamp query is inclusive. [Ash Wilson]
+
+- Consolidated health report into main() to ease checking of thread
+  health. [Ash Wilson]
+
+- Wait instead of fail if events query comes back empty. [Ash Wilson]
+
+v0.12.1 (2016-12-14)
+--------------------
 
 Changes
 ~~~~~~~
