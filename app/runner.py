@@ -54,7 +54,6 @@ def main():
             h_events = ""
         health_string = "\n".join([s_consumer, s_emitter, h_enricher,
                                    h_events])
-        print(health_string)
         time.sleep(10)
 
 
