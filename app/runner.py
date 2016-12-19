@@ -54,7 +54,7 @@ def main():
         health_string = "\n".join([s_consumer, s_emitter, h_enricher,
                                    h_events, str(health_last_event_timestamp)])
         print(health_string)
-        time.sleep(600)
+        time.sleep(60)
 
 
 def event_connector(config):
