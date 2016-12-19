@@ -24,6 +24,7 @@ class HaloEvents(object):
         self.halo_session = None
         self.last_event_id = ""
         self.ua = config.ua
+        print("Starting event timestamp: " + self.start_timestamp)
 
     def __iter__(self):
         while True:
