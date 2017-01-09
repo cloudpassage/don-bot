@@ -1,8 +1,16 @@
 Changelog
 =========
 
-v0.13
------
+v0.13.1
+-------
+
+Changes
+~~~~~~~
+
+- Removed unnecessary print statement. [Ash Wilson]
+
+v0.13 (2016-12-19)
+------------------
 
 New
 ~~~
