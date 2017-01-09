@@ -43,7 +43,6 @@ def main():
         halo_collector.start()
 
     while True:
-        print("Bot Health Report:")
         s_consumer = " Slack consumer alive: %s" % str(slack_consumer.is_alive())
         s_emitter = "  Slack emitter alive: %s" % str(slack_emitter.is_alive())
         h_enricher = "  Halo enricher alive: %s" % str(halo_enricher.is_alive())
