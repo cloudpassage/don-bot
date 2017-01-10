@@ -49,7 +49,7 @@ Set the following env vars, and then run:
 | SLACK_USERNAME      | OPTIONAL- defaults to `donbot`                        |
 | SLACK_ICON_URL      | OPTIONAL- Link to avatar image for bot                |
 | SLACK_CHANNEL       | Notifications go to this channel.  Defaults to `#halo`|
-| MONITOR_EVENTS      | Set to `yes` to send critical events to SLACK_CHANNEL |
+| MONITOR_EVENTS      | OPTIONAL- Set to `yes` to send critical events to SLACK_CHANNEL |
 
 
 ```
@@ -93,7 +93,7 @@ of the last observed event from the API.
 * Failed thread? Use `docker logs CONTAINER_NAME` to ascertain if there's a
 stack trace in the bot's logs.
 * Not getting the response you expect from interacting with the bot? Have a
-look at the test cases for lexicals, found in 
+look at the test cases for lexicals, found in
 `app/test/unit/test_unit_lexicals.py`, to see how your statements align with
  the intended interaction samples in the unit tests.
 
