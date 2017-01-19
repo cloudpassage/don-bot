@@ -23,6 +23,27 @@ class Formatter(object):
                              "  Connecting IP     $connecting_ip_address\n" +
                              "  State             $state\n" +
                              "  State Change      $last_state_change\n"),
+           "server_ec2": T("---------------------------\n" +
+                           "Server Hostname     $hostname\n" +
+                           "  Server ID         $id\n" +
+                           "  Platform          $platform\n" +
+                           "  Platform version  $platform_version\n" +
+                           "  OS version        $os_version\n" +
+                           "  Group             $group_name\n" +
+                           "  Primary IP        $primary_ip_address\n" +
+                           "  Connecting IP     $connecting_ip_address\n" +
+                           "  State             $state\n" +
+                           "  State Change      $last_state_change\n" +
+                           "  EC2:\n" +
+                           "    Instance ID:    $ec2_instance_id\n" +
+                           "    Account ID:     $ec2_account_id\n" +
+                           "    Kernel ID:      $ec2_kernel_id\n" +
+                           "    Image ID:       $ec2_image_id\n" +
+                           "    Avail. Zone:    $ec2_availability_zone\n" +
+                           "    Region:         $ec2_region\n" +
+                           "    Private IP:     $ec2_private_ip\n" +
+                           "    Instance Type:  $ec2_instance_type\n" +
+                           "    Security Grps:  $ec2_security_groups\n"),
            "policy_meta": T("    Policy name $name\n" +
                             "      Policy type   $poltype \n" +
                             "      Policy ID     $id\n" +
