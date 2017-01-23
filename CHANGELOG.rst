@@ -1,19 +1,16 @@
 Changelog
 =========
 
-
 v0.14.0
 -------
 
 New
 ~~~
 
+- Now includes server EC2 metadata, when available. [Ash Wilson]
 
 - Don-Bot now only responds to requests from users who are a member of
   the configured SLACK_CHANNEL, which defaults to #halo. [Ash Wilson]
-
-- Now includes server EC2 metadata, when available. [Ash Wilson]
-
 
 v0.13.2 (2017-01-09)
 --------------------
