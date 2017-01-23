@@ -29,7 +29,7 @@ class Slack(object):
             up_msg = "Don-Bot v%s attached to channel" % self.product_version
             self.client.rtm_send_message(self.channel, up_msg)
         else:
-            print("Can't get WOKE")
+            print("Can't wake up!")
         while True:
             time.sleep(1)
             mymessages = []
@@ -41,7 +41,10 @@ class Slack(object):
                 self.client.rtm_connect()
             if len(mymessages) > 0:
                 for message in mymessages:
-                    yield message
+                    if self.check_request_entitlement(message):
+                        yield message
+                    else:
+                        continue
 
     def send_message(self, channel, message):
         """For messages under 4k"""
@@ -67,6 +70,80 @@ class Slack(object):
         if response["ok"] is not True:
             good = False
         return good
+
+    def get_id_for_channel(self, channel_name):
+        all_channels = self.client.api_call("channels.list")
+        all_groups = self.client.api_call("groups.list")
+        chan_groups = list(all_channels["channels"])
+        chan_groups.extend(all_groups["groups"])
+        for channel in chan_groups:
+            if channel["name"] == channel_name:
+                return channel["id"]
+        return None
+
+    def check_request_entitlement(self, message):
+        """Checks authorization for requester
+
+        If request is in the configured safe channel (${SLACK_CHANNEL}, or
+        #halo by default), we let it through.
+
+        If the requesting user is a member of the safe channel, we let it
+        through.
+        """
+        if "user" not in message:
+            return False
+        safe_channel_id = self.get_id_for_channel(self.channel)
+        safe_channel_info = self.get_channel_info(safe_channel_id)
+        current_channel_id = message["channel"]
+        current_channel_info = self.get_channel_info(current_channel_id)
+        requester = self.get_user_info(message["user"])
+        if Slack.request_in_safe_chan(safe_channel_info, current_channel_info):
+            print("Request is in safe channel")
+            return True
+        elif Slack.requester_is_in_safe_chan(requester, safe_channel_info):
+            print("Requester is a member of a safe channel")
+            return True
+        else:
+            print("User is not entitled...\n  %s" % str(message))
+            return False
+
+    def get_channel_info(self, channel):
+        """Get channel metadata"""
+        ref = {"group": "groups.info",
+               "channel": "channels.info"}
+        if channel.startswith("G"):
+            target = "group"
+        elif channel.startswith("D"):
+            return self.get_dm_info(channel)
+        else:
+            target = "channel"
+        return self.client.api_call(ref[target], channel=channel)[target]
+
+    def get_dm_info(self, channel):
+        for x in self.client.api_call("im.list")["ims"]:
+            if x["id"] == channel:
+                return x
+        return {}
+
+    def get_user_info(self, user):
+        """Get user metadata"""
+        return self.client.api_call("users.info", user=user)
+
+    @classmethod
+    def request_in_safe_chan(cls, safe_chan, current_chan):
+        """Compares message's channel ID against the safe channel's ID"""
+        result = False
+        if safe_chan["id"] == current_chan["id"]:
+            result = True
+        return result
+
+    @classmethod
+    def requester_is_in_safe_chan(cls, requester, safe_chan):
+        """Compares User's ID against safe channel membership"""
+        result = False
+        if requester["user"]["id"] in safe_chan["members"]:
+            result = True
+        return result
 
     @classmethod
     def get_my_messages(cls, botname, messages):

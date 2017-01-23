@@ -16,6 +16,14 @@ without leaving the comfort of your Slack client.  No need to log into the
 web portal to find out the status of a server- just
 `donbot tell me about server XYZ`.
 
+Donbot sends messages to the #halo channel by default, or whatever you have
+specified by the ${SLACK_CHANNEL} environment variable.  Only users who are in
+that channel will be able to interrogate Don-Bot.  Requests from any user who
+is not a member of the #halo channel (or ${SLACK_CHANNEL}, if you overrode the
+default channel) will be ignored.  Consider making that channel private,
+unless you want everyone in your Slack domain to be able to access Halo through
+the bot.
+
 It lives in a Docker container, so you can deploy pretty much anywhere.  
 No listening ports, it just establishes a connection to Slack and listens
 for messages where it's name is mentioned. Then it reaches out to the
