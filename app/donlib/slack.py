@@ -73,7 +73,10 @@ class Slack(object):
 
     def get_id_for_channel(self, channel_name):
         all_channels = self.client.api_call("channels.list")
-        for channel in all_channels["channels"]:
+        all_groups = self.client.api_call("groups.list")
+        chan_groups = list(all_channels["channels"])
+        chan_groups.extend(all_groups["groups"])
+        for channel in chan_groups:
             if channel["name"] == channel_name:
                 return channel["id"]
         return None
@@ -106,7 +109,21 @@ class Slack(object):
 
     def get_channel_info(self, channel):
         """Get channel metadata"""
-        return self.client.api_call("channels.info", channel=channel)
+        ref = {"group": "groups.info",
+               "channel": "channels.info"}
+        if channel.startswith("G"):
+            target = "group"
+        elif channel.startswith("D"):
+            return self.get_dm_info(channel)
+        else:
+            target = "channel"
+        return self.client.api_call(ref[target], channel=channel)[target]
+
+    def get_dm_info(self, channel):
+        for x in self.client.api_call("im.list")["ims"]:
+            if x["id"] == channel:
+                return x
+        return {}
 
     def get_user_info(self, user):
         """Get user metadata"""
@@ -116,17 +133,15 @@ class Slack(object):
     def request_in_safe_chan(cls, safe_chan, current_chan):
         """Compares message's channel ID against the safe channel's ID"""
         result = False
-        if current_chan["ok"] is False:  # Channel info !exist if DM
-            pass
-        elif safe_chan["channel"]["id"] == current_chan["channel"]["id"]:
+        if safe_chan["id"] == current_chan["id"]:
             result = True
         return result
 
     @classmethod
     def requester_is_in_safe_chan(cls, requester, safe_chan):
-        """Compares User's ID against safe channel mambership"""
+        """Compares User's ID against safe channel membership"""
         result = False
-        if requester["user"]["id"] in safe_chan["channel"]["members"]:
+        if requester["user"]["id"] in safe_chan["members"]:
             result = True
         return result
 

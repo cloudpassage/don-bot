@@ -63,24 +63,41 @@ user_sample_2 = {u'ok': True,
                            u'tz_offset': -28800, u'id': u'U53RI5N0T',
                            u'is_primary_owner': True}}
 
-chan_sample = {u'ok': True,
-               u'channel': {u'topic': {u'last_set': 0, u'value': u'',
-                                       u'creator': u''},
-                            u'is_general': False, u'name': u'halo',
-                            u'is_channel': True, u'created': 1481566604,
-                            u'is_member': True, u'is_archived': False,
-                            u'creator': u'U53R1D',
-                            u'members': [u'U53R1D', u'UB0T'],
-                            u'unread_count': 761, u'previous_names': [],
-                            u'purpose': {u'last_set': 0, u'value': u'',
-                                         u'creator': u''},
-                            u'unread_count_display': 681,
-                            u'last_read': u'1481566604.000002',
-                            u'id': u'CHAN1D',
-                            u'latest': {u'text': u'donbot hi',
-                                        u'type': u'message',
-                                        u'user': u'U53R1D',
-                                        u'ts': u'1485196254.000058'}}}
+chan_sample = {u'topic': {u'last_set': 0, u'value': u'',
+                          u'creator': u''},
+               u'is_general': False, u'name': u'halo',
+               u'is_channel': True, u'created': 1481566604,
+               u'is_member': True, u'is_archived': False,
+               u'creator': u'U53R1D',
+               u'members': [u'U53R1D', u'UB0T'],
+               u'unread_count': 761, u'previous_names': [],
+               u'purpose': {u'last_set': 0, u'value': u'',
+                            u'creator': u''},
+               u'unread_count_display': 681,
+               u'last_read': u'1481566604.000002',
+               u'id': u'CHAN1D',
+               u'latest': {u'text': u'donbot hi',
+                           u'type': u'message',
+                           u'user': u'U53R1D',
+                           u'ts': u'1485196254.000058'}}
+
+chan_sample_2 = {u'topic': {u'last_set': 0, u'value': u'',
+                            u'creator': u''},
+                 u'is_general': False, u'name': u'hallothere',
+                 u'is_channel': True, u'created': 1481566604,
+                 u'is_member': True, u'is_archived': False,
+                 u'creator': u'U53R1D',
+                 u'members': [u'U53R1D', u'UB0T'],
+                 u'unread_count': 761, u'previous_names': [],
+                 u'purpose': {u'last_set': 0, u'value': u'',
+                              u'creator': u''},
+                 u'unread_count_display': 681,
+                 u'last_read': u'1481566604.000002',
+                 u'id': u'CHAN1D2',
+                 u'latest': {u'text': u'donbot hi',
+                             u'type': u'message',
+                             u'user': u'U53R1D',
+                             u'ts': u'1485196254.000058'}}
 
 
 class TestUnitSlack:
@@ -109,7 +126,7 @@ class TestUnitSlack:
 
     def test_unit_request_in_safe_chan_false(self):
         assert not donlib.Slack.request_in_safe_chan(chan_sample,
-                                                     chan_not_found)
+                                                     chan_sample_2)
 
     def test_unit_requester_is_in_safe_chan(self):
         assert donlib.Slack.requester_is_in_safe_chan(user_sample,
