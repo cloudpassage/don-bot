@@ -195,13 +195,17 @@ class Halo(object):
         """
         if query_type == "server_facts":
             obj_getter = cloudpassage.Server(self.session)
+            structured = Halo.flatten_ec2(obj_getter.describe(obj_id))
+            if "aws_ec2" in structured:
+                query_type = "server_ec2"
         elif query_type == "group_facts":
             obj_getter = cloudpassage.ServerGroup(self.session)
+            structured = obj_getter.describe(obj_id)
         else:
             msg = "Unsupported facts query_type: " + query_type
             print(msg)
             return {}
-        retval = Formatter.format_item(obj_getter.describe(obj_id), query_type)
+        retval = Formatter.format_item(structured, query_type)
         return retval
 
     def get_group_policies(self, group_id):
@@ -309,3 +313,15 @@ class Halo(object):
         with open(selfie_full_path, 'r') as s_file:
             selfie = "```" + s_file.read() + "```"
         return selfie
+
+    @classmethod
+    def flatten_ec2(cls, server):
+        try:
+            for k, v in server["aws_ec2"].items():
+                server[k] = v
+            if "ec2_security_groups" in server:
+                conjoined = " ,".join(server["ec2_security_groups"])
+                server["ec2_security_groups"] = conjoined
+            return server
+        except:
+            return server
