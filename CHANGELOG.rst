@@ -1,16 +1,17 @@
 Changelog
 =========
 
-v0.13.1
--------
+v0.14
+-----
 
-Changes
-~~~~~~~
+New
+~~~
 
-- Removed unnecessary print statement. [Ash Wilson]
+- Don-Bot now only responds to requests from users who are a member of
+  the configured SLACK_CHANNEL, which defaults to #halo. [Ash Wilson]
 
-v0.13 (2016-12-19)
-------------------
+v0.13.2 (2017-01-09)
+--------------------
 
 New
 ~~~
@@ -19,10 +20,33 @@ New
 
 - Added health query. [Ash Wilson]
 
+- Added "config" and "version" to bot commands. [Ash Wilson]
+
+- Bot can monitor Halo API for critical events. [Ash Wilson]
+
+- Added LIDS policies to group report. [Ash Wilson]
+
+- First working commit of Don-Bot BETA. [Ash Wilson]
+
 Changes
 ~~~~~~~
 
+- Improving status messaging. [Ash Wilson]
+
+- Removed unnecessary print statement. [Ash Wilson]
+
 - Improved API error handling for connection errors. [Ash Wilson]
+
+- Updated instructions to pull container from Dockerhub directly,
+  instead of building locally. [Ash Wilson]
+
+- Added health checker and more meaningful application logs. [Ash
+  Wilson]
+
+- Adding bot profile image. [Ash Wilson]
+
+- Version 0.10.  Many internal refactors, better general quality and
+  error handling. [Ash Wilson]
 
 Fix
 ~~~
@@ -36,57 +60,5 @@ Fix
   health. [Ash Wilson]
 
 - Wait instead of fail if events query comes back empty. [Ash Wilson]
-
-v0.12.1 (2016-12-14)
---------------------
-
-Changes
-~~~~~~~
-
-- Updated instructions to pull container from Dockerhub directly,
-  instead of building locally. [Ash Wilson]
-
-v0.12 (2016-12-12)
-------------------
-
-New
-~~~
-
-- Added "config" and "version" to bot commands. [Ash Wilson]
-
-- Bot can monitor Halo API for critical events. [Ash Wilson]
-
-Changes
-~~~~~~~
-
-- Added health checker and more meaningful application logs. [Ash
-  Wilson]
-
-- Adding bot profile image. [Ash Wilson]
-
-v0.11 (2016-12-05)
-------------------
-
-New
-~~~
-
-- Added LIDS policies to group report. [Ash Wilson]
-
-v0.10 (2016-12-04)
-------------------
-
-Changes
-~~~~~~~
-
-- Version 0.10.  Many internal refactors, better general quality and
-  error handling. [Ash Wilson]
-
-v0.9 (2016-12-03)
------------------
-
-New
-~~~
-
-- First working commit of Don-Bot BETA. [Ash Wilson]
 
 
