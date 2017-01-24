@@ -1,6 +1,14 @@
 Changelog
 =========
 
+v0.15.0
+-------
+
+Changes
+~~~~~~~
+
+- Correcting package metadata. [Ash Wilson]
+
 v0.15.0 (2017-01-23)
 --------------------
 
