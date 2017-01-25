@@ -62,7 +62,7 @@ Set the following env vars, and then run:
 
 ```
     docker run -d \
-        --name don_bot
+        --name don_bot \
         --restart always \
         -e HALO_API_KEY=$HALO_API_KEY \
         -e HALO_API_SECRET_KEY=$HALO_API_SECRET_KEY \

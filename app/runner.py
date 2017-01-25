@@ -54,7 +54,7 @@ def main():
         health_string = "\n".join([s_consumer, s_emitter, h_enricher,
                                    h_events])
         time.sleep(10)
-        die_if_unhealthy(config.slack_channel, health_string)
+        die_if_unhealthy(config.slack_channel, health_string, config)
 
 
 def event_connector(config):
@@ -121,7 +121,7 @@ def check_configs(config):
         sys.exit(1)
 
 
-def die_if_unhealthy(slack_channel, health_string):
+def die_if_unhealthy(slack_channel, health_string, config):
     if "False" in health_string:
         msg = health_string
         msg += ("\n\nInternal failure! I'm going to die now. \n" +
