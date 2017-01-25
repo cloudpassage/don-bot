@@ -54,6 +54,7 @@ def main():
         health_string = "\n".join([s_consumer, s_emitter, h_enricher,
                                    h_events])
         time.sleep(10)
+        die_if_unhealthy(config.slack_channel, health_string)
 
 
 def event_connector(config):
@@ -118,6 +119,22 @@ def check_configs(config):
     if slack.credentials_work() is False:
         print("Slack credentials are bad!  Exiting!")
         sys.exit(1)
+
+
+def die_if_unhealthy(slack_channel, health_string):
+    if "False" in health_string:
+        msg = health_string
+        msg += ("\n\nInternal failure! I'm going to die now. \n" +
+                "If you've set the container restart policy appropriately," +
+                "I'll be back soon.")
+        channel = slack_channel
+        sad_note = (channel, msg)
+        slack = donlib.Slack(config)
+        slack.client.rtm_send_message(slack_channel, sad_note)
+        time.sleep(5)
+        sys.exit(2)
+    else:
+        pass
 
 if __name__ == "__main__":
     main()
