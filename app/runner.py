@@ -130,7 +130,7 @@ def die_if_unhealthy(slack_channel, health_string, config):
         channel = slack_channel
         sad_note = (channel, msg)
         slack = donlib.Slack(config)
-        slack.client.rtm_send_message(slack_channel, sad_note)
+        slack.send_message(slack_channel, sad_note)
         time.sleep(5)
         sys.exit(2)
     else:
