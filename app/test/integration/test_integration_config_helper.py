@@ -37,6 +37,7 @@ class TestIntegrationConfigHelper:
         assert config_obj.halo_api_host == api_hostname
         assert config_obj.halo_api_port == api_port
         assert config_obj.slack_api_token == slack_token
+        assert config_obj.flower_host is None
 
     def test_config_helper_sane_pass(self, monkeypatch):
         config_obj = self.instantiate_config_helper(monkeypatch)
