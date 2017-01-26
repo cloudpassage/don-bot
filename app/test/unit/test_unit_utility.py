@@ -28,3 +28,8 @@ class TestUnitUtility:
 
     def test_unit_utility_event_is_critical(self):
         assert donlib.Utility.event_is_critical({"critical": True})
+
+    def test_unit_utility_u_to_8601(self):
+        test = 1438049313.073402
+        expected = "2015-07-28T02:08:33.073402"
+        assert donlib.Utility.u_to_8601(test) == expected
