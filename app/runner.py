@@ -125,7 +125,7 @@ def die_if_unhealthy(slack_channel, health_string):
     if "False" in health_string:
         msg = health_string
         msg += ("\n\nInternal failure! I'm going to die now. \n" +
-                "If you've set the container restart policy appropriately," +
+                "If you've set the container restart policy appropriately, " +
                 "I'll be back soon.")
         channel = slack_channel
         sad_note = (channel, msg)
