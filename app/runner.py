@@ -130,7 +130,7 @@ def die_if_unhealthy(slack_channel, health_string):
         channel = slack_channel
         sad_note = (channel, msg)
         slack_outbound.append(sad_note)
-        print(sad_note)
+        print(msg)
         time.sleep(5)
         sys.exit(2)
     else:
