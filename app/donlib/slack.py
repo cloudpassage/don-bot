@@ -26,7 +26,7 @@ class Slack(object):
         """This wraps the RTM client, and yields messages"""
         if self.client.rtm_connect():
             time.sleep(3)
-            up_msg = "Don-Bot v%s attached to channel" % self.product_version
+            up_msg = "Don-Bot 👹 v%s started" % self.product_version
             self.client.rtm_send_message(self.channel, up_msg)
         else:
             print("Can't wake up!")
