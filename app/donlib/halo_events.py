@@ -44,7 +44,7 @@ class HaloEvents(object):
         except ConnectionError:  # Sometimes connection abort happens
             pages = [{"events": []}]
         except CloudPassageGeneral:  # We wait if this happens...
-            now_string = utility.iso8601_now()
+            now_string = utility.Utility.iso8601_now()
             print("EventCollector: Caught Halo API error at: %s" % now_string)
             pages = [{"events": []}]
             time.sleep(15)
