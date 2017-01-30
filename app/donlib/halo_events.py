@@ -43,11 +43,11 @@ class HaloEvents(object):
             pages = self.get_pages(url_list)
         except ConnectionError:  # Sometimes connection abort happens
             now_string = utility.Utility.iso8601_now()
-            print("EventCollector: ConnectionError. %s 🔥🔥🔥" % now_string)
+            print("EventCollector: ConnectionError. %s" % now_string)
             pages = [{"events": []}]
         except CloudPassageGeneral:  # We wait if this happens...
             now_string = utility.Utility.iso8601_now()
-            print("EventCollector: Caught Halo error. %s 🔥🔥🔥" % now_string)
+            print("EventCollector: Caught Halo error. %s" % now_string)
             pages = [{"events": []}]
             time.sleep(15)
         events = self.events_from_pages(pages)
