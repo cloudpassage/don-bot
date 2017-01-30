@@ -28,7 +28,7 @@ class Slack(object):
         if self.client.rtm_connect():
             time.sleep(3)
             ver = unicode(self.product_version)
-            up_msg = unicode'Don-Bot 👹 v%s started' % ver
+            up_msg = u'Don-Bot 👹 v%s started' % ver
             self.client.rtm_send_message(self.channel, up_msg)
         else:
             print("Can't wake up!")
