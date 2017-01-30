@@ -1,4 +1,3 @@
-# coding: utf-8
 """This class provides an iterator.  Under the covers it does multi-threaded
 consumption of events, only providing information to the iterator when it's
 been ordered correctly."""
@@ -44,11 +43,11 @@ class HaloEvents(object):
             pages = self.get_pages(url_list)
         except ConnectionError:  # Sometimes connection abort happens
             now_string = unicode(utility.Utility.iso8601_now())
-            print(u'EventCollector: ConnectionError 🌧️ %s' % now_string)
+            print("EventCollector: ConnectionError %s" % now_string)
             pages = [{"events": []}]
         except CloudPassageGeneral:  # We wait if this happens...
             now_string = unicode(utility.Utility.iso8601_now())
-            print(u'EventCollector: Caught Halo error 🌩️ %s' % now_string)
+            print("EventCollector: Caught Halo API error %s" % now_string)
             pages = [{"events": []}]
             time.sleep(15)
         events = self.events_from_pages(pages)
