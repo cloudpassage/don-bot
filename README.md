@@ -61,7 +61,9 @@ Set the following env vars, and then run:
 
 
 ```
-    docker run -it --rm \
+    docker run -d \
+        --name don_bot \
+        --restart always \
         -e HALO_API_KEY=$HALO_API_KEY \
         -e HALO_API_SECRET_KEY=$HALO_API_SECRET_KEY \
         -e SLACK_API_TOKEN=$SLACK_API_TOKEN \
@@ -98,6 +100,9 @@ Troubleshooting Don-Bot
 * `donbot health` will get you a report of the current availability of all
 components.  If `MONITOR_EVENTS` is set to `yes`, you'll also get the timestamp
 of the last observed event from the API.
+* Don-Bot will periodiaclly self-check and if there's an internal component
+failure, it will attempt to drop a message in-channel and exit.  Make sure you
+start the container with the `--restart always` argument.
 * Failed thread? Use `docker logs CONTAINER_NAME` to ascertain if there's a
 stack trace in the bot's logs.
 * Not getting the response you expect from interacting with the bot? Have a

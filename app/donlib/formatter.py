@@ -3,15 +3,16 @@ from string import Template as T
 
 class Formatter(object):
     """All the message formatting happens in this class."""
-    lib = {"issue": T("  Issue $rule_key\n" +
+    lib = {"issue": T("  ----------------------------------------\n" +
+                      "  Issue $rule_key\n" +
                       "    Status $status\n" +
                       "    Type     $issue_type\n" +
                       "    Created  $created_at\n"),
-           "event": T("  Event $type\n" +
+           "event": T("  ----------------------------------------\n" +
+                      "  Event $type\n" +
                       "    Critical $critical\n" +
                       "    Created  $created_at\n" +
-                      "    Message  $message\n" +
-                      "    ----------------------------------------\n"),
+                      "    Message  $message\n"),
            "server_facts": T("---------------------------\n" +
                              "Server Hostname     $hostname\n" +
                              "  Server ID         $id\n" +
@@ -44,16 +45,25 @@ class Formatter(object):
                            "    Private IP:     $ec2_private_ip\n" +
                            "    Instance Type:  $ec2_instance_type\n" +
                            "    Security Grps:  $ec2_security_groups\n"),
-           "policy_meta": T("    Policy name $name\n" +
+           "policy_meta": T("    ---------------------------------------\n" +
+                            "    Policy name $name\n" +
                             "      Policy type   $poltype \n" +
                             "      Policy ID     $id\n" +
-                            "      Description   $description\n" +
-                            "      ---------------------------------------\n"),
+                            "      Description   $description\n"),
            "group_facts": T("---------------------------\n" +
                             "Group name $name\n" +
                             "  Group ID      $id\n" +
                             "  Description   $description\n" +
-                            "  Tag           $tag\n")}
+                            "  Tag           $tag\n"),
+           "task": T("---------------------------\n" +
+                     "Task ID: $id\n" +
+                     "  Task Name:      $name\n" +
+                     "  Task Args:      $args\n" +
+                     "  Task Kwargs:    $kwargs\n" +
+                     "  Task Started:   $started\n" +
+                     "  Task Timestamp: $tstamp\n" +
+                     "  Task State:     $state\n" +
+                     "  Exception:      $exception\n")}
 
     @classmethod
     def format_list(cls, items, item_type):

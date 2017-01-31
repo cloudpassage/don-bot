@@ -39,3 +39,11 @@ class Utility(object):
     @classmethod
     def event_is_critical(cls, event):
         return event["critical"]
+
+    @classmethod
+    def u_to_8601(cls, unixtime):
+        try:
+            ret = datetime.datetime.fromtimestamp(float(unixtime)).isoformat()
+        except TypeError:
+            ret = "N/A"
+        return ret

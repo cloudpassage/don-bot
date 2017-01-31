@@ -1,8 +1,22 @@
 Changelog
 =========
 
-v0.15.0
+v0.16.0
 -------
+
+New
+~~~
+
+- Container will exit on component failure.  We expect that the
+  container will be started with "--restart always". [Ash Wilson]
+
+Changes
+~~~~~~~
+
+- Improved in-channel message formatting consistency. [Ash Wilson]
+
+v0.15.1 (2017-01-24)
+--------------------
 
 Changes
 ~~~~~~~

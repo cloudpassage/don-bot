@@ -1,3 +1,4 @@
+# coding: utf-8
 import time
 
 from slackclient import SlackClient
@@ -25,8 +26,9 @@ class Slack(object):
     def __iter__(self):
         """This wraps the RTM client, and yields messages"""
         if self.client.rtm_connect():
-            time.sleep(1)
-            up_msg = "Don-Bot v%s attached to channel" % self.product_version
+            time.sleep(3)
+            ver = unicode(self.product_version)
+            up_msg = u'Don-Bot 👹 v%s started' % ver
             self.client.rtm_send_message(self.channel, up_msg)
         else:
             print("Can't wake up!")
