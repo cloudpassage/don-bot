@@ -66,6 +66,16 @@ class Slack(object):
                              username=self.botname,
                              icon_url=self.bot_avatar)
 
+    def send_file(self, channel, report, comment):
+        """Slack looks at the file header to determine type"""
+        self.client.api_call("files.upload",
+                             initial_comment=comment,
+                             channels=channel,
+                             file=report,
+                             filename="anybodys_guess",
+                             username=self.botname,
+                             icon_url=self.bot_avatar)
+
     def credentials_work(self):
         good = True
         response = self.client.api_call("auth.test", token=self.token)
