@@ -1,4 +1,6 @@
 pytest==2.8.0
+# flake8>=2.5,<3
+flake8==3.3.0
 pytest-flake8==0.1
 pytest-cov==2.5.1
 codeclimate-test-reporter==0.2.0
