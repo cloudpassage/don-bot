@@ -22,11 +22,10 @@ RUN addgroup ${APP_GROUP} && \
         python=2.7.12-r0 \
         py-pip=8.1.2-r0 && \
     pip install -r /app/requirements.txt && \
+    py.test --flake8 --cov=donlib /app/test && \
     chown -R ${APP_USER}:${APP_GROUP} /app
 
 WORKDIR /app
-
-RUN py.test --cov=donlib
 
 WORKDIR /app
 
