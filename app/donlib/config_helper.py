@@ -29,7 +29,7 @@ class ConfigHelper(object):
         self.slack_channel = os.getenv("SLACK_CHANNEL", "halo")
         self.monitor_events = os.getenv("MONITOR_EVENTS", "no")
         self.flower_host = os.getenv("FLOWER_HOST")
-        self.max_threads = 1  # Max thresds to be used by event collector
+        self.max_threads = 5  # Max thresds to be used by event collector
         self.halo_batch_size = 5  # Pagination depth for event collector
         self.ua = ConfigHelper.get_ua_string()
         self.product_version = ConfigHelper.get_product_version()
