@@ -1,7 +1,9 @@
 import cloudpassage
 import os
+import requests
 from formatter import Formatter
-from utility import Utility
+from urlparse import urljoin
+from utility import Utility as util
 
 
 class Halo(object):
@@ -12,7 +14,7 @@ class Halo(object):
 
     """
 
-    def __init__(self, config, health_string):
+    def __init__(self, config, health_string, tasks_obj):
         """Initialization only instantiates the session object."""
         self.session = cloudpassage.HaloSession(config.halo_api_key,
                                                 config.halo_api_secret_key,
@@ -23,6 +25,8 @@ class Halo(object):
         self.monitor_events = config.monitor_events
         self.slack_channel = config.slack_channel
         self.health_string = health_string
+        self.tasks = tasks_obj
+        self.flower_host = config.flower_host
         return
 
     def credentials_work(self):
@@ -34,6 +38,26 @@ class Halo(object):
             good = False
         return good
 
+    def list_tasks_formatted(self):
+        """Gets a formatted list of tasks from Flower"""
+        report = "OCTOBOX Tasks:\n"
+        celery_url = urljoin(self.flower_host, "api/tasks")
+        result = requests.get(celery_url).json()
+        try:
+            for task in result.items():
+                    prefmt = {"id": task[0], "name": task[1]["name"],
+                              "args": str(task[1]["args"]),
+                              "kwargs": str(task[1]["kwargs"]),
+                              "started": util.u_to_8601(task[1]["started"]),
+                              "tstamp": util.u_to_8601(task[1]["timestamp"]),
+                              "state": task[1]["state"],
+                              "exception": str(task[1]["exception"])}
+                    report += Formatter.format_item(prefmt, "task")
+        except AttributeError as e:  # Empty set will throw AttributeError
+            print("Halo.list_tasks_formatted(): AttributeError! %s" % e)
+            pass
+        return report
+
     def interrogate(self, query_type, target):
         """Entrypoint for report generation
 
@@ -43,25 +67,31 @@ class Halo(object):
 
         Returns a finished report, as a string.
         """
-        report = "What do you even MEAN by saying that?  I just can't even."
+        report = "What do you even MEAN by saying that?  I just can't even.\n"
         if query_type == "server_report":
-            report = self.get_server_report(target)
+            report = self.tasks.report_server_formatted.delay(target)
         elif query_type == "group_report":
-            report = self.get_group_report(target)
+            report = self.tasks.report_group_formatted.delay(target)
         elif query_type == "ip_report":
             report = self.get_ip_report(target)
         elif query_type == "all_servers":
-            report = self.list_all_servers()
+            report = self.tasks.list_all_servers_formatted.delay()
         elif query_type == "all_groups":
-            report = self.list_all_groups()
+            report = self.tasks.list_all_groups_formatted.delay()
+        elif query_type == "group_firewall_report":
+            report = self.tasks.report_group_firewall.delay(target)
         elif query_type == "servers_in_group":
-            report = self.list_servers_in_group(target)
+            report = self.tasks.servers_in_group_formatted.delay(target)
+        elif query_type == "ec2_halo_footprint_csv":
+            report = self.tasks.report_ec2_halo_footprint_csv.delay()
+        elif query_type == "tasks":
+            report = self.list_tasks_formatted()
         elif query_type == "selfie":
             report = Halo.take_selfie()
         elif query_type == "help":
             report = Halo.help_text()
         elif query_type == "version":
-            report = Halo.version_info(self.product_version)
+            report = Halo.version_info(self.product_version) + "\n"
         elif query_type == "config":
             report = self.running_config()
         elif query_type == "health":
@@ -79,7 +109,10 @@ class Halo(object):
                "\"list all servers\"\n" +
                "\"list server groups\"\n" +
                "\"servers in group `(group_id|group_name)`\"\n" +
+               "\"group firewall `(group_id|group_name)`\"\n" +
+               "\"ec2 halo footprint csv\"\n" +
                "\"version\"\n" +
+               "\"tasks\"\n" +
                "\"config\"\n")
         return ret
 
@@ -88,6 +121,8 @@ class Halo(object):
         return "v%s" % product_version
 
     def running_config(self):
+        if os.getenv("NOSLACK"):
+            return "Slack integration is disabled.  CLI access only."
         if self.monitor_events == 'yes':
             events = "Monitoring Halo events"
         else:
@@ -95,215 +130,28 @@ class Halo(object):
         retval = "%s\nHalo channel: #%s" % (events, self.slack_channel)
         return retval
 
-    def get_group_report(self, target):
-        """This is the wrapper method for producing a group report."""
-        report = "Group: " + target + "\n"
-        group_id = self.get_id_for_group_target(target)
-        if group_id is None:
-            report = report + "\n is unknown to us..."
-            return report
-        else:
-            try:
-                report = report + self.report_group_by_id(group_id)
-            except:
-                report = report + "\nis unable to be found as id or group name"
-        return report
-
-    def get_server_report(self, target):
-        """This is the wrapper method for producing a server report."""
-        report = "Server: " + target + "\n"
-        server_id = self.get_id_for_server_target(target)
-        if server_id is None:
-            report = report + "\n is unknown to us..."
-            return report
-        else:
-            try:
-                report = report + self.report_server_by_id(server_id)
-            except cloudpassage.CloudPassageResourceExistence:
-                report = report + "\nis unable to be found as id or hostname"
-        return report
-
-    def get_id_for_server_target(self, target):
-        """Attempts to get server_id using arg:target as hostname, then id"""
-        server = cloudpassage.Server(self.session)
-        result = server.list_all(hostname=target)
-        if len(result) > 0:
-            return result[0]["id"]
-        else:
-            try:
-                result = server.describe(target)["id"]
-            except:
-                result = "Not a hostnamename or server ID: " + target
-        return result
-
-    def get_id_for_group_target(self, target):
-        """Attempts to get group_id using arg:target as group_name, then id"""
-        group = cloudpassage.ServerGroup(self.session)
-        orig_result = group.list_all()
-        result = []
-        for x in orig_result:
-            if x["name"] == target:
-                result.append(x)
-        if len(result) > 0:
-            return result[0]["id"]
-        else:
-            try:
-                result = group.describe(target)["id"]
-            except cloudpassage.CloudPassageResourceExistence:
-                result = "Not a group name or ID (404): " + target
-            except KeyError:
-                result = "Not a group name or ID (KeyError): " + target
-        return result
-
-    def report_server_by_id(self, server_id):
-        """Creates a server report from facts and issues"""
-        report = self.get_facts(server_id, "server_facts")
-        report = report + self.get_server_issues(server_id)
-        report = report + self.get_server_events(server_id)
-        return report
-
-    def report_group_by_id(self, group_id):
-        """Creates a group report"""
-        print("Getting group facts")
-        report = self.get_facts(group_id, "group_facts")
-        print("Getting group policies")
-        report = report + self.get_group_policies(group_id)
-        return report
-
     def get_ip_report(self, target):
         """This wraps the report_server_by_id by accepting IP as target"""
         servers = cloudpassage.Server(self.session)
-        report = "Unknown IP: " + target
+        report = "Unknown IP: \n" + target
         try:
             s_id = servers.list_all(connecting_ip_address=target)[0]["id"]
-            report = self.report_server_by_id(s_id)
+            report = self.tasks.report_server_formatted(s_id)
         except:
             pass
         return report
 
-    def get_facts(self, obj_id, query_type):
-        """Gets facts for servers and groups.
+    def quarantine_server(self, event):
+        server_id = event["server_id"]
+        quarantine_group_name = event["quarantine_group"]
+        return self.tasks.quarantine_server(server_id, quarantine_group_name)
 
-        Args:
-            obj_id (str): ID of object to retrieve facts for.
-
-            query_type (str): "server_facts" or "group_facts"
-
-        Returns:
-            dict: object facts representation
-
-        """
-        if query_type == "server_facts":
-            obj_getter = cloudpassage.Server(self.session)
-            structured = Halo.flatten_ec2(obj_getter.describe(obj_id))
-            if "aws_ec2" in structured:
-                query_type = "server_ec2"
-        elif query_type == "group_facts":
-            obj_getter = cloudpassage.ServerGroup(self.session)
-            structured = obj_getter.describe(obj_id)
-        else:
-            msg = "Unsupported facts query_type: " + query_type
-            print(msg)
-            return {}
-        retval = Formatter.format_item(structured, query_type)
-        return retval
-
-    def get_group_policies(self, group_id):
-        retval = "  Policies\n"
-        firewall_keys = ["firewall_policy_id", "windows_firewall_policy_id"]
-        csm_keys = ["policy_ids", "windows_policy_ids"]
-        fim_keys = ["fim_policy_ids", "windows_fim_policy_ids"]
-        lids_keys = ["lids_policy_ids"]
-        group = cloudpassage.ServerGroup(self.session)
-        grp_struct = group.describe(group_id)
-        print("Getting meta for FW policies")
-        for fwp in firewall_keys:
-            print(grp_struct[fwp])
-            retval = retval + self.get_policy_meta(grp_struct[fwp], "FW")
-        print("Getting meta for CSM policies")
-        for csm in csm_keys:
-            retval = retval + self.get_policy_list(grp_struct[csm], "CSM")
-        print("Getting meta for FIM policies")
-        for fim in fim_keys:
-            retval = retval + self.get_policy_list(grp_struct[fim], "FIM")
-        print("Getting meta for LIDS policies")
-        for lids in lids_keys:
-            retval = retval + self.get_policy_list(grp_struct[lids], "LIDS")
-        print("Gathered all policy metadata successfully")
-        return retval
-
-    def get_policy_list(self, policy_ids, policy_type):
-        retval = ""
-        for policy_id in policy_ids:
-            print(policy_id)
-            retval = retval + self.get_policy_meta(policy_id, policy_type)
-        return retval
-
-    def list_all_servers(self):
-        """Return server list after sending through formatter"""
-        server = cloudpassage.Server(self.session)
-        report = Formatter.format_list(server.list_all(), "server_facts")
-        if report == "":
-            report = "No servers in group!"
-        return report
-
-    def list_all_groups(self):
-        """Return group list after sending through formatter"""
-        group = cloudpassage.ServerGroup(self.session)
-        report = Formatter.format_list(group.list_all(), "group_facts")
-        return report
-
-    def list_servers_in_group(self, target):
-        """Return a list of servers in group after sending through formatter"""
-        group = cloudpassage.ServerGroup(self.session)
-        group_id = self.get_id_for_group_target(target)
-        if "Not a group name" in group_id:
-            return group_id
-        else:
-            report = Formatter.format_list(group.list_members(group_id),
-                                           "server_facts")
-        return report
-
-    def get_server_issues(self, server_id):
-        """Return server issues after sending through formatter"""
-        pagination_key = 'issues'
-        url = '/v2/issues'
-        params = {'agent_id': server_id}
-        hh = cloudpassage.HttpHelper(self.session)
-        report = Formatter.format_list(hh.get_paginated(url, pagination_key, 5,
-                                                        params=params),
-                                       "issue")
-        return report
-
-    def get_server_events(self, server_id):
-        """Return server events after sending through formatter"""
-        event = cloudpassage.Event(self.session)
-        since = Utility.iso8601_today()
-        report = Formatter.format_list(event.list_all(10, server_id=server_id,
-                                                      since=since),
-                                       "event")
-        return report
-
-    def get_policy_meta(self, policy_id, policy_type):
-        p_ref = {"FW": " Firewall",
-                 "CSM": "Configuration",
-                 "FIM": "File Integrity Monitoring",
-                 "LIDS": "Log-Based IDS"}
-        if policy_id is None:
-            return ""
-        elif policy_type == "FIM":
-            pol = cloudpassage.FimPolicy(self.session)
-        elif policy_type == "CSM":
-            pol = cloudpassage.ConfigurationPolicy(self.session)
-        elif policy_type == "FW":
-            pol = cloudpassage.FirewallPolicy(self.session)
-        elif policy_type == "LIDS":
-            pol = cloudpassage.LidsPolicy(self.session)
-        else:
-            return ""
-        retval = Formatter.policy_meta(pol.describe(policy_id),
-                                       p_ref[policy_type])
-        return retval
+    def add_ip_to_blocklist(self, ip_address, block_list_name):
+        # We trigger a removal job for one hour out.
+        self.tasks.remove_ip_from_list.apply_async(args=[ip_address,
+                                                         block_list_name],
+                                                   countdown=3600)
+        return self.tasks.add_ip_to_list.delay(ip_address, block_list_name)
 
     @classmethod
     def take_selfie(cls):
@@ -313,15 +161,3 @@ class Halo(object):
         with open(selfie_full_path, 'r') as s_file:
             selfie = "```" + s_file.read() + "```"
         return selfie
-
-    @classmethod
-    def flatten_ec2(cls, server):
-        try:
-            for k, v in server["aws_ec2"].items():
-                server[k] = v
-            if "ec2_security_groups" in server:
-                conjoined = " ,".join(server["ec2_security_groups"])
-                server["ec2_security_groups"] = conjoined
-            return server
-        except:
-            return server

@@ -116,3 +116,23 @@ class TestUnitLexicals:
         message = 'donbot health'
         expected = "health"
         assert donlib.Lexicals.get_target(message) == expected
+
+    def test_unit_lexical_get_tasks(self):
+        message = 'donbot tasks'
+        expected = "tasks"
+        assert donlib.Lexicals.get_target(message) == expected
+
+    def test_unit_lexical_firewall_report(self):
+        message = 'donbot group firewall xyz'
+        expected = "group_firewall_report"
+        assert donlib.Lexicals.get_message_type(message) == expected
+
+    def test_unit_lexical_firewall_report_target(self):
+        message = 'donbot group firewall xyz'
+        expected = "xyz"
+        assert donlib.Lexicals.get_target(message) == expected
+
+    def test_unit_lexical_ec2_halo_footprint_csv(self):
+        message = 'donbot ec2 halo footprint csv'
+        expected = "ec2_halo_footprint_csv"
+        assert donlib.Lexicals.get_message_type(message) == expected
