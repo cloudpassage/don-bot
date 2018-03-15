@@ -1,34 +1,77 @@
-FROM alpine:3.4
+# Get the halocelery component
+FROM docker.io/halotools/python-sdk:ubuntu-16.04_sdk-1.0.6 as downloader
+MAINTAINER toolbox@cloudpassage.com
+
+ARG HALOCELERY_BRANCH=v0.4.4
+
+RUN apt-get update && \
+    apt-get install -y \
+        git
+
+WORKDIR /app/
+
+RUN echo "Target branch for this build: $HALOCELERY_BRANCH"
+
+RUN git clone https://github.com/cloudpassage/halocelery
+
+RUN cd halocelery && \
+    git archive --verbose --format=tar.gz -o /app/halocelery.tar.gz $HALOCELERY_BRANCH
+
+
+#####################################
+
+FROM docker.io/halotools/python-sdk:ubuntu-16.04_sdk-1.0.6
 MAINTAINER toolbox@cloudpassage.com
 
 ENV SLACK_ICON_URL=http://www.cloudpassage.com/wp-content/uploads/2016/12/don-operator.png
 ENV HALO_API_HOSTNAME=api.cloudpassage.com
 ENV HALO_API_PORT=443
-ENV APP_USER=donbot
-ENV APP_GROUP=botgroup
 
+# Up to root to add additional packages
+USER root
+
+RUN apt-get install -y expect
+
+RUN pip install \
+    boto3==1.4.3 \
+    celery[redis]==4.0.2 \
+    docker==2.6.1 \
+    flower==0.9.1 \
+    pytest==2.8.0 \
+    pytest-flake8==0.1 \
+    pytest-cover==3.0.0 \
+    python-magic==0.4.15 \
+    slackclient==1.0.2
+
+# Drop in the app code
 COPY app/ /app/
-COPY .git/ /.git/
+COPY octo_conf.yml /
 
-RUN addgroup ${APP_GROUP} && \
-    adduser \
-        -D \
-        -G ${APP_GROUP} \
-        -s /bin/sh \
-        -h /app \
-        ${APP_USER} && \
-    apk add --no-cache \
-        git=2.8.6-r0 \
-        python=2.7.12-r0 \
-        py-pip=8.1.2-r0 && \
-    pip install -r /app/requirements.txt && \
-    py.test --flake8 --cov=donlib /app/test && \
-    chown -R ${APP_USER}:${APP_GROUP} /app
+# Setup for manual library installation
+RUN mkdir /src/
+WORKDIR /src/
+
+
+COPY --from=downloader /app/halocelery.tar.gz /src/halocelery/halocelery.tar.gz
+
+RUN cd halocelery && \
+    tar -zxvf ./halocelery.tar.gz && \
+    cd /src/ && \
+    mv ./halocelery /app
+
 
 WORKDIR /app
 
-WORKDIR /app
+RUN pip install -r requirements.txt
+
+# Now take ownership and drop to non-root user
+RUN chown -R ${APP_USER}:$APP_GROUP /app
 
 USER ${APP_USER}
 
-CMD /app/runner.py
+RUN py.test
+
+WORKDIR /app
+
+
+CMD ["unbuffer", "python", "/app/runner.py"]

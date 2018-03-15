@@ -16,15 +16,22 @@ class Lexicals(object):
     @classmethod
     def get_message_type(cls, message):
         retval = ("unknown")
-        matchers = [(r'\sserver\s+(?!group)(?!\")\S+', "server_report"),
+        matchers = [(r'\s+ec2\s+halo\s+footprint\s+csv\s*', "ec2_halo_footprint_csv"),  # NOQA
+                    (r'\s+halo\s+ec2\s+footprint\s+csv\s*', "ec2_halo_footprint_csv"),  # NOQA
+                    (r'\sserver\s+(?!group)(?!\")\S+', "server_report"),
                     (r'\sserver\s+(?!group)\"[^\"]+\"', "server_report"),
                     (r'\s+ip\s+\S+', "ip_report"),
+                    (r'\s+group\s+firewall\s+(?!\")\S+',
+                     "group_firewall_report"),
+                    (r'\s+group\s+firewall\s+\"[^\"]+\"',
+                     "group_firewall_report"),
                     (r'list\s(all\s)*servers', "all_servers"),
                     (r'list\s(all\s)*server\s*groups', "all_groups"),
                     (r'servers\sin\sgroup\s+(?!\")\S+', "servers_in_group"),
                     (r'servers\sin\sgroup\s+\"[^\"]+\"', "servers_in_group"),
                     (r'(?!\sin)\s+group\s+(?!\")\S+', "group_report"),
                     (r'(?!\sin)\s+group\s+\"[^\"]+\"', "group_report"),
+                    (r'(?P<target>tasks)', "tasks"),
                     (r'(?P<target>selfie)', "selfie"),
                     (r'(?P<target>help)', "help"),
                     (r'(?P<target>version)', "version"),
@@ -56,7 +63,7 @@ class Lexicals(object):
         """
 
         quoted = r'[^\"]+\"(?P<target>[^\"]+)\"'
-        unquoted = r'^.*?(?P<target>\w+)$'
+        unquoted = r'^.*?(?P<target>[A-Za-z0-9_-]+)$'
         if '"' in message:
             matcher = re.match(quoted, message)
         else:

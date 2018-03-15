@@ -24,11 +24,11 @@ default channel) will be ignored.  Consider making that channel private,
 unless you want everyone in your Slack domain to be able to access Halo through
 the bot.
 
-It lives in a Docker container, so you can deploy pretty much anywhere.  
+It lives in a Docker container, so you can deploy pretty much anywhere.
 No listening ports, it just establishes a connection to Slack and listens
 for messages where it's name is mentioned. Then it reaches out to the
 CloudPassage Halo API to gather information, and drops a report back into the
-channel where it was requested.  
+channel where it was requested.
 
 This bot can optionally poll the Halo API events endpoint, and post all
 critical events into the configured channel.  See below for details...
@@ -42,22 +42,28 @@ Requirements:
 
 * CloudPassage Halo READ-ONLY API key
 * Slack chatbot token (don-operator.png included in repo for bot profile image)
+* An instance of Halo Celery running. (https://hub.docker.com/r/halotools/halocelery)
 
 Doing the thing:
 
 Set the following env vars, and then run:
 
-| var                 | purpose                                               |
-|---------------------|-------------------------------------------------------|
-| HALO_API_KEY        | Halo API key ID                                       |
-| HALO_API_SECRET_KEY | Halo API secret                                       |
-| HALO_API_HOSTNAME   | OPTIONAL- defaults to api.cloudpassage.com            |
-| HALO_API_PORT       | OPTIONAL- defaults to 443                             |
-| SLACK_API_TOKEN     | Slack token for bot                                   |
-| SLACK_USERNAME      | OPTIONAL- defaults to `donbot`                        |
-| SLACK_ICON_URL      | OPTIONAL- Link to avatar image for bot                |
-| SLACK_CHANNEL       | Notifications go to this channel.  Defaults to `#halo`|
-| MONITOR_EVENTS      | OPTIONAL- Set to `yes` to send critical events to SLACK_CHANNEL |
+| var                  | purpose                                               |
+|----------------------|-------------------------------------------------------|
+| CELERY_BACKEND_URL   | Url for Celery backend                                |
+| CELERY_BROKER_URL    | Url for Celery broker                                 |
+| FLOWER_HOST          | Url for Flower host                                   |
+| HALO_API_KEY         | Halo API key ID                                       |
+| HALO_API_SECRET_KEY  | Halo API secret                                       |
+| AWS_ACCESS_KEY_ID    | AWS Access Key ID                                     |
+| AWS_SECRET_ACCESS_KEY| AWS Secret Access Key                                 |
+| SLACK_API_TOKEN      | Slack token for bot                                   |
+| SLACK_CHANNEL        | Notifications go to this channel.  Defaults to `#halo`|
+| MONITOR_EVENTS       | Set to `yes` to send critical events to SLACK_CHANNEL |
+| ARCHIVE_SCANS        | Set to `yes` to archive scans to S3.                  |
+| SCANS_S3_BUCKET      | S3 Scans bucket name.                                 |
+| ARCHIVE_EVENTS       | Set to `yes` to archive events to S3.                 |
+| EVENTS_S3_BUCKET     | S3 Events bucket name.                                |
 
 
 ```
@@ -85,7 +91,7 @@ interprets messages.
 
 Extending Don-Bot
 
-* `app/donlib/lexicals.py` contains `Lexicals.get_messsage_type()`.  
+* `app/donlib/lexicals.py` contains `Lexicals.get_messsage_type()`.
 That's where the interpretation and extraction happen.  If you want to
 add functionality, that's where you should start.
 * There are already some unit tests in `app/test/unit/test_unit_lexicals.py`
