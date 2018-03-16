@@ -29,6 +29,7 @@ class Lexicals(object):
                     (r'list\s(all\s)*server\s*groups', "all_groups"),
                     (r'servers\sin\sgroup\s+(?!\")\S+', "servers_in_group"),
                     (r'servers\sin\sgroup\s+\"[^\"]+\"', "servers_in_group"),
+                    (r'server(s)*\swith\s(cve|CVE):', "servers_by_cve"),
                     (r'(?!\sin)\s+group\s+(?!\")\S+', "group_report"),
                     (r'(?!\sin)\s+group\s+\"[^\"]+\"', "group_report"),
                     (r'(?P<target>tasks)', "tasks"),
