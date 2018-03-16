@@ -82,6 +82,8 @@ class Halo(object):
             report = self.tasks.report_group_firewall.delay(target)
         elif query_type == "servers_in_group":
             report = self.tasks.servers_in_group_formatted.delay(target)
+        elif query_type == "servers_by_cve":
+            report = self.tasks.search_server_by_cve(target)
         elif query_type == "ec2_halo_footprint_csv":
             report = self.tasks.report_ec2_halo_footprint_csv.delay()
         elif query_type == "tasks":
@@ -108,6 +110,7 @@ class Halo(object):
                "\"tell me about group `(group_id|group_name)`\"\n" +
                "\"list all servers\"\n" +
                "\"list server groups\"\n" +
+               "\"list severs with CVEs `server with CVE:`\"\n" +
                "\"servers in group `(group_id|group_name)`\"\n" +
                "\"group firewall `(group_id|group_name)`\"\n" +
                "\"ec2 halo footprint csv\"\n" +
