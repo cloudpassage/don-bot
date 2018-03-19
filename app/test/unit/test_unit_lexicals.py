@@ -28,6 +28,13 @@ class TestUnitLexicals:
         r_type = donlib.Lexicals.get_message_type(message)
         assert r_type == report_type
 
+    def test_unit_lexical_get_message_type_server_report_3(self):
+        message = "donbot tell me about server \"xyz zyx\" "
+        decoded = message.decode('utf-8')
+        report_type = "server_report"
+        r_type = donlib.Lexicals.get_message_type(decoded)
+        assert r_type == report_type
+
     def test_unit_lexical_get_message_type_group_report_1(self):
         message = "donbot tell me about group xyz"
         report_type = "group_report"
