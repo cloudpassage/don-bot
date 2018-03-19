@@ -110,7 +110,7 @@ class Halo(object):
                "\"tell me about group `(group_id|group_name)`\"\n" +
                "\"list all servers\"\n" +
                "\"list server groups\"\n" +
-               "\"list severs with CVEs `server with CVE:`\"\n" +
+               "\"severs with CVE `cve_id`\"\n" +
                "\"servers in group `(group_id|group_name)`\"\n" +
                "\"group firewall `(group_id|group_name)`\"\n" +
                "\"ec2 halo footprint csv\"\n" +

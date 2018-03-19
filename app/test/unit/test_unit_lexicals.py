@@ -70,6 +70,12 @@ class TestUnitLexicals:
         r_type = donlib.Lexicals.get_message_type(message)
         assert r_type == report_type
 
+    def test_unit_lexical_get_servers_by_cve(self):
+        message = "donbot servers with CVE \"cve-2017-01\""
+        report_type = "servers_by_cve"
+        r_type = donlib.Lexicals.get_message_type(message)
+        assert r_type == report_type
+
     def test_unit_lexical_get_message_type_selfie(self):
         message = "donbot selfie"
         report_type = "selfie"
