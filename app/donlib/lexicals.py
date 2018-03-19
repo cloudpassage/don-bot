@@ -45,7 +45,7 @@ class Lexicals(object):
                 break
         q_string = "QUERY>> " + message
         i_string = "TYPE>> " + retval
-        print(q_string.encode('utf-8'))
+        print(q_string.encode('utf-8', 'ignore'))
         print(i_string)
         return retval
 
