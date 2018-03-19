@@ -29,12 +29,14 @@ class TestUnitLexicals:
         assert r_type == report_type
 
     def test_unit_lexical_get_message_type_server_report_3(self):
-        """Test with unicode in message."""
-        message = u'donbot tell me about server \"xyz \u201c \" '
-        decoded = message.decode('utf-8')
+        """Test with unicode in message. Exception is a fail.."""
+        message = 'donbot tell me about server \"xyz \u201c \" '
+        message2 = u'\u201c'
         report_type = "server_report"
-        r_type = donlib.Lexicals.get_message_type(decoded)
+        r_type = donlib.Lexicals.get_message_type(message)
+        r_type_2 = donlib.Lexicals.get_message_type(message2)
         assert r_type == report_type
+        assert r_type_2 == 'unknown'
 
     def test_unit_lexical_get_message_type_group_report_1(self):
         message = "donbot tell me about group xyz"
