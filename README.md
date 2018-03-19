@@ -118,8 +118,7 @@ look at the test cases for lexicals, found in
 
 ### Author
 
-This tool was written by Ash Wilson (@ashmastaflash).  Feedback should go to
-<toolbox@cloudpassage.com>.
+Feedback goes to <toolbox@cloudpassage.com>.
 
 ### License
 
