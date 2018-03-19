@@ -5,7 +5,7 @@ import yaml
 
 class IpBlockCheck(object):
     here_dir = os.path.dirname(os.path.abspath(__file__))
-    config_file = os.path.join(here_dir, "../../octo_conf.yml")
+    config_file = os.path.join(here_dir, "../../cortex_conf.yml")
 
     def __init__(self):
         self.ip_zone_name = ""

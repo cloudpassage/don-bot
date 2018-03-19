@@ -3,7 +3,7 @@
 import base64
 import donlib
 import io
-import octolib
+import cortexlib
 import os
 import sys
 import threading
@@ -87,8 +87,8 @@ def event_connector(config):
     global health_last_event_timestamp
     halo = donlib.Halo(config, str(health_string), tasks)
     events = donlib.HaloEvents(config)
-    quarantine = octolib.Quarantine()
-    ipblock = octolib.IpBlockCheck()
+    quarantine = cortexlib.Quarantine()
+    ipblock = cortexlib.IpBlockCheck()
     # We add a short delay in case of time drift between container and API
     time.sleep(10)
     while True:
@@ -204,7 +204,7 @@ def check_configs(config):
 def noslack_hold():
     msg = ("Slack integration is disabled.  "
            "Interact with Halo using:"
-           " 'docker exec -it octo-bot python /app/interrogate.py'")
+           " 'docker exec -it cortex-bot python /app/interrogate.py'")
     while True:
         print(msg)
         time.sleep(3600)
