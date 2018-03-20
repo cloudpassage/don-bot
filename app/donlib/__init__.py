@@ -9,4 +9,4 @@ from utility import Utility  # NOQA
 
 __author__ = "toolbox@cloudpassage.com"
 
-__version__ = "0.17.1"
+__version__ = "0.17.2"
