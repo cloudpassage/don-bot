@@ -2,7 +2,7 @@
 FROM docker.io/halotools/python-sdk:ubuntu-16.04_sdk-1.0.6 as downloader
 MAINTAINER toolbox@cloudpassage.com
 
-ARG HALOCELERY_BRANCH=v0.4.4
+ARG HALOCELERY_BRANCH=v0.4.9
 
 RUN apt-get update && \
     apt-get install -y \
