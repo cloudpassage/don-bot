@@ -69,7 +69,7 @@ RUN chown -R ${APP_USER}:$APP_GROUP /app
 
 USER ${APP_USER}
 
-RUN py.test
+RUN py.test /app/test
 
 WORKDIR /app
 
