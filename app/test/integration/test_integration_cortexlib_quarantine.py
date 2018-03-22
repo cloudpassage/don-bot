@@ -33,26 +33,25 @@ class TestIntegrationCortexlibQuarantine:
     def test_trigger_validation_fail(self):
         q = self.instantiate_cortexlib_quarantine()
         with pytest.raises(ValueError):
-            q.trigger_events = 123
-            q.validate_config()
+            q.config.quarantine_trigger_events = 123
+            q.config.validate_config()
         with pytest.raises(ValueError):
-            q.trigger_group_names = "invalidus maximus"
-            q.validate_config()
+            q.config.quarantine_trigger_group_names = "invalidus maximus"
+            q.config.validate_config()
         with pytest.raises(ValueError):
-            q.quarantine_group_name = ["invalidus minimus"]
-            q.validate_config()
+            q.config.quarantine_quarantine_group_name = ["invalidus minimus"]
+            q.config.validate_config()
         with pytest.raises(ValueError):
-            q.trigger_only_on_critical = "YAS"
-            q.validate_config()
+            q.config.quarantine_strigger_only_on_critical = "YAS"
+            q.config.validate_config()
 
     def test_quarantine_event_trigger(self):
         q = self.instantiate_cortexlib_quarantine()
-        quar_event["server_group_name"] = q.trigger_group_names[0]
-        quar_event["type"] = q.trigger_events[0]
-        q_grp = q.quarantine_group_name
+        quar_event["server_group_name"] = q.config.quarantine_trigger_group_names[0]
+        quar_event["type"] = q.config.quarantine_trigger_events[0]
+        q_grp = q.config.quarantine_group_name
         assert q.should_quarantine(quar_event)["quarantine_group"] == q_grp
 
     def test_quarantine_event_no_trigger(self):
-        print os.getenv("IPBLOCKER_ENABLED")
         q = self.instantiate_cortexlib_quarantine()
         assert q.should_quarantine(safe_event) is False
