@@ -8,7 +8,6 @@ class Quarantine(object):
 
     def should_quarantine(self, event):
         """Returns an enriched event object, or False if the event is OK"""
-        print self.config
         event["quarantine_group"] = self.config.quarantine_group_name
         if (self.config.quarantine_trigger_only_on_critical is True and
             event["critical"] is False):
