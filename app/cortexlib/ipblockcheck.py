@@ -36,8 +36,18 @@ class IpBlockCheck(object):
                 pass
         return None
 
-
     def set_ipblockcheck_config(self):
+        if "IPBLOCKER_ENABLED" in os.environ:
+            self.set_ipblockcheck_env()
+        else:
+            self.set_ipblockcheck_yml()
+
+    def set_ipblockcheck_env(self):
+        self.ip_zone_name = os.getenv("IPBLOCKER_IP_ZONE_NAME")
+        self.trigger_events = self.string_list(os.getenv("IPBLOCKER_TRIGGER_EVENTS"))
+        self.trigger_only_on_critical = self.string_bool(os.getenv("IPBLOCKER_TRIGGER_ONLY_ON_CRITICAL"))
+
+    def set_ipblockcheck_yml(self):
         with open(IpBlockCheck.config_file, 'r') as config:
             ipblock_conf = yaml.load(config)["ipblocker"]
         self.ip_zone_name = ipblock_conf["ip_zone_name"]
@@ -60,3 +70,14 @@ class IpBlockCheck(object):
             if not isinstance(v, str):
                 msg = "%s is not the correct type!  Should be string!" % str(v)
                 raise ValueError(msg)
+
+    def string_list(self, env_str):
+        return env_str.split(",")
+
+    def string_bool(self, env_str):
+        if not env_str:
+            return None
+        if env_str == "True":
+            return True
+        return False
+

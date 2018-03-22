@@ -26,6 +26,18 @@ class Quarantine(object):
         return False
 
     def set_quarantine_config(self):
+        if "QUARANTINE_ENABLED" in os.environ:
+            self.set_quarantine_env()
+        else:
+            self.set_quarantine_yml()
+
+    def set_quarantine_env(self):
+        self.trigger_group_names = self.string_list(os.getenv("QUARANTINE_TRIGGER_GROUP_NAME"))
+        self.trigger_events = self.string_list(os.getenv("QUARANTINE_TRIGGER_EVENTS"))
+        self.trigger_only_on_critical = self.string_bool(os.getenv("QUARANTINE_TRIGGER_ONLY_ON_CRITICAL"))
+        self.quarantine_group_name = os.getenv("QUARANTINE_GROUP_NAME")
+
+    def set_quarantine_yml(self):
         with open(Quarantine.config_file, 'r') as config:
             quar_conf = yaml.load(config)["quarantine"]
         self.trigger_group_names = quar_conf["trigger_group_names"]
@@ -50,3 +62,13 @@ class Quarantine(object):
             if not isinstance(v, str):
                 msg = "%s is not the correct type!  Should be string!" % str(v)
                 raise ValueError(msg)
+
+    def string_list(self, env_str):
+        return env_str.split(",")
+
+    def string_bool(self, env_str):
+        if not env_str:
+            return None
+        if env_str == "True":
+            return True
+        return False

@@ -14,9 +14,7 @@ safe_event = {"server_group_name": "NOTME",
               "type": "NOT_A_BAD_TYPE",
               "critical": True}
 
-quar_event = {"server_group_name": "q-test",
-              "type": "lids_rule_failed",
-              "critical": True}
+quar_event = {"critical": True}
 
 
 class TestIntegrationCortexlibQuarantine:
@@ -43,8 +41,10 @@ class TestIntegrationCortexlibQuarantine:
             q.validate_config()
 
     def test_quarantine_event_trigger(self):
-        q_grp = "Quarantine"
         q = self.instantiate_cortexlib_quarantine()
+        quar_event["server_group_name"] = q.trigger_group_names[0]
+        quar_event["type"] = q.trigger_events[0]
+        q_grp = q.quarantine_group_name
         assert q.should_quarantine(quar_event)["quarantine_group"] == q_grp
 
     def test_quarantine_event_no_trigger(self):
