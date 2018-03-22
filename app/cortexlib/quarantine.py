@@ -1,11 +1,7 @@
 import os
-import yaml
 
 
 class Quarantine(object):
-    here_dir = os.path.dirname(os.path.abspath(__file__))
-    config_file = os.path.join(here_dir, "../../cortex_conf.yml")
-
     def __init__(self):
         self.trigger_group_names = []
         self.quarantine_group_name = ""
@@ -17,7 +13,7 @@ class Quarantine(object):
     def should_quarantine(self, event):
         """Returns an enriched event object, or False if the event is OK"""
         event["quarantine_group"] = self.quarantine_group_name
-        if (self.trigger_only_on_critical == True and
+        if (self.trigger_only_on_critical is True and
             event["critical"] is False):
             pass
         elif (event["type"] in self.trigger_events and
@@ -26,24 +22,10 @@ class Quarantine(object):
         return False
 
     def set_quarantine_config(self):
-        if "QUARANTINE_ENABLED" in os.environ:
-            self.set_quarantine_env()
-        else:
-            self.set_quarantine_yml()
-
-    def set_quarantine_env(self):
         self.trigger_group_names = self.string_list(os.getenv("QUARANTINE_TRIGGER_GROUP_NAME"))
         self.trigger_events = self.string_list(os.getenv("QUARANTINE_TRIGGER_EVENTS"))
         self.trigger_only_on_critical = self.string_bool(os.getenv("QUARANTINE_TRIGGER_ONLY_ON_CRITICAL"))
-        self.quarantine_group_name = os.getenv("QUARANTINE_GROUP_NAME")
-
-    def set_quarantine_yml(self):
-        with open(Quarantine.config_file, 'r') as config:
-            quar_conf = yaml.load(config)["quarantine"]
-        self.trigger_group_names = quar_conf["trigger_group_names"]
-        self.quarantine_group_name = quar_conf["quarantine_group_name"]
-        self.trigger_events = quar_conf["trigger_events"]
-        self.trigger_only_on_critical = quar_conf["trigger_only_on_critical"]
+        self.quarantine_group_name = str(os.getenv("QUARANTINE_GROUP_NAME"))
 
     def validate_config(self):
         ref = {"should_be_lists": [self.trigger_group_names,

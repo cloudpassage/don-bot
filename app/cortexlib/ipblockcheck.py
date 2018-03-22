@@ -1,12 +1,8 @@
 import os
 import re
-import yaml
 
 
 class IpBlockCheck(object):
-    here_dir = os.path.dirname(os.path.abspath(__file__))
-    config_file = os.path.join(here_dir, "../../cortex_conf.yml")
-
     def __init__(self):
         self.ip_zone_name = ""
         self.trigger_events = []
@@ -15,7 +11,7 @@ class IpBlockCheck(object):
         self.validate_config()
 
     def should_block_ip(self, event):
-        if (self.trigger_only_on_critical == True and
+        if (self.trigger_only_on_critical is True and
             event["critical"] is False):
             pass
         elif event["type"] in self.trigger_events:
@@ -37,22 +33,9 @@ class IpBlockCheck(object):
         return None
 
     def set_ipblockcheck_config(self):
-        if "IPBLOCKER_ENABLED" in os.environ:
-            self.set_ipblockcheck_env()
-        else:
-            self.set_ipblockcheck_yml()
-
-    def set_ipblockcheck_env(self):
         self.ip_zone_name = os.getenv("IPBLOCKER_IP_ZONE_NAME")
         self.trigger_events = self.string_list(os.getenv("IPBLOCKER_TRIGGER_EVENTS"))
         self.trigger_only_on_critical = self.string_bool(os.getenv("IPBLOCKER_TRIGGER_ONLY_ON_CRITICAL"))
-
-    def set_ipblockcheck_yml(self):
-        with open(IpBlockCheck.config_file, 'r') as config:
-            ipblock_conf = yaml.load(config)["ipblocker"]
-        self.ip_zone_name = ipblock_conf["ip_zone_name"]
-        self.trigger_events = ipblock_conf["trigger_events"]
-        self.trigger_only_on_critical = ipblock_conf["trigger_only_on_critical"]
 
     def validate_config(self):
         ref = {"should_be_lists": [self.trigger_events],
@@ -80,4 +63,3 @@ class IpBlockCheck(object):
         if env_str == "True":
             return True
         return False
-

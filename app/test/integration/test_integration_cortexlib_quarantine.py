@@ -2,13 +2,18 @@ import imp
 import os
 import pytest
 import sys
+from dotenv import load_dotenv
+
 
 module_name = 'cortexlib'
 here_dir = os.path.dirname(os.path.abspath(__file__))
 module_path = os.path.join(here_dir, '../../')
+config_file = os.path.join(here_dir, "../configuration/local.env")
+load_dotenv(dotenv_path=config_file)
 sys.path.append(module_path)
 fp, pathname, description = imp.find_module(module_name)
 cortexlib = imp.load_module(module_name, fp, pathname, description)
+
 
 safe_event = {"server_group_name": "NOTME",
               "type": "NOT_A_BAD_TYPE",
@@ -48,5 +53,6 @@ class TestIntegrationCortexlibQuarantine:
         assert q.should_quarantine(quar_event)["quarantine_group"] == q_grp
 
     def test_quarantine_event_no_trigger(self):
+        print os.getenv("IPBLOCKER_ENABLED")
         q = self.instantiate_cortexlib_quarantine()
         assert q.should_quarantine(safe_event) is False
