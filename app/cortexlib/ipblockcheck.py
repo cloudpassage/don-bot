@@ -1,17 +1,17 @@
 import os
 import re
-from config_helper import ConfigHelper as config
+from config_helper import ConfigHelper
 
 
 class IpBlockCheck(object):
     def __init__(self):
-        return None
+        self.config = ConfigHelper()
 
     def should_block_ip(self, event):
-        if (config.ipblocker_trigger_only_on_critical is True and
+        if (self.config.ipblocker_trigger_only_on_critical is True and
             event["critical"] is False):
             pass
-        elif event["type"] in config.ipblocker_trigger_events:
+        elif event["type"] in self.config.ipblocker_trigger_events:
             return IpBlockCheck.extract_ip_from_event(event)
         return False
 
