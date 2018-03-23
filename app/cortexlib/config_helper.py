@@ -5,10 +5,10 @@ import re
 class ConfigHelper(object):
     def __init__(self):
         self.ip_zone_name = str(os.getenv("IPBLOCKER_IP_ZONE_NAME"))
-        self.ipblocker_enable = self.string_bool("IPBLOCKER_ENABLED")
+        self.ipblocker_enable = self.string_bool(os.getenv("IPBLOCKER_ENABLED"))
         self.ipblocker_trigger_events = self.string_list(os.getenv("IPBLOCKER_TRIGGER_EVENTS"))
         self.ipblocker_trigger_only_on_critical = self.string_bool(os.getenv("IPBLOCKER_TRIGGER_ONLY_ON_CRITICAL"))
-        self.quarantine_enable = self.string_bool("QUARANTINE_ENABLED")
+        self.quarantine_enable = self.string_bool(os.getenv("QUARANTINE_ENABLED"))
         self.quarantine_trigger_group_names = self.string_list(os.getenv("QUARANTINE_TRIGGER_GROUP_NAME"))
         self.quarantine_trigger_events = self.string_list(os.getenv("QUARANTINE_TRIGGER_EVENTS"))
         self.quarantine_trigger_only_on_critical = self.string_bool(os.getenv("QUARANTINE_TRIGGER_ONLY_ON_CRITICAL"))
