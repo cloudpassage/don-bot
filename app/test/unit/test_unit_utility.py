@@ -9,6 +9,9 @@ sys.path.append(module_path)
 fp, pathname, description = imp.find_module(module_name)
 donlib = imp.load_module(module_name, fp, pathname, description)
 
+class ObjectView(object):
+    def __init__(self, d):
+        self.__dict__ = d
 
 class TestUnitUtility:
     def test_utility_8601_today(self):
@@ -25,3 +28,16 @@ class TestUnitUtility:
 
     def test_unit_utility_8601_now(self):
         assert isinstance(donlib.Utility.iso8601_now(), str)
+
+    def test_unit_is_suppressed_event_type(self):
+        event = {"type": "abc"}
+        data = {"surppress_events": "abc,123"}
+        config = ObjectView(data)
+        u = donlib.Utility
+        assert u.is_surppressed_event_type(config, event)
+
+    def test_unit_string_to_list(self):
+        events = "abc,123"
+        events_list = ["abc", "123"]
+        u = donlib.Utility
+        assert u.string_to_list(events) == events_list

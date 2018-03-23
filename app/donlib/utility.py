@@ -41,6 +41,17 @@ class Utility(object):
         return event["critical"]
 
     @classmethod
+    def is_surppressed_event_type(cls, config, event):
+        surp_events = Utility.string_to_list(config.surppress_events)
+        if event["type"] in surp_events:
+            return True
+        return False
+
+    @classmethod
+    def string_to_list(cls, events):
+        return events.split(",")
+
+    @classmethod
     def u_to_8601(cls, unixtime):
         try:
             ret = datetime.datetime.fromtimestamp(float(unixtime)).isoformat()

@@ -88,17 +88,22 @@ def event_connector(config):
     events = donlib.HaloEvents(config)
     quarantine = cortexlib.Quarantine()
     ipblock = cortexlib.IpBlockCheck()
+    quarantine_check = False
+    ip_block_check = False
     # We add a short delay in case of time drift between container and API
     time.sleep(10)
     while True:
         for event in events:
-            quarantine_check = quarantine.should_quarantine(event)
-            ip_block_check = ipblock.should_block_ip(event)
+            if quarantine.config.quarantine_enable:
+                quarantine_check = quarantine.should_quarantine(event)
+            if ipblock.config.ipblocker_enable:
+                ip_block_check = ipblock.should_block_ip(event)
             health_last_event_timestamp = event["created_at"]
-            if donlib.Utility.event_is_critical(event):
-                print("EVENT_CONNECTOR: Critical event detected!")
-                event_fmt = donlib.Formatter.format_item(event, "event")
-                slack_outbound.append((config.slack_channel, event_fmt))
+            if not donlib.Utility.is_surppressed_event_type(config, event):
+                if donlib.Utility.event_is_critical(event):
+                    print("EVENT_CONNECTOR: Critical event detected!")
+                    event_fmt = donlib.Formatter.format_item(event, "event")
+                    slack_outbound.append((config.slack_channel, event_fmt))
             if quarantine_check is not False:
                 async_jobs.append((config.slack_channel,
                                    halo.quarantine_server(event)))
@@ -108,7 +113,6 @@ def event_connector(config):
                 async_jobs.append((config.slack_channel,
                                    halo.add_ip_to_blocklist(target_ip,
                                                             target_zone_name)))
-
 
 def daemon_speaker(config):
     while True:
@@ -207,7 +211,6 @@ def noslack_hold():
     while True:
         print(msg)
         time.sleep(3600)
-
 
 if __name__ == "__main__":
     main()
