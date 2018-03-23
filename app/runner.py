@@ -99,7 +99,7 @@ def event_connector(config):
             if ipblock.config.ipblocker_enable:
                 ip_block_check = ipblock.should_block_ip(event)
             health_last_event_timestamp = event["created_at"]
-            if donlib.Utility.is_surppressed_event_type(config, event):
+            if not donlib.Utility.is_surppressed_event_type(config, event):
                 if donlib.Utility.event_is_critical(event):
                     print("EVENT_CONNECTOR: Critical event detected!")
                     event_fmt = donlib.Formatter.format_item(event, "event")

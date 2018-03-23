@@ -9,7 +9,7 @@ sys.path.append(module_path)
 fp, pathname, description = imp.find_module(module_name)
 donlib = imp.load_module(module_name, fp, pathname, description)
 
-class objectview(object):
+class ObjectView(object):
     def __init__(self, d):
         self.__dict__ = d
 
@@ -32,7 +32,7 @@ class TestUnitUtility:
     def test_unit_is_suppressed_event_type(self):
         event = {"type": "abc"}
         data = {"surppress_events": "abc,123"}
-        config = objectview(data)
+        config = ObjectView(data)
         u = donlib.Utility
         assert u.is_surppressed_event_type(config, event)
 
