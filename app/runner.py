@@ -8,7 +8,6 @@ import os
 import sys
 import threading
 import time
-# import celery
 from halocelery import tasks
 from collections import deque
 

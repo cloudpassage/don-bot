@@ -45,7 +45,6 @@ RUN pip install \
 
 # Drop in the app code
 COPY app/ /app/
-COPY cortex_conf.yml /
 
 # Setup for manual library installation
 RUN mkdir /src/
