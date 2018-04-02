@@ -70,7 +70,7 @@ class Slack(object):
     def send_file(self, channel, report, comment):
         """Slack looks at the file header to determine type"""
         file_ext = self.get_file_extension_for_content(report)
-        filename = "OCTOBOX_Content%s" % file_ext
+        filename = "Halo_Cortex_Content%s" % file_ext
         print("Uploading %s" % filename)
         self.client.api_call("files.upload",
                              initial_comment=comment,
