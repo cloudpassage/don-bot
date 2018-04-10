@@ -81,6 +81,13 @@ Set the following env vars, and then run:
 You can add the optional variables, if needed, with:
 `-e OPTIONAL_VAR=$OPTIONAL_VAR`
 
+To create a bot user in slack:
+* (via Slack) click on Administration -> Manage Apps.
+* Search for "bots" in the search box and select the first one.
+* Click Add Configuration on the Bot page.
+* Choose a username for the bot. "donbot"
+* Click on Add bot integration
+* The Bot API token will be displayed. 
 
 * Invite donbot to a channel, or message it directly.
 * `donbot help` to see available commands.
