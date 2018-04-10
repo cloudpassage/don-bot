@@ -16,27 +16,41 @@ class ConfigHelper(object):
         self.validate_config()
 
     def validate_config(self):
-        ref = {"should_be_lists":  [self.quarantine_trigger_group_names,
-                                    self.quarantine_trigger_events,
-                                    self.ipblocker_trigger_events],
-               "should_be_bool":   [self.quarantine_trigger_only_on_critical,
-                                    self.quarantine_enable,
-                                    self.ipblocker_trigger_only_on_critical,
-                                    self.ipblocker_enable],
-               "should_be_string": [self.quarantine_group_name,
-                                    self.ip_zone_name]
-               }
-        for v in ref["should_be_lists"]:
-            if not isinstance(v, list):
-                msg = "%s is not the correct type!  Should be a list!" % str(v)
-                raise ValueError(msg)
-        for v in ref["should_be_bool"]:
-            if not isinstance(v, bool):
-                msg = "%s is not the correct type!  Should be a bool!" % str(v)
-                raise ValueError(msg)
-        for v in ref["should_be_string"]:
-            if not isinstance(v, str):
-                msg = "%s is not the correct type!  Should be string!" % str(v)
+        ref = {
+            "quarantine": {
+                "enable": [self.quarantine_enable],
+                "should_be_lists": [
+                    self.quarantine_trigger_group_names,
+                    self.quarantine_trigger_events
+                ],
+                "should_be_bool": [self.quarantine_trigger_only_on_critical],
+                "should_be_string": [self.quarantine_group_name]
+            },
+            "ipblocker": {
+                "enable": [self.ipblocker_enable],
+                "should_be_lists": [self.ipblocker_trigger_events],
+                "should_be_bool": [self.ipblocker_trigger_only_on_critical],
+                "should_be_string": [self.ip_zone_name]
+            }
+        }
+
+        self.validate_type(ref['quarantine']['enable'], bool)
+        self.validate_type(ref['ipblocker']['enable'], bool)
+
+        if self.quarantine_enable:
+            self.validate_type(ref['quarantine']['should_be_lists'], list)
+            self.validate_type(ref['quarantine']['should_be_bool'], bool)
+            self.validate_type(ref['quarantine']['should_be_string'], str)
+
+        if self.ipblocker_enable:
+            self.validate_type(ref['ipblocker']['should_be_lists'], list)
+            self.validate_type(ref['ipblocker']['should_be_bool'], bool)
+            self.validate_type(ref['ipblocker']['should_be_string'], str)
+
+    def validate_type(self, obj_lst, var_type):
+        for v in obj_lst:
+            if not isinstance(v, var_type):
+                msg = "%s is not the correct type! Should be a %s" % (str(v), var_type)
                 raise ValueError(msg)
 
     def string_list(self, env_str):
