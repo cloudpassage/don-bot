@@ -32,6 +32,7 @@ class TestIntegrationCortexlibQuarantine:
 
     def test_trigger_validation_fail(self):
         q = self.instantiate_cortexlib_quarantine()
+        q.config.quarantine_enable = True
         with pytest.raises(ValueError):
             q.config.quarantine_trigger_events = 123
             q.config.validate_config()
@@ -42,7 +43,7 @@ class TestIntegrationCortexlibQuarantine:
             q.config.quarantine_quarantine_group_name = ["invalidus minimus"]
             q.config.validate_config()
         with pytest.raises(ValueError):
-            q.config.quarantine_strigger_only_on_critical = "YAS"
+            q.config.quarantine_trigger_only_on_critical = "YAS"
             q.config.validate_config()
 
     def test_quarantine_event_trigger(self):
