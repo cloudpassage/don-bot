@@ -27,6 +27,7 @@ class Halo(object):
         self.health_string = health_string
         self.tasks = tasks_obj
         self.flower_host = config.flower_host
+        self.config = config
         return
 
     def credentials_work(self):
@@ -128,9 +129,29 @@ class Halo(object):
             return "Slack integration is disabled.  CLI access only."
         if self.monitor_events == 'yes':
             events = "Monitoring Halo events"
+            config_setup = ("IP-Blocker Configuration\n" +
+                            "------------------------\n" +
+                            "IPBLOCKER_ENABLED=%s\n" % (self.config.ipblocker_enable) +
+                            "IPBLOCKER_IP_ZONE_NAME=%s\n" % (self.config.ip_zone_name) +
+                            "IPBLOCKER_TRIGGER_EVENTS=%s\n" % (self.config.ipblocker_trigger_events) +
+                            "IPBLOCKER_TRIGGER_ONLY_ON_CRITICAL=%s\n\n" % (self.config.ipblocker_trigger_only_on_critical) +
+                            "Quarantine Configuration\n" +
+                            "------------------------\n" +
+                            "QUARANTINE_ENABLED=%s\n" % (self.config.quarantine_enable) +
+                            "QUARANTINE_TRIGGER_GROUP_NAME=%s\n" % (self.config.quarantine_trigger_group_names) +
+                            "QUARANTINE_TRIGGER_EVENTS=%s\n" % (self.config.quarantine_trigger_events) +
+                            "QUARANTINE_TRIGGER_ONLY_ON_CRITICAL=%s\n" % (self.config.quarantine_trigger_only_on_critical) +
+                            "QUARANTINE_GROUP_NAME=%s\n\n" % (self.config.quarantine_group_name) +
+                            "Event Suppression Configuration\n" +
+                            "-------------------------------\n" +
+                            "SUPPRESS_EVENTS_IN_CHANNEL=%s\n" % (self.config.suppress_events))
         else:
             events = "NOT monitoring Halo events"
-        retval = "%s\nHalo channel: #%s" % (events, self.slack_channel)
+
+
+        retval = "%s\nHalo channel: #%s\n%s\n" % (events,
+                                                  self.slack_channel,
+                                                  config_setup)
         return retval
 
     def get_ip_report(self, target):
