@@ -41,9 +41,9 @@ class Utility(object):
         return event["critical"]
 
     @classmethod
-    def is_surppressed_event_type(cls, config, event):
-        surp_events = Utility.string_to_list(config.surppress_events)
-        if event["type"] in surp_events:
+    def is_suppressed_event_type(cls, config, event):
+        sup_events = Utility.string_to_list(config.suppress_events)
+        if event["type"] in sup_events:
             return True
         return False
 
