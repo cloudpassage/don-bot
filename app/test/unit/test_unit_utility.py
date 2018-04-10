@@ -31,10 +31,10 @@ class TestUnitUtility:
 
     def test_unit_is_suppressed_event_type(self):
         event = {"type": "abc"}
-        data = {"surppress_events": "abc,123"}
+        data = {"suppress_events": "abc,123"}
         config = ObjectView(data)
         u = donlib.Utility
-        assert u.is_surppressed_event_type(config, event)
+        assert u.is_suppressed_event_type(config, event)
 
     def test_unit_string_to_list(self):
         events = "abc,123"
