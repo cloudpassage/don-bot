@@ -17,7 +17,6 @@ class HaloEvents(object):
     def __init__(self, config):
         self.halo_key = config.halo_api_key
         self.halo_secret = config.halo_api_secret_key
-        self.start_timestamp = utility.Utility.iso8601_now()
         self.max_threads = config.max_threads
         self.halo_batch_size = config.halo_batch_size
         self.last_event_timestamp = None
@@ -25,6 +24,7 @@ class HaloEvents(object):
         self.halo_session = None
         self.last_event_id = ""
         self.ua = config.ua
+        self.start_timestamp = self.starting_event_time()
         print("Event Collector: Starting timestamp: " + self.start_timestamp)
 
     def __iter__(self):
@@ -36,17 +36,24 @@ class HaloEvents(object):
             except IndexError:
                 pass
 
+    def starting_event_time(self):
+        halo_session = self.build_halo_session()
+        api = cloudpassage.HttpHelper(halo_session)
+        url = "/v1/events?sort_by=created_at.desc&per_page=1"
+        resp = api.get(url)
+        return resp['events'][0]['created_at']
+
     def get_next_batch(self):
         """Gets the next batch of events for the iterator."""
         url_list = self.create_url_list()
         try:
             pages = self.get_pages(url_list)
         except ConnectionError:  # Sometimes connection abort happens
-            now_string = unicode(utility.Utility.iso8601_now())
+            now_string = unicode(self.start_timestamp)
             print("EventCollector: ConnectionError %s" % now_string)
             pages = [{"events": []}]
         except CloudPassageGeneral:  # We wait if this happens...
-            now_string = unicode(utility.Utility.iso8601_now())
+            now_string = unicode(self.start_timestamp)
             print("EventCollector: Caught Halo API error %s" % now_string)
             pages = [{"events": []}]
             time.sleep(15)
