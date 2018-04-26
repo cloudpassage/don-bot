@@ -1,10 +1,9 @@
 import re
-from config_helper import ConfigHelper
 
 
 class IpBlockCheck(object):
-    def __init__(self):
-        self.config = ConfigHelper()
+    def __init__(self, config):
+        self.config = config
 
     def should_block_ip(self, event):
         if (self.config.ipblocker_trigger_only_on_critical is True and
