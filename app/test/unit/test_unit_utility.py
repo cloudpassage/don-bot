@@ -9,9 +9,11 @@ sys.path.append(module_path)
 fp, pathname, description = imp.find_module(module_name)
 donlib = imp.load_module(module_name, fp, pathname, description)
 
+
 class ObjectView(object):
     def __init__(self, d):
         self.__dict__ = d
+
 
 class TestUnitUtility:
     def test_utility_8601_today(self):
@@ -41,3 +43,19 @@ class TestUnitUtility:
         events_list = ["abc", "123"]
         u = donlib.Utility
         assert u.string_to_list(events) == events_list
+
+    def test_unit_utility_bool_from_env_true_1(self, monkeypatch):
+        monkeypatch.setenv('TESTING_ENVVAR', "True")
+        assert donlib.Utility.bool_from_env('TESTING_ENVVAR')
+
+    def test_unit_utility_bool_from_env_true_2(self, monkeypatch):
+        monkeypatch.setenv('TESTING_ENVVAR', "true")
+        assert donlib.Utility.bool_from_env('TESTING_ENVVAR')
+
+    def test_unit_utility_bool_from_env_false_1(self, monkeypatch):
+        monkeypatch.setenv('TESTING_ENVVAR', "nope")
+        assert donlib.Utility.bool_from_env('TESTING_ENVVAR') is False
+
+    def test_unit_utility_bool_from_env_false_2(self, monkeypatch):
+        monkeypatch.setenv('TESTING_ENVVAR', "")
+        assert donlib.Utility.bool_from_env('TESTING_ENVVAR') is False

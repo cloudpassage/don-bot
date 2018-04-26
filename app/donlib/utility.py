@@ -1,4 +1,5 @@
 import datetime
+import os
 
 
 class Utility(object):
@@ -58,3 +59,17 @@ class Utility(object):
         except TypeError:
             ret = "N/A"
         return ret
+
+    @classmethod
+    def bool_from_env(cls, envvar_name):
+        """Return boolean for environment variable.
+
+        If the value of environment variable indicated by envvar_name is
+        "True" or "true", return boolean True. Anything else returns False.
+        """
+        envvar_value = os.getenv(envvar_name, "absent")
+        if envvar_value in ["True", "true"]:
+            envvar_bool = True
+        else:
+            envvar_bool = False
+        return envvar_bool
