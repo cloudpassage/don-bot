@@ -91,8 +91,8 @@ def event_connector(config):
     global health_last_event_timestamp
     halo = donlib.Halo(config, str(health_string), tasks)
     events = donlib.HaloEvents(config)
-    quarantine = cortexlib.Quarantine()
-    ipblock = cortexlib.IpBlockCheck()
+    quarantine = cortexlib.Quarantine(config)
+    ipblock = cortexlib.IpBlockCheck(config)
     quarantine_check = False
     ip_block_check = False
     # We add a short delay in case of time drift between container and API

@@ -1,4 +1,3 @@
-import os
 import re
 from config_helper import ConfigHelper
 
@@ -9,7 +8,7 @@ class IpBlockCheck(object):
 
     def should_block_ip(self, event):
         if (self.config.ipblocker_trigger_only_on_critical is True and
-            event["critical"] is False):
+                event["critical"] is False):
             pass
         elif event["type"] in self.config.ipblocker_trigger_events:
             return IpBlockCheck.extract_ip_from_event(event)
