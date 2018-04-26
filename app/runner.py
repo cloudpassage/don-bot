@@ -49,22 +49,27 @@ def main():
     print(msg)
     if config.monitor_events == "yes":
         print("Starting Halo event monitor")
-        halo_collector = threading.Thread(target=event_connector, args=[config])
+        halo_collector = threading.Thread(target=event_connector,
+                                          args=[config])
         halo_collector.daemon = True
         halo_collector.start()
 
     while True:
-        s_consumer = " Slack consumer alive: %s" % str(slack_consumer.is_alive())
-        s_emitter = "  Slack emitter alive: %s" % str(slack_emitter.is_alive())
-        h_enricher = "  Halo enricher alive: %s" % str(halo_enricher.is_alive())
-        a_manager = "  Async job manager alive: %s" % str(async_mgr.is_alive())
+        s_consumer = (" Slack consumer alive: %s" %
+                      str(slack_consumer.is_alive()))
+        s_emitter = ("  Slack emitter alive: %s" %
+                     str(slack_emitter.is_alive()))
+        h_enricher = ("  Halo enricher alive: %s" %
+                      str(halo_enricher.is_alive()))
+        a_manager = ("  Async job manager alive: %s" %
+                     str(async_mgr.is_alive()))
         if config.monitor_events == "yes":
             h_events = "  Halo event monitor alive: %s\n  Last event: %s" % (
                 halo_collector.is_alive(), health_last_event_timestamp)
         else:
             h_events = ""
-        health_string = "\n".join([s_consumer, s_emitter, h_enricher, a_manager,
-                                   h_events])
+        health_string = "\n".join([s_consumer, s_emitter, h_enricher,
+                                   a_manager, h_events])
         die_if_unhealthy(config.slack_channel)
         time.sleep(30)
 
@@ -113,6 +118,7 @@ def event_connector(config):
                 async_jobs.append((config.slack_channel,
                                    halo.add_ip_to_blocklist(target_ip,
                                                             target_zone_name)))
+
 
 def daemon_speaker(config):
     while True:
@@ -211,6 +217,7 @@ def noslack_hold():
     while True:
         print(msg)
         time.sleep(3600)
+
 
 if __name__ == "__main__":
     main()
