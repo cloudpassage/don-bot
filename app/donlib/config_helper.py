@@ -33,11 +33,14 @@ class ConfigHelper(object):
         self.ip_zone_name = os.getenv("IPBLOCKER_IP_ZONE_NAME")
         self.ipblocker_enable = os.getenv("IPBLOCKER_ENABLED")
         self.ipblocker_trigger_events = os.getenv("IPBLOCKER_TRIGGER_EVENTS")
-        self.ipblocker_trigger_only_on_critical = os.getenv("IPBLOCKER_TRIGGER_ONLY_ON_CRITICAL")
+        self.ipblocker_trigger_only_on_critical = os.getenv(
+            "IPBLOCKER_TRIGGER_ONLY_ON_CRITICAL")
         self.quarantine_enable = os.getenv("QUARANTINE_ENABLED")
-        self.quarantine_trigger_group_names = os.getenv("QUARANTINE_TRIGGER_GROUP_NAME")
+        self.quarantine_trigger_group_names = os.getenv(
+            "QUARANTINE_TRIGGER_GROUP_NAME")
         self.quarantine_trigger_events = os.getenv("QUARANTINE_TRIGGER_EVENTS")
-        self.quarantine_trigger_only_on_critical = os.getenv("QUARANTINE_TRIGGER_ONLY_ON_CRITICAL")
+        self.quarantine_trigger_only_on_critical = os.getenv(
+            "QUARANTINE_TRIGGER_ONLY_ON_CRITICAL")
         self.quarantine_group_name = os.getenv("QUARANTINE_GROUP_NAME")
         self.max_threads = 5  # Max threads to be used by event collector
         self.halo_batch_size = 5  # Pagination depth for event collector
