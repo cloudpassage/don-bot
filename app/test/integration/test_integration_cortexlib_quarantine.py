@@ -5,14 +5,17 @@ import sys
 from dotenv import load_dotenv
 
 
-module_name = 'cortexlib'
 here_dir = os.path.dirname(os.path.abspath(__file__))
 module_path = os.path.join(here_dir, '../../')
 config_file = os.path.join(here_dir, "../configuration/local.env")
 load_dotenv(dotenv_path=config_file)
 sys.path.append(module_path)
-fp, pathname, description = imp.find_module(module_name)
-cortexlib = imp.load_module(module_name, fp, pathname, description)
+# Load cortexlib
+fp, pathname, description = imp.find_module('cortexlib')
+cortexlib = imp.load_module('cortexlib', fp, pathname, description)
+# Load donlib
+fp, pathname, description = imp.find_module('donlib')
+donlib = imp.load_module('donlib', fp, pathname, description)
 
 
 safe_event = {"server_group_name": "NOTME",
@@ -24,7 +27,8 @@ quar_event = {"critical": True}
 
 class TestIntegrationCortexlibQuarantine:
     def instantiate_cortexlib_quarantine(self):
-        q_obj = cortexlib.Quarantine()
+        config = donlib.ConfigHelper()
+        q_obj = cortexlib.Quarantine(config)
         return q_obj
 
     def test_instantiate_cortexlib_quarantine(self):
@@ -48,7 +52,7 @@ class TestIntegrationCortexlibQuarantine:
 
     def test_quarantine_event_trigger(self):
         q = self.instantiate_cortexlib_quarantine()
-        quar_event["server_group_name"] = q.config.quarantine_trigger_group_names[0]
+        quar_event["server_group_name"] = q.config.quarantine_trigger_group_names[0]  # NOQA
         quar_event["type"] = q.config.quarantine_trigger_events[0]
         q_grp = q.config.quarantine_group_name
         assert q.should_quarantine(quar_event)["quarantine_group"] == q_grp
@@ -56,3 +60,7 @@ class TestIntegrationCortexlibQuarantine:
     def test_quarantine_event_no_trigger(self):
         q = self.instantiate_cortexlib_quarantine()
         assert q.should_quarantine(safe_event) is False
+
+    def test_quarantine_event_no_trigger_due_to_disabled_feature(self):
+        q = self.instantiate_cortexlib_quarantine()
+        assert q.should_quarantine(quar_event) is False

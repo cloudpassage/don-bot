@@ -1,5 +1,4 @@
 import os
-import re
 
 
 class ConfigHelper(object):
@@ -50,7 +49,8 @@ class ConfigHelper(object):
     def validate_type(self, obj_lst, var_type):
         for v in obj_lst:
             if not isinstance(v, var_type):
-                msg = "%s is not the correct type! Should be a %s" % (str(v), var_type)
+                msg = ("%s is not the correct type! Should be a %s" %
+                       (str(v), var_type))
                 raise ValueError(msg)
 
     def string_list(self, env_str):
