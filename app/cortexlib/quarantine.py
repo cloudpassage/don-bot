@@ -31,8 +31,12 @@ class Quarantine(object):
 
     def get_all_server_groups(self):
         """Get a list of groups from the Halo API."""
-        server_groups = cloudpassage.ServerGroup(self.session)
-        all_groups = server_groups.list_all()
+        try:
+            server_groups = cloudpassage.ServerGroup(self.session)
+            all_groups = server_groups.list_all()
+        except cloudpassage.CloudPassageAuthentication:
+            print("Authentication failure with CloudPassage API!")
+            all_groups = []
         return all_groups
 
     def config_is_unambiguous(self):

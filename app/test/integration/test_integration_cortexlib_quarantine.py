@@ -26,6 +26,38 @@ quar_event = {"critical": True}
 
 
 class TestIntegrationCortexlibQuarantine:
+    def instantiate_donlib_config_quarantine_good(self, monkeypatch):
+        monkeypatch.setenv('HALO_API_HOSTNAME', 'api.cloudpassage.com')
+        monkeypatch.setenv('HALO_API_PORT', 443)
+        monkeypatch.setenv('SLACK_API_TOKEN', 'some_token_')
+        config = donlib.ConfigHelper()
+        return config
+
+    def instantiate_donlib_config_quarantine_invalid_halo(self, monkeypatch):
+        monkeypatch.setenv('HALO_API_KEY', 'bad_key')
+        monkeypatch.setenv('HALO_API_SECRET_KEY', 'bad_secret')
+        monkeypatch.setenv('HALO_API_HOSTNAME', 'api.cloudpassage.com')
+        monkeypatch.setenv('HALO_API_PORT', 443)
+        monkeypatch.setenv('SLACK_API_TOKEN', 'some_token_')
+        config = donlib.ConfigHelper()
+        return config
+
+    def instantiate_donlib_config_quarantine_bad_q_config(self, monkeypatch):
+        monkeypatch.setenv('HALO_API_HOSTNAME', 'api.cloudpassage.com')
+        monkeypatch.setenv('HALO_API_PORT', 443)
+        monkeypatch.setenv('SLACK_API_TOKEN', 'some_token_')
+        monkeypatch.setenv('QUARANTINE_TRIGGER_GROUP_NAME', 'duplicate')
+        config = donlib.ConfigHelper()
+        return config
+
+    def instantiate_donlib_config_quarantine_q_disabled(self, monkeypatch):
+        monkeypatch.setenv('HALO_API_HOSTNAME', 'api.cloudpassage.com')
+        monkeypatch.setenv('HALO_API_PORT', 443)
+        monkeypatch.setenv('SLACK_API_TOKEN', 'some_token_')
+        monkeypatch.setenv('QUARANTINE_ENABLED', 'false')
+        config = donlib.ConfigHelper()
+        return config
+
     def instantiate_cortexlib_quarantine(self):
         config = donlib.ConfigHelper()
         q_obj = cortexlib.Quarantine(config)
@@ -51,14 +83,14 @@ class TestIntegrationCortexlibQuarantine:
             q.config.validate_config()
 
     def test_quarantine_event_trigger(self):
-        q = self.instantiate_cortexlib_quarantine()
+        q = self.instantiate_donlib_config_quarantine_good()
         quar_event["server_group_name"] = q.config.quarantine_trigger_group_names[0]  # NOQA
         quar_event["type"] = q.config.quarantine_trigger_events[0]
         q_grp = q.config.quarantine_group_name
         assert q.should_quarantine(quar_event)["quarantine_group"] == q_grp
 
     def test_quarantine_event_no_trigger(self):
-        q = self.instantiate_cortexlib_quarantine()
+        q = self.instantiate_donlib_config_quarantine_good()
         assert q.should_quarantine(safe_event) is False
 
     def test_quarantine_event_no_trigger_due_to_disabled_feature(self):
