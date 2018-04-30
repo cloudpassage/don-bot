@@ -103,8 +103,12 @@ class TestIntegrationCortexlibQuarantine:
         q = self.instantiate_cortexlib_quarantine(monkeypatch)
         assert q.should_quarantine(safe_event) is False
 
-    def test_quarantine_event_no_trigger_due_to_disabled_feature(self,
-                                                                 monkeypatch):
+    def test_quarantine_event_no_trigger_due_to_bad_config(self, monkeypatch):
         """Valid quarantine event should not trigger because config is bad."""
-        q = self.instantiate_cortexlib_quarantine(monkeypatch)
+        q = self.instantiate_donlib_config_bad_q_config(monkeypatch)
+        assert q.should_quarantine(quar_event) is False
+
+    def test_quarantine_event_no_trigger_because_disabled(self, monkeypatch):
+        """Valid quarantine event should not trigger because Q is disables."""
+        q = self.instantiate_donlib_config_q_disabled(monkeypatch)
         assert q.should_quarantine(quar_event) is False
