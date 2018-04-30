@@ -43,8 +43,8 @@ class ConfigHelper(object):
             "IPBLOCKER_TRIGGER_ONLY_ON_CRITICAL")
         # Quarantine configs
         self.quarantine_enable = Utility.bool_from_env("QUARANTINE_ENABLED")
-        self.quarantine_trigger_group_names = os.getenv(
-            "QUARANTINE_TRIGGER_GROUP_NAME", "")
+        self.quarantine_trigger_group_names = Utility.list_from_env(
+            "QUARANTINE_TRIGGER_GROUP_NAMES")
         self.quarantine_trigger_events = Utility.list_from_env(
             "QUARANTINE_TRIGGER_EVENTS")
         self.quarantine_trigger_only_on_critical = Utility.bool_from_env(
@@ -103,15 +103,18 @@ class ConfigHelper(object):
         sanity = True
         # Check that trigger group names is a list
         if not isinstance(self.quarantine_trigger_group_names, list):
-            print("Quarantine trigger group name failed sanity check.")
+            print("Quarantine trigger group names\"%s\" failed sanity check." %
+                  self.quarantine_trigger_group_names)
             sanity = False
         # Check that trigger events is a list
         if not isinstance(self.quarantine_trigger_events, list):
-            print("Quarantine trigger events failed sanity check.")
+            print("Quarantine trigger events \"%s\" failed sanity check." %
+                  self.quarantine_trigger_events)
             sanity = False
         # Check that quarantine group name is a string
         if not isinstance(self.quarantine_group_name, str):
-            print("Quarantine group name failed sanity check.")
+            print("Quarantine group name \"%s\"failed sanity check." %
+                  self.quarantine_group_name)
             sanity = False
         # Check that lists and strings are not zero-length
         for x in [self.quarantine_trigger_events,

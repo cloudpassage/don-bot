@@ -1,6 +1,6 @@
 import imp
 import os
-import pytest
+# import pytest
 import sys
 from dotenv import load_dotenv
 
@@ -26,14 +26,14 @@ quar_event = {"critical": True}
 
 
 class TestIntegrationCortexlibQuarantine:
-    def instantiate_donlib_config_quarantine_good(self, monkeypatch):
+    def instantiate_donlib_config_good(self, monkeypatch):
         monkeypatch.setenv('HALO_API_HOSTNAME', 'api.cloudpassage.com')
         monkeypatch.setenv('HALO_API_PORT', 443)
         monkeypatch.setenv('SLACK_API_TOKEN', 'some_token_')
         config = donlib.ConfigHelper()
         return config
 
-    def instantiate_donlib_config_quarantine_invalid_halo(self, monkeypatch):
+    def instantiate_donlib_config_invalid_halo(self, monkeypatch):
         monkeypatch.setenv('HALO_API_KEY', 'bad_key')
         monkeypatch.setenv('HALO_API_SECRET_KEY', 'bad_secret')
         monkeypatch.setenv('HALO_API_HOSTNAME', 'api.cloudpassage.com')
@@ -42,7 +42,7 @@ class TestIntegrationCortexlibQuarantine:
         config = donlib.ConfigHelper()
         return config
 
-    def instantiate_donlib_config_quarantine_bad_q_config(self, monkeypatch):
+    def instantiate_donlib_config_bad_q_config(self, monkeypatch):
         monkeypatch.setenv('HALO_API_HOSTNAME', 'api.cloudpassage.com')
         monkeypatch.setenv('HALO_API_PORT', 443)
         monkeypatch.setenv('SLACK_API_TOKEN', 'some_token_')
@@ -50,7 +50,7 @@ class TestIntegrationCortexlibQuarantine:
         config = donlib.ConfigHelper()
         return config
 
-    def instantiate_donlib_config_quarantine_q_disabled(self, monkeypatch):
+    def instantiate_donlib_config_q_disabled(self, monkeypatch):
         monkeypatch.setenv('HALO_API_HOSTNAME', 'api.cloudpassage.com')
         monkeypatch.setenv('HALO_API_PORT', 443)
         monkeypatch.setenv('SLACK_API_TOKEN', 'some_token_')
@@ -58,41 +58,52 @@ class TestIntegrationCortexlibQuarantine:
         config = donlib.ConfigHelper()
         return config
 
-    def instantiate_cortexlib_quarantine(self):
-        config = donlib.ConfigHelper()
+    def instantiate_cortexlib_quarantine(self, monkeypatch):
+        config = self.instantiate_donlib_config_good(monkeypatch)
         q_obj = cortexlib.Quarantine(config)
         return q_obj
 
-    def test_instantiate_cortexlib_quarantine(self):
-        assert self.instantiate_cortexlib_quarantine()
+    def test_instantiate_cortexlib_quarantine(self, monkeypatch):
+        assert self.instantiate_cortexlib_quarantine(monkeypatch)
 
-    def test_trigger_validation_fail(self):
-        q = self.instantiate_cortexlib_quarantine()
-        q.config.quarantine_enable = True
-        with pytest.raises(ValueError):
-            q.config.quarantine_trigger_events = 123
-            q.config.validate_config()
-        with pytest.raises(ValueError):
-            q.config.quarantine_trigger_group_names = "invalidus maximus"
-            q.config.validate_config()
-        with pytest.raises(ValueError):
-            q.config.quarantine_quarantine_group_name = ["invalidus minimus"]
-            q.config.validate_config()
-        with pytest.raises(ValueError):
-            q.config.quarantine_trigger_only_on_critical = "YAS"
-            q.config.validate_config()
+    def test_trigger_validation_fail_invalid_trigger_group(self, monkeypatch):
+        """Walk through scenarios where live validation will fail because of a
+        missing group."""
+        q = self.instantiate_cortexlib_quarantine(monkeypatch)
+        q.quarantine_enable = True
+        # Invalid group name causes validation failure
+        q.quarantine_trigger_group_names = ["invalidus maximus"]
+        q.quarantine_group_name = "donbot testing"
+        assert q.config_is_unambiguous() is False
 
-    def test_quarantine_event_trigger(self):
-        q = self.instantiate_donlib_config_quarantine_good()
-        quar_event["server_group_name"] = q.config.quarantine_trigger_group_names[0]  # NOQA
-        quar_event["type"] = q.config.quarantine_trigger_events[0]
-        q_grp = q.config.quarantine_group_name
+    def test_trigger_validation_fail_ambiguous_quarantine_group(self,
+                                                                monkeypatch):
+        """Walk through scenario where live validation will fail over duplicate
+        groups."""
+        q = self.instantiate_cortexlib_quarantine(monkeypatch)
+        q.quarantine_enable = True
+        # Multiple groups with the same name causes validation failure
+        q.quarantine_trigger_group_names = ["duplicate"]
+        q.quarantine_group_name = "donbot testing"
+        assert q.config_is_unambiguous() is False
+
+    def test_quarantine_event_trigger(self, monkeypatch):
+        """Successfully match a quarantine event."""
+        q = self.instantiate_cortexlib_quarantine(monkeypatch)
+        print(q.quarantine_trigger_group_names)
+        print(q.quarantine_trigger_events)
+        quar_event["server_group_name"] = q.quarantine_trigger_group_names[0]  # NOQA
+        quar_event["type"] = q.quarantine_trigger_events[0]
+        q_grp = q.quarantine_group_name
         assert q.should_quarantine(quar_event)["quarantine_group"] == q_grp
 
-    def test_quarantine_event_no_trigger(self):
-        q = self.instantiate_donlib_config_quarantine_good()
+    def test_quarantine_event_no_trigger(self, monkeypatch):
+        """This should NOT match as a quarantine event."""
+        q = self.instantiate_cortexlib_quarantine(monkeypatch)
         assert q.should_quarantine(safe_event) is False
 
-    def test_quarantine_event_no_trigger_due_to_disabled_feature(self):
-        q = self.instantiate_cortexlib_quarantine()
+    def test_quarantine_event_no_trigger_due_to_disabled_feature(self,
+                                                                 monkeypatch):
+        """Valid quarantine event should not trigger because config is bad."""
+        q = self.instantiate_cortexlib_quarantine(monkeypatch)
         assert q.should_quarantine(quar_event) is False

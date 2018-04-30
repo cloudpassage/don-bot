@@ -6,7 +6,11 @@ class Quarantine(object):
     """Instantiate with a `config` object."""
 
     def __init__(self, config):
-        self.config = config
+        self.quarantine_enable = config.quarantine_enable
+        self.quarantine_group_name = config.quarantine_group_name
+        self.quarantine_trigger_group_names = config.quarantine_trigger_group_names  # NOQA
+        self.quarantine_trigger_events = config.quarantine_trigger_events
+        self.quarantine_trigger_only_on_critical = config.quarantine_trigger_only_on_critical  # NOQA
         self.session = cloudpassage.HaloSession(config.halo_api_key,
                                                 config.halo_api_secret_key,
                                                 api_host=config.halo_api_host,
@@ -16,9 +20,9 @@ class Quarantine(object):
     def should_quarantine(self, event):
         """Return an event object, or False if quarantine should not happen."""
         # If quarantine is not enabled, bail now.
-        if self.config.quarantine_enable is False:
+        if self.quarantine_enable is False:
             return False
-        event["quarantine_group"] = self.config.quarantine_group_name
+        event["quarantine_group"] = self.quarantine_group_name
         # If criteria are met and configuration is sane, trigger quarantine.
         if (self.criticality_match is True and
                 self.event_type_match is True and
@@ -49,9 +53,13 @@ class Quarantine(object):
         retval = True
         reason = ""
         all_groups = self.get_all_server_groups()
-        quar_group = self.config.quarantine_group_name
-        src_groups = self.config.quarantine_trigger_group_names
-        all_configured_groups = quar_group.extend(src_groups)
+        if all_groups == []:
+            print("Unable to get server groups from Halo! Check your API credentials!")  # NOQA
+            return False
+        all_configured_groups = []
+        all_configured_groups.append(self.quarantine_group_name)
+        all_configured_groups.extend(self.quarantine_trigger_group_names[:])
+        print(all_configured_groups)
         # Ensure that no more than one group exists per source group name.
         for group in all_configured_groups:
             groups = [x for x in all_groups if x["name"] == group]
@@ -69,9 +77,9 @@ class Quarantine(object):
 
     def criticality_match(self, event):
         """Return True if the event's criticality meets requirements."""
-        if self.config.quarantine_trigger_only_on_critical is False:
+        if self.quarantine_trigger_only_on_critical is False:
             return True
-        elif (self.config.quarantine_trigger_only_on_critical is True and
+        elif (self.quarantine_trigger_only_on_critical is True and
               event["critical"] is True):
             return True
         else:
@@ -79,7 +87,7 @@ class Quarantine(object):
 
     def event_type_match(self, event):
         """Return boolean for event type match."""
-        if event["type"] in self.config.quarantine_trigger_events:
+        if event["type"] in self.quarantine_trigger_events:
             return True
         else:
             return False
