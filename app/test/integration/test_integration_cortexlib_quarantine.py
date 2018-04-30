@@ -45,7 +45,7 @@ class TestIntegrationCortexlibQuarantine:
         monkeypatch.setenv('HALO_API_HOSTNAME', 'api.cloudpassage.com')
         monkeypatch.setenv('HALO_API_PORT', 443)
         monkeypatch.setenv('SLACK_API_TOKEN', 'some_token_')
-        monkeypatch.setenv('QUARANTINE_TRIGGER_GROUP_NAME', 'duplicate')
+        monkeypatch.setenv('QUARANTINE_TRIGGER_GROUP_NAMES', 'duplicate')
         config = donlib.ConfigHelper()
         return config
 
