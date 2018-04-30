@@ -1,6 +1,5 @@
 import imp
 import os
-# import pytest
 import sys
 from dotenv import load_dotenv
 
@@ -90,9 +89,7 @@ class TestIntegrationCortexlibQuarantine:
     def test_quarantine_event_trigger(self, monkeypatch):
         """Successfully match a quarantine event."""
         q = self.instantiate_cortexlib_quarantine(monkeypatch)
-        print(q.quarantine_trigger_group_names)
-        print(q.quarantine_trigger_events)
-        quar_event["server_group_name"] = q.quarantine_trigger_group_names[0]  # NOQA
+        quar_event["server_group_name"] = q.quarantine_trigger_group_names[0]
         quar_event["type"] = q.quarantine_trigger_events[0]
         q_grp = q.quarantine_group_name
         print(q.quarantine_enable)

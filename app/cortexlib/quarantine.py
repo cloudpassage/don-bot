@@ -51,6 +51,7 @@ class Quarantine(object):
         retval = True
         reason = ""
         all_groups = self.get_all_server_groups()
+        print([x["name"] for x in all_groups])
         if all_groups == []:
             print("Quarantine: Unable to get server groups from Halo! Check your API credentials!")  # NOQA
             return False
