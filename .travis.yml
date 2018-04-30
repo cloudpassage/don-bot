@@ -2,7 +2,7 @@ sudo: required
 language: python
 services:
 - docker
-script: docker build -t don-bot .
+script: docker build -t don-bot --build-arg RUN_INTEGRATION_TESTS=True --build-arg HALO_API_KEY=$HALO_API_KEY --build-arg HALO_API_SECRET_KEY=$HALO_API_SECRET_KEY .
 after_script: docker run -it --rm don-bot /bin/sh -c "git checkout master; codeclimate-test-reporter
   --token $CODECLIMATE_REPO_TOKEN --debug"
 env:
