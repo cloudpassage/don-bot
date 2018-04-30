@@ -17,8 +17,8 @@ RUN git clone https://github.com/cloudpassage/halocelery
 RUN cd halocelery && \
     git archive --verbose --format=tar.gz -o /app/halocelery.tar.gz $HALOCELERY_BRANCH
 
-
 #####################################
+# Unit and integration tests run in a separate step.
 
 FROM docker.io/halotools/python-sdk:ubuntu-16.04_sdk-1.0.6
 MAINTAINER toolbox@cloudpassage.com
@@ -33,15 +33,18 @@ USER root
 RUN apt-get install -y expect
 
 RUN pip install \
-    boto3==1.4.3 \
-    celery[redis]==4.0.2 \
-    docker==2.6.1 \
-    flower==0.9.1 \
-    pytest==2.8.0 \
+    pytest==3.1.1 \
+    flake8==2.6.2 \
+    pyflakes==1.2.3 \
+    pycodestyle==2.0.0 \
+    mccabe==0.5.3 \
     pytest-flake8==0.1 \
-    pytest-cover==3.0.0 \
-    python-magic==0.4.15 \
-    slackclient==1.0.2
+    pytest-cov==2.5.1 \
+    python-dotenv==0.8.2 \
+    codeclimate-test-reporter==0.2.0
+#    pytest==2.8.0 \
+#    pytest-flake8==0.1 \
+#    pytest-cover==3.0.0
 
 # Drop in the app code
 COPY app/ /app/
@@ -68,9 +71,66 @@ RUN chown -R ${APP_USER}:$APP_GROUP /app
 
 USER ${APP_USER}
 
-RUN py.test /app/test
+# Run unit tests
+RUN py.test /app/test/unit
+
+# If it's in travis-ci, run integration tests.
+RUN if [ "${RUN_INTEGRATION_TESTS}" = "True" ] ;\
+     then py.test /app/test/integration ;  \
+     else echo Not running integration tests because RUN_INTEGRATION_TESTS is not set.
+
+
+#####################################
+# Building the final container image
+
+FROM docker.io/halotools/python-sdk:ubuntu-16.04_sdk-1.0.6
+MAINTAINER toolbox@cloudpassage.com
+
+ENV SLACK_ICON_URL=http://www.cloudpassage.com/wp-content/uploads/2016/12/don-operator.png
+ENV HALO_API_HOSTNAME=api.cloudpassage.com
+ENV HALO_API_PORT=443
+
+# Up to root to add additional packages
+USER root
+
+RUN apt-get install -y expect
+
+#RUN pip install \
+#    boto3==1.4.3 \
+#    celery[redis]==4.0.2 \
+#    docker==2.6.1 \
+#    flower==0.9.1 \
+#    pytest==2.8.0 \
+#    pytest-flake8==0.1 \
+#    pytest-cover==3.0.0 \
+#    python-magic==0.4.15 \
+#    slackclient==1.0.2
+
+# Drop in the app code
+COPY app/ /app/
+
+# Setup for manual library installation
+RUN mkdir /src/
+WORKDIR /src/
+
+
+COPY --from=downloader /app/halocelery.tar.gz /src/halocelery/halocelery.tar.gz
+
+RUN cd halocelery && \
+    tar -zxvf ./halocelery.tar.gz && \
+    cd /src/ && \
+    mv ./halocelery /app
+
 
 WORKDIR /app
 
+RUN pip install -r requirements.txt
+
+# Now take ownership and drop to non-root user
+RUN chown -R ${APP_USER}:$APP_GROUP /app
+
+USER ${APP_USER}
+
+WORKDIR /app
 
 CMD ["unbuffer", "python", "/app/runner.py"]
