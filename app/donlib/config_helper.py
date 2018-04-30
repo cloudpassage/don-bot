@@ -59,7 +59,7 @@ class ConfigHelper(object):
         if not self.quarantine_config_is_sane():
             self.quarantine_enable = False
         if not self.ipblocker_config_is_sane():
-            self.quarantine_enable = False
+            self.ipblocker_enable = False
 
     @classmethod
     def get_ua_string(cls):
@@ -112,8 +112,8 @@ class ConfigHelper(object):
                   self.quarantine_trigger_events)
             sanity = False
         # Check that quarantine group name is a string
-        if not isinstance(self.quarantine_group_name, str):
-            print("Quarantine group name \"%s\"failed sanity check." %
+        if not isinstance(self.quarantine_group_name, unicode):
+            print("Quarantine group name \"%s\" failed sanity check." %
                   self.quarantine_group_name)
             sanity = False
         # Check that lists and strings are not zero-length
@@ -129,7 +129,7 @@ class ConfigHelper(object):
         """Sanity check for IP blocker configuration."""
         sanity = True
         # Check that trigger group names is a list
-        if not isinstance(self.ip_zone_name, str):
+        if not isinstance(self.ip_zone_name, unicode):
             print("IP Blocker IP zone name failed sanity check.")
             sanity = False
         # Check that trigger events is a list

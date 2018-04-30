@@ -24,12 +24,10 @@ class Quarantine(object):
             return False
         event["quarantine_group"] = self.quarantine_group_name
         # If criteria are met and configuration is sane, trigger quarantine.
-        if (self.criticality_match is True and
-                self.event_type_match is True and
-                self.config_is_unambiguous is True):
+        if (self.criticality_match(event) is True and
+                self.event_type_match(event) is True and
+                self.config_is_unambiguous() is True):
             return event
-        else:
-            pass
         # Don't trigger by default.
         return False
 
@@ -39,7 +37,7 @@ class Quarantine(object):
             server_groups = cloudpassage.ServerGroup(self.session)
             all_groups = server_groups.list_all()
         except cloudpassage.CloudPassageAuthentication:
-            print("Authentication failure with CloudPassage API!")
+            print("Quarantine: Authentication failure with CloudPassage API!")
             all_groups = []
         return all_groups
 
@@ -54,25 +52,24 @@ class Quarantine(object):
         reason = ""
         all_groups = self.get_all_server_groups()
         if all_groups == []:
-            print("Unable to get server groups from Halo! Check your API credentials!")  # NOQA
+            print("Quarantine: Unable to get server groups from Halo! Check your API credentials!")  # NOQA
             return False
         all_configured_groups = []
         all_configured_groups.append(self.quarantine_group_name)
         all_configured_groups.extend(self.quarantine_trigger_group_names[:])
-        print(all_configured_groups)
         # Ensure that no more than one group exists per source group name.
         for group in all_configured_groups:
             groups = [x for x in all_groups if x["name"] == group]
             if len(groups) == 0:
-                reason += "There is no group named %s\n" % group
+                reason += "Quarantine: There is no group named %s\n" % group
                 retval = False
             elif len(groups) > 1:
-                reason += "More than one group named %s\n" % group
+                reason += "Quarantine: More than one group named %s\n" % group
                 retval = False
             else:
                 continue
         if retval is False:
-            print("Quarantine group configuration is ambiguous:\n%s" % reason)
+            print("Quarantine: Group configuration is ambiguous:\n%s" % reason)
         return retval
 
     def criticality_match(self, event):
@@ -83,6 +80,7 @@ class Quarantine(object):
               event["critical"] is True):
             return True
         else:
+            print("Quarantine: Event does not meet criticality threshold.")
             return False
 
     def event_type_match(self, event):

@@ -95,7 +95,11 @@ class TestIntegrationCortexlibQuarantine:
         quar_event["server_group_name"] = q.quarantine_trigger_group_names[0]  # NOQA
         quar_event["type"] = q.quarantine_trigger_events[0]
         q_grp = q.quarantine_group_name
-        assert q.should_quarantine(quar_event)["quarantine_group"] == q_grp
+        print(q.quarantine_enable)
+        print(q_grp)
+        result = q.should_quarantine(quar_event)
+        print result
+        assert result["quarantine_group"] == q_grp
 
     def test_quarantine_event_no_trigger(self, monkeypatch):
         """This should NOT match as a quarantine event."""
