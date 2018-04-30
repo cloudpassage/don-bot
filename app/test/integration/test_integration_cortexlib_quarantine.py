@@ -62,6 +62,16 @@ class TestIntegrationCortexlibQuarantine:
         q_obj = cortexlib.Quarantine(config)
         return q_obj
 
+    def instantiate_cortexlib_quarantine_bad_conf(self, monkeypatch):
+        config = self.instantiate_donlib_config_bad_q_config(monkeypatch)
+        q_obj = cortexlib.Quarantine(config)
+        return q_obj
+
+    def instantiate_cortexlib_quarantine_disabled(self, monkeypatch):
+        config = self.instantiate_donlib_config_q_disabled(monkeypatch)
+        q_obj = cortexlib.Quarantine(config)
+        return q_obj
+
     def test_instantiate_cortexlib_quarantine(self, monkeypatch):
         assert self.instantiate_cortexlib_quarantine(monkeypatch)
 
@@ -105,10 +115,10 @@ class TestIntegrationCortexlibQuarantine:
 
     def test_quarantine_event_no_trigger_due_to_bad_config(self, monkeypatch):
         """Valid quarantine event should not trigger because config is bad."""
-        q = self.instantiate_donlib_config_bad_q_config(monkeypatch)
+        q = self.instantiate_cortexlib_quarantine_bad_conf(monkeypatch)
         assert q.should_quarantine(quar_event) is False
 
     def test_quarantine_event_no_trigger_because_disabled(self, monkeypatch):
-        """Valid quarantine event should not trigger because Q is disables."""
-        q = self.instantiate_donlib_config_q_disabled(monkeypatch)
+        """Valid quarantine event should not trigger because Q is disabled."""
+        q = self.instantiate_cortexlib_quarantine_disabled(monkeypatch)
         assert q.should_quarantine(quar_event) is False
