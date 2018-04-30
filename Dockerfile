@@ -27,6 +27,11 @@ ENV SLACK_ICON_URL=http://www.cloudpassage.com/wp-content/uploads/2016/12/don-op
 ENV HALO_API_HOSTNAME=api.cloudpassage.com
 ENV HALO_API_PORT=443
 
+# These arguments allow integration testing with the Halo API
+ARG HALO_API_KEY
+ARG HALO_API_SECRET_KEY
+ARG RUN_INTEGRATION_TESTS
+
 # Up to root to add additional packages
 USER root
 
@@ -34,17 +39,9 @@ RUN apt-get install -y expect
 
 RUN pip install \
     pytest==3.1.1 \
-    flake8==2.6.2 \
-    pyflakes==1.2.3 \
-    pycodestyle==2.0.0 \
-    mccabe==0.5.3 \
-    pytest-flake8==0.1 \
-    pytest-cov==2.5.1 \
     python-dotenv==0.8.2 \
-    codeclimate-test-reporter==0.2.0
-#    pytest==2.8.0 \
-#    pytest-flake8==0.1 \
-#    pytest-cover==3.0.0
+    codeclimate-test-reporter==0.2.0 \
+    pytest-cover==3.0.0
 
 # Drop in the app code
 COPY app/ /app/
@@ -71,14 +68,15 @@ RUN chown -R ${APP_USER}:$APP_GROUP /app
 
 USER ${APP_USER}
 
-# Run unit tests
-RUN py.test /app/test/unit
+RUN echo $RUN_INTEGRATION_TESTS
 
-# If it's in travis-ci, run integration tests.
-RUN if [ "${RUN_INTEGRATION_TESTS}" = "True" ] ;\
-     then py.test /app/test/integration ;  \
-     else echo Not running integration tests because RUN_INTEGRATION_TESTS is not set. ; \
-     fi
+# If RUN_INTEGRATION_TESTS is set, run integration tests.
+RUN if [ "$RUN_INTEGRATION_TESTS" = "True" ] ; \
+    then echo "Run all tests" && \
+        py.test /app/test/ ;  \
+    else echo Not running integration tests!. && \
+        py.test /app/test/unit ; \
+    fi
 
 
 #####################################
@@ -95,17 +93,6 @@ ENV HALO_API_PORT=443
 USER root
 
 RUN apt-get install -y expect
-
-#RUN pip install \
-#    boto3==1.4.3 \
-#    celery[redis]==4.0.2 \
-#    docker==2.6.1 \
-#    flower==0.9.1 \
-#    pytest==2.8.0 \
-#    pytest-flake8==0.1 \
-#    pytest-cover==3.0.0 \
-#    python-magic==0.4.15 \
-#    slackclient==1.0.2
 
 # Drop in the app code
 COPY app/ /app/
