@@ -1,6 +1,6 @@
 import os
 import re
-import utility
+from utility import Utility
 
 
 class ConfigHelper(object):
@@ -42,12 +42,12 @@ class ConfigHelper(object):
         self.ipblocker_trigger_only_on_critical = os.getenv(
             "IPBLOCKER_TRIGGER_ONLY_ON_CRITICAL", "")
         # Quarantine configs
-        self.quarantine_enable = utility.bool_from_env("QUARANTINE_ENABLED")
+        self.quarantine_enable = Utility.bool_from_env("QUARANTINE_ENABLED")
         self.quarantine_trigger_group_names = os.getenv(
             "QUARANTINE_TRIGGER_GROUP_NAME", "")
         self.quarantine_trigger_events = os.getenv("QUARANTINE_TRIGGER_EVENTS",
                                                    "")
-        self.quarantine_trigger_only_on_critical = utility.bool_from_env(
+        self.quarantine_trigger_only_on_critical = Utility.bool_from_env(
             "QUARANTINE_TRIGGER_ONLY_ON_CRITICAL")
         self.quarantine_group_name = os.getenv("QUARANTINE_GROUP_NAME", "")
         # Event collector configs
