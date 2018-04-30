@@ -36,17 +36,17 @@ class ConfigHelper(object):
         self.flower_host = os.getenv("FLOWER_HOST")
         # IP Blocker configs
         self.ip_zone_name = os.getenv("IPBLOCKER_IP_ZONE_NAME", "")
-        self.ipblocker_enable = os.getenv("IPBLOCKER_ENABLED", "")
-        self.ipblocker_trigger_events = os.getenv("IPBLOCKER_TRIGGER_EVENTS",
-                                                  "")
-        self.ipblocker_trigger_only_on_critical = os.getenv(
-            "IPBLOCKER_TRIGGER_ONLY_ON_CRITICAL", "")
+        self.ipblocker_enable = Utility.bool_from_env("IPBLOCKER_ENABLED")
+        self.ipblocker_trigger_events = Utility.list_from_env(
+            "IPBLOCKER_TRIGGER_EVENTS")
+        self.ipblocker_trigger_only_on_critical = Utility.bool_from_env(
+            "IPBLOCKER_TRIGGER_ONLY_ON_CRITICAL")
         # Quarantine configs
         self.quarantine_enable = Utility.bool_from_env("QUARANTINE_ENABLED")
         self.quarantine_trigger_group_names = os.getenv(
             "QUARANTINE_TRIGGER_GROUP_NAME", "")
-        self.quarantine_trigger_events = os.getenv("QUARANTINE_TRIGGER_EVENTS",
-                                                   "")
+        self.quarantine_trigger_events = Utility.list_from_env(
+            "QUARANTINE_TRIGGER_EVENTS")
         self.quarantine_trigger_only_on_critical = Utility.bool_from_env(
             "QUARANTINE_TRIGGER_ONLY_ON_CRITICAL")
         self.quarantine_group_name = os.getenv("QUARANTINE_GROUP_NAME", "")
@@ -119,5 +119,24 @@ class ConfigHelper(object):
                   self.quarantine_group_name]:
             if len(x) == 0:
                 print("Quarantine config has empty field(s)")
+                sanity = False
+        return sanity
+
+    def ipblocker_config_is_sane(self):
+        """Sanity check for IP blocker configuration."""
+        sanity = True
+        # Check that trigger group names is a list
+        if not isinstance(self.ip_zone_name, str):
+            print("IP Blocker IP zone name failed sanity check.")
+            sanity = False
+        # Check that trigger events is a list
+        if not isinstance(self.ipblocker_trigger_events, list):
+            print("IP Blocker trigger events failed sanity check.")
+            sanity = False
+        # Check that list and string values are not zero-length
+        for x in [self.ipblocker_trigger_events,
+                  self.ip_zone_name]:
+            if len(x) == 0:
+                print("IP Blocker config has empty field(s)")
                 sanity = False
         return sanity
