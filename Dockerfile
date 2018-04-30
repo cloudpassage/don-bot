@@ -77,7 +77,8 @@ RUN py.test /app/test/unit
 # If it's in travis-ci, run integration tests.
 RUN if [ "${RUN_INTEGRATION_TESTS}" = "True" ] ;\
      then py.test /app/test/integration ;  \
-     else echo Not running integration tests because RUN_INTEGRATION_TESTS is not set.
+     else echo Not running integration tests because RUN_INTEGRATION_TESTS is not set. ; \
+     fi
 
 
 #####################################
