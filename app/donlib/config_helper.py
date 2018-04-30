@@ -1,5 +1,6 @@
 import os
 import re
+import utility
 
 
 class ConfigHelper(object):
@@ -34,19 +35,21 @@ class ConfigHelper(object):
         # Flower host for task status reporting
         self.flower_host = os.getenv("FLOWER_HOST")
         # IP Blocker configs
-        self.ip_zone_name = os.getenv("IPBLOCKER_IP_ZONE_NAME")
-        self.ipblocker_enable = os.getenv("IPBLOCKER_ENABLED")
-        self.ipblocker_trigger_events = os.getenv("IPBLOCKER_TRIGGER_EVENTS")
+        self.ip_zone_name = os.getenv("IPBLOCKER_IP_ZONE_NAME", "")
+        self.ipblocker_enable = os.getenv("IPBLOCKER_ENABLED", "")
+        self.ipblocker_trigger_events = os.getenv("IPBLOCKER_TRIGGER_EVENTS",
+                                                  "")
         self.ipblocker_trigger_only_on_critical = os.getenv(
-            "IPBLOCKER_TRIGGER_ONLY_ON_CRITICAL")
+            "IPBLOCKER_TRIGGER_ONLY_ON_CRITICAL", "")
         # Quarantine configs
-        self.quarantine_enable = os.getenv("QUARANTINE_ENABLED")
+        self.quarantine_enable = utility.bool_from_env("QUARANTINE_ENABLED")
         self.quarantine_trigger_group_names = os.getenv(
-            "QUARANTINE_TRIGGER_GROUP_NAME")
-        self.quarantine_trigger_events = os.getenv("QUARANTINE_TRIGGER_EVENTS")
-        self.quarantine_trigger_only_on_critical = os.getenv(
+            "QUARANTINE_TRIGGER_GROUP_NAME", "")
+        self.quarantine_trigger_events = os.getenv("QUARANTINE_TRIGGER_EVENTS",
+                                                   "")
+        self.quarantine_trigger_only_on_critical = utility.bool_from_env(
             "QUARANTINE_TRIGGER_ONLY_ON_CRITICAL")
-        self.quarantine_group_name = os.getenv("QUARANTINE_GROUP_NAME")
+        self.quarantine_group_name = os.getenv("QUARANTINE_GROUP_NAME", "")
         # Event collector configs
         self.monitor_events = os.getenv("MONITOR_EVENTS", "no")
         self.suppress_events = os.getenv("SUPPRESS_EVENTS_IN_CHANNEL", "")
