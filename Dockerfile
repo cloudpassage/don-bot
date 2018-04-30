@@ -73,7 +73,7 @@ RUN echo $RUN_INTEGRATION_TESTS
 # If RUN_INTEGRATION_TESTS is set, run integration tests.
 RUN if [ "$RUN_INTEGRATION_TESTS" = "True" ] ; \
     then echo "Run all tests" && \
-        py.test /app/test/ ;  \
+        py.test --cov-report term-missing --cov=donlib --cov=cortexlib /app/test/ ;  \
     else echo Not running integration tests!. && \
         py.test /app/test/unit ; \
     fi
