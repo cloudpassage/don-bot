@@ -65,7 +65,7 @@ class TestIntegrationCortexlibIPBlockheck:
         i = self.instantiate_cortexlib_ipblockcheck(monkeypatch)
         i.ipblocker_trigger_only_on_critical = False
         i_event = block_event.copy()
-        i_event["type"] = i.ipblocker_trigger_events
+        i_event["type"] = i.ipblocker_trigger_events[0]
         i_event["critical"] = False
         print(i.ipblocker_enable)
         result = i.should_block_ip(i_event)
@@ -77,7 +77,7 @@ class TestIntegrationCortexlibIPBlockheck:
         i = self.instantiate_cortexlib_ipblockcheck(monkeypatch)
         i.ipblocker_enable = False
         i_event = block_event.copy()
-        i_event["type"] = i.ipblocker_trigger_events
+        i_event["type"] = i.ipblocker_trigger_events[0]
         print(i.ipblocker_enable)
         result = i.should_block_ip(i_event)
         print result
@@ -88,7 +88,7 @@ class TestIntegrationCortexlibIPBlockheck:
         i = self.instantiate_cortexlib_ipblockcheck(monkeypatch)
         i.ipblocker_enable = False
         i_event = block_event.copy()
-        i_event["type"] = i.ipblocker_trigger_events
+        i_event["type"] = i.ipblocker_trigger_events[0]
         i_event["critical"] = False
         print(i.ipblocker_enable)
         result = i.should_block_ip(i_event)
@@ -100,7 +100,7 @@ class TestIntegrationCortexlibIPBlockheck:
         i = self.instantiate_cortexlib_ipblockcheck(monkeypatch)
         i.ipblocker_enable = False
         i_event = block_event.copy()
-        i_event["type"] = i.ipblocker_trigger_events
+        i_event["type"] = i.ipblocker_trigger_events[0]
         i_event["critical"] = True
         i_event["message"] = "No IP addy here."
         print(i.ipblocker_enable)
