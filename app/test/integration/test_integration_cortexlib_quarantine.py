@@ -151,3 +151,11 @@ class TestIntegrationCortexlibQuarantine:
         q_event["server_group_name"] = q.quarantine_trigger_group_names[0]
         q_event["type"] = q.quarantine_trigger_events[0]
         assert q.should_quarantine(quar_event) is False
+
+    def test_quarantine_event_no_trigger_bad_group(self, monkeypatch):
+        """Quarantine fails because group name does not match."""
+        q = self.instantiate_cortexlib_quarantine(monkeypatch)
+        q_event = quar_event.copy()
+        q_event["server_group_name"] = "Not a target group name"
+        q_event["type"] = q.quarantine_trigger_events[0]
+        assert q.should_quarantine(q_event) is False
