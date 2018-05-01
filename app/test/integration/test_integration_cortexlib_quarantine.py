@@ -104,22 +104,24 @@ class TestIntegrationCortexlibQuarantine:
     def test_quarantine_event_trigger(self, monkeypatch):
         """Successfully match a quarantine event."""
         q = self.instantiate_cortexlib_quarantine(monkeypatch)
-        quar_event["server_group_name"] = q.quarantine_trigger_group_names[0]
-        quar_event["type"] = q.quarantine_trigger_events[0]
+        q_event = quar_event.copy()
+        q_event["server_group_name"] = q.quarantine_trigger_group_names[0]
+        q_event["type"] = q.quarantine_trigger_events[0]
         q_grp = q.quarantine_group_name
         print(q.quarantine_enable)
         print(q_grp)
-        result = q.should_quarantine(quar_event)
+        result = q.should_quarantine(q_event)
         print result
         assert result["quarantine_group"] == q_grp
 
     def test_quarantine_event_crit_no_trigger(self, monkeypatch):
         """Don't trigger quarantine because criticality doesn't pass test."""
         q = self.instantiate_cortexlib_quarantine(monkeypatch)
-        quar_event["server_group_name"] = q.quarantine_trigger_group_names[0]
-        quar_event["type"] = q.quarantine_trigger_events[0]
-        quar_event["critical"] = False
-        assert q.should_quarantine(quar_event) is False
+        q_event = quar_event.copy()
+        q_event["server_group_name"] = q.quarantine_trigger_group_names[0]
+        q_event["type"] = q.quarantine_trigger_events[0]
+        q_event["critical"] = False
+        assert q.should_quarantine(q_event) is False
 
     def test_quarantine_event_no_trigger(self, monkeypatch):
         """This should NOT match as a quarantine event."""
@@ -129,11 +131,17 @@ class TestIntegrationCortexlibQuarantine:
     def test_quarantine_event_no_trigger_due_to_bad_config(self, monkeypatch):
         """Valid quarantine event should not trigger because config is bad."""
         q = self.instantiate_cortexlib_quarantine_bad_conf(monkeypatch)
-        assert q.should_quarantine(quar_event) is False
+        q_event = quar_event.copy()
+        q_event["server_group_name"] = q.quarantine_trigger_group_names[0]
+        q_event["type"] = q.quarantine_trigger_events[0]
+        assert q.should_quarantine(q_event) is False
 
     def test_quarantine_event_no_trigger_because_disabled(self, monkeypatch):
         """Valid quarantine event should not trigger because Q is disabled."""
         q = self.instantiate_cortexlib_quarantine_disabled(monkeypatch)
+        q_event = quar_event.copy()
+        q_event["server_group_name"] = q.quarantine_trigger_group_names[0]
+        q_event["type"] = q.quarantine_trigger_events[0]
         assert q.should_quarantine(quar_event) is False
 
     def test_quarantine_event_no_trigger_because_bad_keys(self, monkeypatch):
