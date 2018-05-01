@@ -54,7 +54,7 @@ class TestIntegrationCortexlibIPBlockheck:
         """Successfully match ip block event."""
         i = self.instantiate_cortexlib_ipblockcheck(monkeypatch)
         i_event = block_event.copy()
-        i_event["type"] = i.ipblocker_trigger_events
+        i_event["type"] = i.ipblocker_trigger_events[0]
         print(i.ipblocker_enable)
         result = i.should_block_ip(i_event)
         print result
