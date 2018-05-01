@@ -92,7 +92,7 @@ class Quarantine(object):
     def group_name_match(self, event):
         """Return bool for server group name match."""
         # If this is not a workload event, return False
-        if not event["server_group_name"]:
+        if "server_group_name" not in event:
             return False
         if event["server_group_name"] in self.quarantine_trigger_group_names:
             return True
