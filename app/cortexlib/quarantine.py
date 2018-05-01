@@ -66,8 +66,6 @@ class Quarantine(object):
             elif len(groups) > 1:
                 reason += "Quarantine: More than one group named %s\n" % group
                 retval = False
-            else:
-                continue
         if retval is False:
             print("Quarantine: Group configuration is ambiguous:\n%s" % reason)
         return retval

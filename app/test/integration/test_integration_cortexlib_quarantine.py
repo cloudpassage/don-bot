@@ -113,6 +113,14 @@ class TestIntegrationCortexlibQuarantine:
         print result
         assert result["quarantine_group"] == q_grp
 
+    def test_quarantine_event_crit_no_trigger(self, monkeypatch):
+        """Don't trigger quarantine because criticality doesn't pass test."""
+        q = self.instantiate_cortexlib_quarantine(monkeypatch)
+        quar_event["server_group_name"] = q.quarantine_trigger_group_names[0]
+        quar_event["type"] = q.quarantine_trigger_events[0]
+        quar_event["critical"] = False
+        assert q.should_quarantine(quar_event) is False
+
     def test_quarantine_event_no_trigger(self, monkeypatch):
         """This should NOT match as a quarantine event."""
         q = self.instantiate_cortexlib_quarantine(monkeypatch)
