@@ -86,7 +86,6 @@ class TestIntegrationCortexlibIPBlockheck:
     def test_ipblock_event_no_trigger_no_crit(self, monkeypatch):
         """Don't match because event is not critical."""
         i = self.instantiate_cortexlib_ipblockcheck(monkeypatch)
-        i.ipblocker_enable = False
         i_event = block_event.copy()
         i_event["type"] = i.ipblocker_trigger_events[0]
         i_event["critical"] = False
@@ -98,7 +97,6 @@ class TestIntegrationCortexlibIPBlockheck:
     def test_ipblock_event_no_trigger_no_addy(self, monkeypatch):
         """Don't match because there is not IP in the message."""
         i = self.instantiate_cortexlib_ipblockcheck(monkeypatch)
-        i.ipblocker_enable = False
         i_event = block_event.copy()
         i_event["type"] = i.ipblocker_trigger_events[0]
         i_event["critical"] = True
