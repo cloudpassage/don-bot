@@ -147,4 +147,7 @@ class TestIntegrationCortexlibQuarantine:
     def test_quarantine_event_no_trigger_because_bad_keys(self, monkeypatch):
         """Valid quarantine event should not trigger b/c API keys are bad."""
         q = self.instantiate_cortexlib_quarantine_bad_keys(monkeypatch)
+        q_event = quar_event.copy()
+        q_event["server_group_name"] = q.quarantine_trigger_group_names[0]
+        q_event["type"] = q.quarantine_trigger_events[0]
         assert q.should_quarantine(quar_event) is False
