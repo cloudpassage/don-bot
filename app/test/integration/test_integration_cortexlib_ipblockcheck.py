@@ -56,7 +56,7 @@ class TestIntegrationCortexlibIPBlockheck:
         i_event = block_event.copy()
         i_event["type"] = i.ipblocker_trigger_events
         print(i.ipblocker_enable)
-        result = i.should_block(i_event)
+        result = i.should_block_ip(i_event)
         print result
         assert result is not False
 
@@ -68,7 +68,7 @@ class TestIntegrationCortexlibIPBlockheck:
         i_event["type"] = i.ipblocker_trigger_events
         i_event["critical"] = False
         print(i.ipblocker_enable)
-        result = i.should_block(i_event)
+        result = i.should_block_ip(i_event)
         print result
         assert result is not False
 
@@ -79,7 +79,7 @@ class TestIntegrationCortexlibIPBlockheck:
         i_event = block_event.copy()
         i_event["type"] = i.ipblocker_trigger_events
         print(i.ipblocker_enable)
-        result = i.should_block(i_event)
+        result = i.should_block_ip(i_event)
         print result
         assert result is False
 
@@ -91,7 +91,7 @@ class TestIntegrationCortexlibIPBlockheck:
         i_event["type"] = i.ipblocker_trigger_events
         i_event["critical"] = False
         print(i.ipblocker_enable)
-        result = i.should_block(i_event)
+        result = i.should_block_ip(i_event)
         print result
         assert result is False
 
@@ -104,6 +104,6 @@ class TestIntegrationCortexlibIPBlockheck:
         i_event["critical"] = True
         i_event["message"] = "No IP addy here."
         print(i.ipblocker_enable)
-        result = i.should_block(i_event)
+        result = i.should_block_ip(i_event)
         print result
         assert result is False
