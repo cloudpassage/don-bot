@@ -3,13 +3,14 @@ import re
 
 class IpBlockCheck(object):
     def __init__(self, config):
-        self.config = config
+        self.ipblocker_trigger_only_on_critical = config.ipblocker_trigger_only_on_critical  # NOQA
+        self.ipblocker_trigger_events = config.ipblocker_trigger_events
 
     def should_block_ip(self, event):
-        if (self.config.ipblocker_trigger_only_on_critical is True and
+        if (self.ipblocker_trigger_only_on_critical is True and
                 event["critical"] is False):
             pass
-        elif event["type"] in self.config.ipblocker_trigger_events:
+        elif event["type"] in self.ipblocker_trigger_events:
             return IpBlockCheck.extract_ip_from_event(event)
         return False
 
