@@ -138,7 +138,7 @@ class Halo(object):
                     "Quarantine Configuration\n" +
                     "------------------------\n" +
                     "QUARANTINE_ENABLED=%s\n" % (self.config.quarantine_enable) +  # NOQA
-                    "QUARANTINE_TRIGGER_GROUP_NAME=%s\n" % (self.config.quarantine_trigger_group_names) +  # NOQA
+                    "QUARANTINE_TRIGGER_GROUP_NAMES=%s\n" % (self.config.quarantine_trigger_group_names) +  # NOQA
                     "QUARANTINE_TRIGGER_EVENTS=%s\n" % (self.config.quarantine_trigger_events) +  # NOQA
                     "QUARANTINE_TRIGGER_ONLY_ON_CRITICAL=%s\n" % (self.config.quarantine_trigger_only_on_critical) +  # NOQA
                     "QUARANTINE_GROUP_NAME=%s\n\n" % (self.config.quarantine_group_name) +  # NOQA
@@ -168,7 +168,8 @@ class Halo(object):
         quarantine_group_name = event["quarantine_group"]
         print("Quarantine %s to group %s" % (server_id,
                                              quarantine_group_name))
-        return self.tasks.quarantine_server(server_id, quarantine_group_name)
+        return self.tasks.quarantine_server.delay(server_id,
+                                                  quarantine_group_name)
 
     def add_ip_to_blocklist(self, ip_address, block_list_name):
         # We trigger a removal job for one hour out.
