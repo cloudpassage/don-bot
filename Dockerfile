@@ -1,5 +1,5 @@
 # Get the halocelery component
-FROM docker.io/halotools/python-sdk:ubuntu-16.04_sdk-1.0.6 as downloader
+FROM docker.io/halotools/python-sdk:ubuntu-16.04_sdk-1.1.4 as downloader
 MAINTAINER toolbox@cloudpassage.com
 
 ARG HALOCELERY_BRANCH=v0.6.0
@@ -20,7 +20,7 @@ RUN cd halocelery && \
 #####################################
 # Unit and integration tests run in a separate step.
 
-FROM docker.io/halotools/python-sdk:ubuntu-16.04_sdk-1.0.6
+FROM docker.io/halotools/python-sdk:ubuntu-16.04_sdk-1.1.4
 MAINTAINER toolbox@cloudpassage.com
 
 ENV SLACK_ICON_URL=http://www.cloudpassage.com/wp-content/uploads/2016/12/don-operator.png
@@ -82,7 +82,7 @@ RUN if [ "$RUN_INTEGRATION_TESTS" = "True" ] ; \
 #####################################
 # Building the final container image
 
-FROM docker.io/halotools/python-sdk:ubuntu-16.04_sdk-1.0.6
+FROM docker.io/halotools/python-sdk:ubuntu-16.04_sdk-1.1.4
 MAINTAINER toolbox@cloudpassage.com
 
 ENV SLACK_ICON_URL=http://www.cloudpassage.com/wp-content/uploads/2016/12/don-operator.png
