@@ -112,7 +112,7 @@ class ConfigHelper(object):
                   self.quarantine_trigger_events)
             sanity = False
         # Check that quarantine group name is a string
-        if not isinstance(self.quarantine_group_name, unicode):
+        if not isinstance(self.quarantine_group_name, basestring):
             print("Quarantine group name \"%s\" failed sanity check." %
                   self.quarantine_group_name)
             sanity = False
@@ -129,7 +129,7 @@ class ConfigHelper(object):
         """Sanity check for IP blocker configuration."""
         sanity = True
         # Check that trigger group names is a list
-        if not isinstance(self.ip_zone_name, unicode):
+        if not isinstance(self.ip_zone_name, basestring):
             print("IP Blocker IP zone name failed sanity check.")
             sanity = False
         # Check that trigger events is a list
