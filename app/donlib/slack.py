@@ -26,7 +26,7 @@ class Slack(object):
 
     def __iter__(self):
         """This wraps the RTM client, and yields messages"""
-        if self.client.rtm_connect():
+        if self.client.rtm_connect(auto_reconnect=True):
             time.sleep(3)
             ver = unicode(self.product_version)
             up_msg = u'Don-Bot 👹 v%s started' % ver
@@ -41,7 +41,7 @@ class Slack(object):
                 mymessages = Slack.get_my_messages(self.botname, messages)
             except SocketError:
                 print("Caught SocketError... attempting to reconnect")
-                self.client.rtm_connect()
+                self.client.rtm_connect(auto_reconnect=True)
             if len(mymessages) > 0:
                 for message in mymessages:
                     if self.check_request_entitlement(message):
