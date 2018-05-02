@@ -112,7 +112,7 @@ def event_connector(config):
                                    halo.quarantine_server(event)))
             if ip_block_check is not False:
                 target_ip = ipblock.extract_ip_from_event(event)
-                target_zone_name = ipblock.config.ip_zone_name
+                target_zone_name = ipblock.ip_zone_name
                 async_jobs.append((config.slack_channel,
                                    halo.add_ip_to_blocklist(target_ip,
                                                             target_zone_name)))
