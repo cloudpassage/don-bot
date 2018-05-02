@@ -99,10 +99,8 @@ def event_connector(config):
     time.sleep(10)
     while True:
         for event in events:
-            if quarantine.config.quarantine_enable:
-                quarantine_check = quarantine.should_quarantine(event)
-            if ipblock.config.ipblocker_enable:
-                ip_block_check = ipblock.should_block_ip(event)
+            quarantine_check = quarantine.should_quarantine(event)
+            ip_block_check = ipblock.should_block_ip(event)
             health_last_event_timestamp = event["created_at"]
             if not donlib.Utility.is_suppressed_event_type(config, event):
                 if donlib.Utility.event_is_critical(event):
