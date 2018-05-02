@@ -6,6 +6,7 @@ class IpBlockCheck(object):
         self.ipblocker_trigger_only_on_critical = config.ipblocker_trigger_only_on_critical  # NOQA
         self.ipblocker_trigger_events = config.ipblocker_trigger_events
         self.ipblocker_enable = config.ipblocker_enable
+        self.ip_zone_name = config.ip_zone_name
 
     def should_block_ip(self, event):
         """Return IP address if IP should be blocked, else return False."""
