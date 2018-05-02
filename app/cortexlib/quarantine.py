@@ -24,9 +24,9 @@ class Quarantine(object):
             return False
         event["quarantine_group"] = self.quarantine_group_name
         # If criteria are met and configuration is sane, trigger quarantine.
-        if (self.criticality_match(event) is True and
+        if (self.group_name_match(event) is True and
                 self.event_type_match(event) is True and
-                self.group_name_match(event) is True and
+                self.criticality_match(event) is True and
                 self.config_is_unambiguous() is True):
             return event
         # Don't trigger by default.
@@ -79,7 +79,6 @@ class Quarantine(object):
               event["critical"] is True):
             return True
         else:
-            print("Quarantine: Event does not meet criticality threshold.")
             return False
 
     def event_type_match(self, event):
