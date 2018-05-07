@@ -6,9 +6,16 @@ Quarantine workloads exhibiting anomalous behavior.
 
 This feature watches your Halo events stream for specific events from specific
 workload groups.  When these events are observed, the target workload is moved
-into a quarantine group in Halo, which isolates the workload until a security
-engineer can perform a forensic analysis.  When a quarantine event is
+into a quarantine group in Halo, which can isolate the workload until a
+security engineer can perform a forensic analysis.  When a quarantine event is
 triggered, a message to this effect will appear in Slack.
+
+_Note: When quarantine is triggered and a workload is moved into the quarantine
+group, all policies attached to the quarantine group will immediately apply to
+the server. If firewall policies are attached to the quarantine group, they
+will be immediately activated on the workload as soon as it is moved to the
+quarantine group, and network traffic for the quarantined workload will be
+governed by the quarantine group's firewall policy._
 
 ## Configuration
 
