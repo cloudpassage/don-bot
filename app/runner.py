@@ -49,22 +49,27 @@ def main():
     print(msg)
     if config.monitor_events == "yes":
         print("Starting Halo event monitor")
-        halo_collector = threading.Thread(target=event_connector, args=[config])
+        halo_collector = threading.Thread(target=event_connector,
+                                          args=[config])
         halo_collector.daemon = True
         halo_collector.start()
 
     while True:
-        s_consumer = " Slack consumer alive: %s" % str(slack_consumer.is_alive())
-        s_emitter = "  Slack emitter alive: %s" % str(slack_emitter.is_alive())
-        h_enricher = "  Halo enricher alive: %s" % str(halo_enricher.is_alive())
-        a_manager = "  Async job manager alive: %s" % str(async_mgr.is_alive())
+        s_consumer = (" Slack consumer alive: %s" %
+                      str(slack_consumer.is_alive()))
+        s_emitter = ("  Slack emitter alive: %s" %
+                     str(slack_emitter.is_alive()))
+        h_enricher = ("  Halo enricher alive: %s" %
+                      str(halo_enricher.is_alive()))
+        a_manager = ("  Async job manager alive: %s" %
+                     str(async_mgr.is_alive()))
         if config.monitor_events == "yes":
             h_events = "  Halo event monitor alive: %s\n  Last event: %s" % (
                 halo_collector.is_alive(), health_last_event_timestamp)
         else:
             h_events = ""
-        health_string = "\n".join([s_consumer, s_emitter, h_enricher, a_manager,
-                                   h_events])
+        health_string = "\n".join([s_consumer, s_emitter, h_enricher,
+                                   a_manager, h_events])
         die_if_unhealthy(config.slack_channel)
         time.sleep(30)
 
@@ -72,7 +77,7 @@ def main():
 def die_if_unhealthy(slack_channel):
     if "False" in health_string:
         msg = health_string
-        msg += "\n\nI'm feeling sick.  I'm going to die.  Be back in a few..."
+        msg += "\n\nDetected trouble in bot (see above). Bot app will restart."
         channel = slack_channel
         sad_note = (channel, msg)
         slack_outbound.append(sad_note)
@@ -86,18 +91,16 @@ def event_connector(config):
     global health_last_event_timestamp
     halo = donlib.Halo(config, str(health_string), tasks)
     events = donlib.HaloEvents(config)
-    quarantine = cortexlib.Quarantine()
-    ipblock = cortexlib.IpBlockCheck()
+    quarantine = cortexlib.Quarantine(config)
+    ipblock = cortexlib.IpBlockCheck(config)
     quarantine_check = False
     ip_block_check = False
     # We add a short delay in case of time drift between container and API
     time.sleep(10)
     while True:
         for event in events:
-            if quarantine.config.quarantine_enable:
-                quarantine_check = quarantine.should_quarantine(event)
-            if ipblock.config.ipblocker_enable:
-                ip_block_check = ipblock.should_block_ip(event)
+            quarantine_check = quarantine.should_quarantine(event)
+            ip_block_check = ipblock.should_block_ip(event)
             health_last_event_timestamp = event["created_at"]
             if not donlib.Utility.is_suppressed_event_type(config, event):
                 if donlib.Utility.event_is_critical(event):
@@ -109,10 +112,11 @@ def event_connector(config):
                                    halo.quarantine_server(event)))
             if ip_block_check is not False:
                 target_ip = ipblock.extract_ip_from_event(event)
-                target_zone_name = ipblock.config.ip_zone_name
+                target_zone_name = ipblock.ip_zone_name
                 async_jobs.append((config.slack_channel,
                                    halo.add_ip_to_blocklist(target_ip,
                                                             target_zone_name)))
+
 
 def daemon_speaker(config):
     while True:
@@ -211,6 +215,7 @@ def noslack_hold():
     while True:
         print(msg)
         time.sleep(3600)
+
 
 if __name__ == "__main__":
     main()

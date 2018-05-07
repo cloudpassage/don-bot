@@ -68,7 +68,7 @@ class Halo(object):
 
         Returns a finished report, as a string.
         """
-        report = "What do you even MEAN by saying that?  I just can't even.\n"
+        report = "I didn't understand your request. Try asking for help!\n"
         if query_type == "server_report":
             report = self.tasks.report_server_formatted.delay(target)
         elif query_type == "group_report":
@@ -105,7 +105,7 @@ class Halo(object):
     def help_text(cls):
         """This is the help output"""
         ret = ("I currently answer these burning questions, " +
-               "but only when you address me by name:\n " +
+               "but only when you address me by name:\n" +
                "\"tell me about server `(server_id|server_name)`\"\n" +
                "\"tell me about ip `ip_address`\"\n" +
                "\"tell me about group `(group_id|group_name)`\"\n" +
@@ -129,29 +129,27 @@ class Halo(object):
             return "Slack integration is disabled.  CLI access only."
         if self.monitor_events == 'yes':
             events = "Monitoring Halo events"
-            config_setup = ("IP-Blocker Configuration\n" +
-                            "------------------------\n" +
-                            "IPBLOCKER_ENABLED=%s\n" % (self.config.ipblocker_enable) +
-                            "IPBLOCKER_IP_ZONE_NAME=%s\n" % (self.config.ip_zone_name) +
-                            "IPBLOCKER_TRIGGER_EVENTS=%s\n" % (self.config.ipblocker_trigger_events) +
-                            "IPBLOCKER_TRIGGER_ONLY_ON_CRITICAL=%s\n\n" % (self.config.ipblocker_trigger_only_on_critical) +
-                            "Quarantine Configuration\n" +
-                            "------------------------\n" +
-                            "QUARANTINE_ENABLED=%s\n" % (self.config.quarantine_enable) +
-                            "QUARANTINE_TRIGGER_GROUP_NAME=%s\n" % (self.config.quarantine_trigger_group_names) +
-                            "QUARANTINE_TRIGGER_EVENTS=%s\n" % (self.config.quarantine_trigger_events) +
-                            "QUARANTINE_TRIGGER_ONLY_ON_CRITICAL=%s\n" % (self.config.quarantine_trigger_only_on_critical) +
-                            "QUARANTINE_GROUP_NAME=%s\n\n" % (self.config.quarantine_group_name) +
-                            "Event Suppression Configuration\n" +
-                            "-------------------------------\n" +
-                            "SUPPRESS_EVENTS_IN_CHANNEL=%s\n" % (self.config.suppress_events))
+            conf = ("IP-Blocker Configuration\n" +
+                    "------------------------\n" +
+                    "IPBLOCKER_ENABLED=%s\n" % (self.config.ipblocker_enable) +
+                    "IPBLOCKER_IP_ZONE_NAME=%s\n" % (self.config.ip_zone_name) +  # NOQA
+                    "IPBLOCKER_TRIGGER_EVENTS=%s\n" % (self.config.ipblocker_trigger_events) +  # NOQA
+                    "IPBLOCKER_TRIGGER_ONLY_ON_CRITICAL=%s\n\n" % (self.config.ipblocker_trigger_only_on_critical) +  # NOQA
+                    "Quarantine Configuration\n" +
+                    "------------------------\n" +
+                    "QUARANTINE_ENABLED=%s\n" % (self.config.quarantine_enable) +  # NOQA
+                    "QUARANTINE_TRIGGER_GROUP_NAMES=%s\n" % (self.config.quarantine_trigger_group_names) +  # NOQA
+                    "QUARANTINE_TRIGGER_EVENTS=%s\n" % (self.config.quarantine_trigger_events) +  # NOQA
+                    "QUARANTINE_TRIGGER_ONLY_ON_CRITICAL=%s\n" % (self.config.quarantine_trigger_only_on_critical) +  # NOQA
+                    "QUARANTINE_GROUP_NAME=%s\n\n" % (self.config.quarantine_group_name) +  # NOQA
+                    "Event Suppression Configuration\n" +
+                    "-------------------------------\n" +
+                    "SUPPRESS_EVENTS_IN_CHANNEL=%s\n" % (self.config.suppress_events))  # NOQA
         else:
             events = "NOT monitoring Halo events"
-
-
         retval = "%s\nHalo channel: #%s\n%s\n" % (events,
                                                   self.slack_channel,
-                                                  config_setup)
+                                                  conf)
         return retval
 
     def get_ip_report(self, target):
@@ -168,10 +166,14 @@ class Halo(object):
     def quarantine_server(self, event):
         server_id = event["server_id"]
         quarantine_group_name = event["quarantine_group"]
-        return self.tasks.quarantine_server(server_id, quarantine_group_name)
+        print("Quarantine %s to group %s" % (server_id,
+                                             quarantine_group_name))
+        return self.tasks.quarantine_server.delay(server_id,
+                                                  quarantine_group_name)
 
     def add_ip_to_blocklist(self, ip_address, block_list_name):
         # We trigger a removal job for one hour out.
+        print("Add IP %s to blocklist %s" % (ip_address, block_list_name))
         self.tasks.remove_ip_from_list.apply_async(args=[ip_address,
                                                          block_list_name],
                                                    countdown=3600)
