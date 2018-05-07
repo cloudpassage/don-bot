@@ -68,7 +68,7 @@ class Halo(object):
 
         Returns a finished report, as a string.
         """
-        report = "What do you even MEAN by saying that?  I just can't even.\n"
+        report = "I didn't understand your request. Try asking for help!\n"
         if query_type == "server_report":
             report = self.tasks.report_server_formatted.delay(target)
         elif query_type == "group_report":
@@ -105,7 +105,7 @@ class Halo(object):
     def help_text(cls):
         """This is the help output"""
         ret = ("I currently answer these burning questions, " +
-               "but only when you address me by name:\n " +
+               "but only when you address me by name:\n" +
                "\"tell me about server `(server_id|server_name)`\"\n" +
                "\"tell me about ip `ip_address`\"\n" +
                "\"tell me about group `(group_id|group_name)`\"\n" +
