@@ -77,7 +77,7 @@ def main():
 def die_if_unhealthy(slack_channel):
     if "False" in health_string:
         msg = health_string
-        msg += "\n\nI'm feeling sick.  I'm going to die.  Be back in a few..."
+        msg += "\n\nDetected trouble in bot (see above). Bot app will restart."
         channel = slack_channel
         sad_note = (channel, msg)
         slack_outbound.append(sad_note)
