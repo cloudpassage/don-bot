@@ -50,3 +50,16 @@ class TestUnitHalo:
         cfg = self.instantiate_config_helper(monkeypatch)
         h_obj = donlib.Halo(cfg, "", "")
         assert h_obj.credentials_work() is False
+
+    def test_unit_list_tasks_formatted(self):
+        assert donlib.Halo.list_tasks_formatted('http://google.com')
+
+    def test_unit_list_tasks_formatted_gentle_fail_nonexistent(self):
+        assert donlib.Halo.list_tasks_formatted('http://169.254.1.2')
+
+    def test_unit_list_tasks_formatted_gentle_fail_bad_data(self):
+        site = 'https://api.ipify.org?format=json'
+        assert donlib.Halo.list_tasks_formatted(site)
+
+    def test_unit_list_tasks_formatted_gentle_fail_conn_refused(self):
+        assert donlib.Halo.list_tasks_formatted('http://127.0.0.1:2')

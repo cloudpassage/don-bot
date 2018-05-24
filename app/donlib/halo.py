@@ -39,11 +39,20 @@ class Halo(object):
             good = False
         return good
 
-    def list_tasks_formatted(self):
+    @classmethod
+    def list_tasks_formatted(cls, flower_host):
         """Gets a formatted list of tasks from Flower"""
-        report = "OCTOBOX Tasks:\n"
-        celery_url = urljoin(self.flower_host, "api/tasks")
-        result = requests.get(celery_url).json()
+        report = "Cortex Tasks:\n"
+        celery_url = urljoin(flower_host, "api/tasks")
+        try:
+            response = requests.get(celery_url)
+            result = response.json()
+        except (ValueError, requests.exceptions.ConnectionError) as e:
+            report += "Error: Unable to retrieve task list at this time."
+            # We print the output so that it will be retained in the
+            # container logs.
+            print(e)
+            return report
         try:
             for task in result.items():
                     prefmt = {"id": task[0], "name": task[1]["name"],
@@ -88,7 +97,7 @@ class Halo(object):
         elif query_type == "ec2_halo_footprint_csv":
             report = self.tasks.report_ec2_halo_footprint_csv.delay()
         elif query_type == "tasks":
-            report = self.list_tasks_formatted()
+            report = self.list_tasks_formatted(self.flower_host)
         elif query_type == "selfie":
             report = Halo.take_selfie()
         elif query_type == "help":
