@@ -3,6 +3,7 @@ import magic
 import mimetypes
 import time
 from slackclient import SlackClient
+from slackclient.server import SlackConnectionError
 from socket import error as SocketError
 
 
@@ -39,8 +40,14 @@ class Slack(object):
             try:
                 messages = self.client.rtm_read()
                 mymessages = Slack.get_my_messages(self.botname, messages)
+            # This covers many common hiccups we see with Slack.
             except SocketError:
                 print("Caught SocketError... attempting to reconnect")
+                self.client.rtm_connect(auto_reconnect=True)
+            # This happens when Slack RTM API has trouble. Wait and retry.
+            except SlackConnectionError as e:
+                print("Encountered SlackConnectionError: %s" % e)
+                time.sleep(5)
                 self.client.rtm_connect(auto_reconnect=True)
             if len(mymessages) > 0:
                 for message in mymessages:

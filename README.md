@@ -53,17 +53,11 @@ Set the following env vars, and then run:
 | CELERY_BACKEND_URL   | Url for Celery backend                                |
 | CELERY_BROKER_URL    | Url for Celery broker                                 |
 | FLOWER_HOST          | Url for Flower host                                   |
-| HALO_API_KEY         | Halo API key ID                                       |
+| HALO_API_KEY         | Halo API key ID (read-only)                           |
 | HALO_API_SECRET_KEY  | Halo API secret                                       |
-| AWS_ACCESS_KEY_ID    | AWS Access Key ID                                     |
-| AWS_SECRET_ACCESS_KEY| AWS Secret Access Key                                 |
 | SLACK_API_TOKEN      | Slack token for bot                                   |
 | SLACK_CHANNEL        | Notifications go to this channel.  Defaults to `#halo`|
 | MONITOR_EVENTS       | Set to `yes` to send critical events to SLACK_CHANNEL |
-| ARCHIVE_SCANS        | Set to `yes` to archive scans to S3.                  |
-| SCANS_S3_BUCKET      | S3 Scans bucket name.                                 |
-| ARCHIVE_EVENTS       | Set to `yes` to archive events to S3.                 |
-| EVENTS_S3_BUCKET     | S3 Events bucket name.                                |
 
 
 ```
