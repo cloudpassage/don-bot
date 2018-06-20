@@ -138,6 +138,14 @@ class TestIntegrationCortexlibQuarantine:
         q_event["critical"] = False
         assert q.should_quarantine(q_event) is False
 
+    def test_quarantine_event_crit_no_trigger_evttype(self, monkeypatch):
+        """Don't trigger quarantine because event type doesn't pass test."""
+        q = self.instantiate_cortexlib_quarantine(monkeypatch)
+        q_event = quar_event.copy()
+        q_event["server_group_name"] = q.quarantine_trigger_group_names[0]
+        q_event["type"] = "NOMATCH"
+        assert q.should_quarantine(q_event) is False
+
     def test_quarantine_event_no_trigger(self, monkeypatch):
         """This should NOT match as a quarantine event."""
         q = self.instantiate_cortexlib_quarantine(monkeypatch)
