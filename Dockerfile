@@ -2,7 +2,7 @@
 FROM docker.io/halotools/python-sdk:ubuntu-16.04_sdk-1.1.4 as downloader
 MAINTAINER toolbox@cloudpassage.com
 
-ARG HALOCELERY_BRANCH=v0.7.0
+ARG HALOCELERY_BRANCH=v0.8
 
 RUN apt-get update && \
     apt-get install -y \
@@ -12,10 +12,14 @@ WORKDIR /app/
 
 RUN echo "Target branch for this build: $HALOCELERY_BRANCH"
 
-RUN git clone https://github.com/cloudpassage/halocelery
+RUN git clone -b $HALOCELERY_BRANCH https://github.com/cloudpassage/halocelery
 
 RUN cd halocelery && \
-    git archive --verbose --format=tar.gz -o /app/halocelery.tar.gz $HALOCELERY_BRANCH
+    git archive \
+        --verbose \
+        --format=tar.gz \
+        -o /app/halocelery.tar.gz \
+        $HALOCELERY_BRANCH
 
 #####################################
 # Unit and integration tests run in a separate step.

@@ -89,13 +89,40 @@ class Halo(object):
         elif query_type == "all_groups":
             report = self.tasks.list_all_groups_formatted.delay()
         elif query_type == "group_firewall_report":
-            report = self.tasks.report_group_firewall.delay(target)
+            img_tag = os.getenv('FIREWALL_GRAPH_VERSION', 'v0.2')
+            image = "docker.io/halotools/firewall-graph:%s" % img_tag
+            env_literal = {"TARGET": target}
+            env_expand = {"HALO_API_KEY": "HALO_API_KEY",
+                          "HALO_API_SECRET_KEY": "HALO_API_SECRET_KEY",
+                          "HALO_API_HOSTNAME": "HALO_API_HOSTNAME",
+                          "HTTPS_PROXY": "HTTPS_PROXY"}
+            report = self.tasks.generic_containerized_task.delay(image,
+                                                                 env_literal,
+                                                                 env_expand,
+                                                                 False)
         elif query_type == "servers_in_group":
             report = self.tasks.servers_in_group_formatted.delay(target)
         elif query_type == "servers_by_cve":
             report = self.tasks.search_server_by_cve(target)
         elif query_type == "ec2_halo_footprint_csv":
-            report = self.tasks.report_ec2_halo_footprint_csv.delay()
+            img_tag = os.getenv('EC2_HALO_DELTA_VERSION', 'v0.2')
+            image = "docker.io/halotools/ec2-halo-delta:%s" % img_tag
+            env_literal = {"OUTPUT_FORMAT": "csv"}
+            # Set optional args
+            optional_fields = ["AWS_ROLE_NAME", "AWS_ACCOUNT_NUMBERS"]
+            for field in optional_fields:
+                if os.getenv(field, "") != "":
+                    env_literal[field] = os.getenv(field)
+            env_expand = {"HALO_API_KEY": "HALO_API_KEY",
+                          "HALO_API_SECRET_KEY": "HALO_API_SECRET_KEY",
+                          "HALO_API_HOSTNAME": "HALO_API_HOSTNAME",
+                          "AWS_ACCESS_KEY_ID": "AWS_ACCESS_KEY_ID",
+                          "AWS_SECRET_ACCESS_KEY": "AWS_SECRET_ACCESS_KEY",
+                          "HTTPS_PROXY": "HTTPS_PROXY"}
+            report = self.tasks.generic_containerized_task.delay(image,
+                                                                 env_literal,
+                                                                 env_expand,
+                                                                 False)
         elif query_type == "tasks":
             report = self.list_tasks_formatted(self.flower_host)
         elif query_type == "selfie":

@@ -1,5 +1,5 @@
 boto3==1.4.3
-celery[redis]==4.0.2
+celery[redis]==4.2.0rc4
 docker==2.6.1
 flower==0.9.1
 python-magic==0.4.15
