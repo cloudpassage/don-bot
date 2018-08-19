@@ -4,6 +4,7 @@ import requests
 from formatter import Formatter
 from urlparse import urljoin
 from utility import Utility as util
+from halocelery.apputils import Utility as hc_util
 
 
 class Halo(object):
@@ -51,7 +52,7 @@ class Halo(object):
             report += "Error: Unable to retrieve task list at this time."
             # We print the output so that it will be retained in the
             # container logs.
-            print(e)
+            hc_util.log_stderr(e)
             return report
         try:
             for task in result.items():
@@ -64,7 +65,7 @@ class Halo(object):
                               "exception": str(task[1]["exception"])}
                     report += Formatter.format_item(prefmt, "task")
         except AttributeError as e:  # Empty set will throw AttributeError
-            print("Halo.list_tasks_formatted(): AttributeError! %s" % e)
+            hc_util.log_stderr("Halo.list_tasks_formatted(): AttributeError! %s" % e)  # NOQA
             pass
         return report
 
@@ -202,14 +203,15 @@ class Halo(object):
     def quarantine_server(self, event):
         server_id = event["server_id"]
         quarantine_group_name = event["quarantine_group"]
-        print("Quarantine %s to group %s" % (server_id,
-                                             quarantine_group_name))
+        hc_util.log_stdout("Quarantine %s to group %s" % (server_id,
+                                                          quarantine_group_name))  # NOQA
         return self.tasks.quarantine_server.delay(server_id,
                                                   quarantine_group_name)
 
     def add_ip_to_blocklist(self, ip_address, block_list_name):
         # We trigger a removal job for one hour out.
-        print("Add IP %s to blocklist %s" % (ip_address, block_list_name))
+        hc_util.log_stdout("Add IP %s to blocklist %s" % (ip_address,
+                                                          block_list_name))
         self.tasks.remove_ip_from_list.apply_async(args=[ip_address,
                                                          block_list_name],
                                                    countdown=3600)
