@@ -1,6 +1,7 @@
 import os
 import re
 from utility import Utility
+from halocelery.apputils import Utility as hc_util
 
 
 class ConfigHelper(object):
@@ -95,7 +96,7 @@ class ConfigHelper(object):
         for name, varval in critical_vars.items():
             if varval == "HARDSTOP":
                 sanity = False
-                print(template.format(name))
+                hc_util.log_stdout(template.format(name))
         return sanity
 
     def quarantine_config_is_sane(self):
@@ -103,25 +104,25 @@ class ConfigHelper(object):
         sanity = True
         # Check that trigger group names is a list
         if not isinstance(self.quarantine_trigger_group_names, list):
-            print("Quarantine trigger group names\"%s\" failed sanity check." %
-                  self.quarantine_trigger_group_names)
+            hc_util.log_stderr("Quarantine trigger group names\"%s\" failed sanity check." %  # NOQA
+                               self.quarantine_trigger_group_names)
             sanity = False
         # Check that trigger events is a list
         if not isinstance(self.quarantine_trigger_events, list):
-            print("Quarantine trigger events \"%s\" failed sanity check." %
-                  self.quarantine_trigger_events)
+            hc_util.log_stderr("Quarantine trigger events \"%s\" failed sanity check." %  # NOQA
+                               self.quarantine_trigger_events)
             sanity = False
         # Check that quarantine group name is a string
         if not isinstance(self.quarantine_group_name, basestring):
-            print("Quarantine group name \"%s\" failed sanity check." %
-                  self.quarantine_group_name)
+            hc_util.log_stderr("Quarantine group name \"%s\" failed sanity check." %  # NOQA
+                               self.quarantine_group_name)
             sanity = False
         # Check that lists and strings are not zero-length
         for x in [self.quarantine_trigger_events,
                   self.quarantine_trigger_group_names,
                   self.quarantine_group_name]:
             if len(x) == 0:
-                print("Quarantine config has empty field(s)")
+                hc_util.log_stderr("Quarantine config has empty field(s)")
                 sanity = False
         return sanity
 
@@ -130,16 +131,16 @@ class ConfigHelper(object):
         sanity = True
         # Check that trigger group names is a list
         if not isinstance(self.ip_zone_name, basestring):
-            print("IP Blocker IP zone name failed sanity check.")
+            hc_util.log_stderr("IP Blocker IP zone name failed sanity check.")
             sanity = False
         # Check that trigger events is a list
         if not isinstance(self.ipblocker_trigger_events, list):
-            print("IP Blocker trigger events failed sanity check.")
+            hc_util.log_stderr("IP Blocker trigger events failed sanity check.")  # NOQA
             sanity = False
         # Check that list and string values are not zero-length
         for x in [self.ipblocker_trigger_events,
                   self.ip_zone_name]:
             if len(x) == 0:
-                print("IP Blocker config has empty field(s)")
+                hc_util.log_stderr("IP Blocker config has empty field(s)")
                 sanity = False
         return sanity

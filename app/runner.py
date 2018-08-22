@@ -9,6 +9,7 @@ import sys
 import threading
 import time
 from halocelery import tasks
+from halocelery.apputils import Utility as util
 from collections import deque
 
 
@@ -44,11 +45,11 @@ def main():
     halo_enricher.start()
     msg = "Starting Don-Bot v%s\nName is set to %s" % (donlib.__version__,
                                                        config.slack_username)
-    print(msg)
+    util.log_stdout(msg)
     msg = "Don-Bot sends general notifications to #%s" % config.slack_channel
-    print(msg)
+    util.log_stdout(msg)
     if config.monitor_events == "yes":
-        print("Starting Halo event monitor")
+        util.log_stdout("Starting Halo event monitor")
         halo_collector = threading.Thread(target=event_connector,
                                           args=[config])
         halo_collector.daemon = True
@@ -104,7 +105,7 @@ def event_connector(config):
             health_last_event_timestamp = event["created_at"]
             if not donlib.Utility.is_suppressed_event_type(config, event):
                 if donlib.Utility.event_is_critical(event):
-                    print("EVENT_CONNECTOR: Critical event detected!")
+                    util.log_stdout("EVENT_CONNECTOR: Critical event detected!")  # NOQA
                     event_fmt = donlib.Formatter.format_item(event, "event")
                     slack_outbound.append((config.slack_channel, event_fmt))
             if quarantine_check is not False:
@@ -127,11 +128,12 @@ def daemon_speaker(config):
             channel = message["channel"]
             halo_query, target = donlib.Lexicals.parse(message)
             halo_results = halo.interrogate(halo_query, target)
-            print "DAEMON_SPEAKER: Results object type:%s" % type(halo_results)
+            util.log_stdout("DAEMON_SPEAKER: Results object type:%s" %
+                            type(halo_results))
             if isinstance(halo_results, (str, unicode)):
                 slack_outbound.append((channel, halo_results))
             else:
-                print "DAEMON_SPEAKER: queueing up async job"
+                util.log_stdout("DAEMON_SPEAKER: queueing up async job")
                 async_jobs.append((channel, halo_results))
         except IndexError:
             time.sleep(1)
@@ -163,7 +165,7 @@ def async_manager(config):
 def slack_in_manager(config):
     slack = donlib.Slack(config)
     for message in slack:
-        print("Message in slack consumer")
+        util.log_stdout("Message in slack consumer")
         slack_inbound.append(message)
 
 
@@ -177,11 +179,11 @@ def slack_out_manager(config):
                 if "\n" in message[1]:
                     raise TypeError("Detected plaintext response...")
                 dec_msg = base64.decodestring(message[1])
-                print("Detected Base64-encoded file...")
+                util.log_stdout("Detected Base64-encoded file...")
                 slack.send_file(message[0], io.BytesIO(dec_msg).read(),
                                 "Daemonic File")
             except TypeError as e:
-                print(e)
+                util.log_stdout(e)
                 slack.send_report(message[0], message[1],
                                   "Daemonic Report")
         except IndexError:
@@ -191,7 +193,7 @@ def slack_out_manager(config):
 def check_configs(config):
     halo = donlib.Halo(config, "", "")
     if halo.credentials_work() is False:
-        print("Halo credentials are bad!  Exiting!")
+        util.log_stdout("Halo credentials are bad!  Exiting!")
         sys.exit(1)
 
     # If NOSLACK env var is set, don't go any further!
@@ -199,12 +201,12 @@ def check_configs(config):
         noslack_hold()
 
     if config.sane() is False:
-        print("Configuration is bad!  Exiting!")
+        util.log_stdout("Configuration is bad!  Exiting!")
         sys.exit(1)
 
     slack = donlib.Slack(config)
     if slack.credentials_work() is False:
-        print("Slack credentials are bad!  Exiting!")
+        util.log_stdout("Slack credentials are bad!  Exiting!")
         sys.exit(1)
 
 
@@ -213,7 +215,7 @@ def noslack_hold():
            "Interact with Halo using:"
            " 'docker exec -it cortex-bot python /app/interrogate.py'")
     while True:
-        print(msg)
+        util.log_stdout(msg)
         time.sleep(3600)
 
 
