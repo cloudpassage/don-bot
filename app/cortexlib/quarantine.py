@@ -1,5 +1,6 @@
 """Quarantine functionality is managed here."""
 import cloudpassage
+from halocelery.apputils import Utility as hc_util
 
 
 class Quarantine(object):
@@ -38,7 +39,7 @@ class Quarantine(object):
             server_groups = cloudpassage.ServerGroup(self.session)
             all_groups = server_groups.list_all()
         except cloudpassage.CloudPassageAuthentication:
-            print("Quarantine: Authentication failure with CloudPassage API!")
+            hc_util.log_stderr("Quarantine: Authentication failure with CloudPassage API!")  # NOQA
             all_groups = []
         return all_groups
 
@@ -53,7 +54,7 @@ class Quarantine(object):
         reason = ""
         all_groups = self.get_all_server_groups()
         if all_groups == []:
-            print("Quarantine: Unable to get server groups from Halo! Check your API credentials!")  # NOQA
+            hc_util.log_stderr("Quarantine: Unable to get server groups from Halo! Check your API credentials!")  # NOQA
             return False
         all_configured_groups = []
         all_configured_groups.append(self.quarantine_group_name)
@@ -68,7 +69,7 @@ class Quarantine(object):
                 reason += "Quarantine: More than one group named %s\n" % group
                 retval = False
         if retval is False:
-            print("Quarantine: Group configuration is ambiguous:\n%s" % reason)
+            hc_util.log_stderr("Quarantine: Group configuration is ambiguous:\n%s" % reason)  # NOQA
         return retval
 
     def criticality_match(self, event):

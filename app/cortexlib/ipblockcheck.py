@@ -1,4 +1,5 @@
 import re
+from halocelery.apputils import Utility as hc_util
 
 
 class IpBlockCheck(object):
@@ -35,6 +36,6 @@ class IpBlockCheck(object):
                     return m.group("addy")
             except AttributeError:
                 pass
-        print("Unable to extract IP address from message: %s" %
-              event["message"])
+        hc_util.log_stderr("Unable to extract IP address from message: %s" %
+                           event["message"])
         return False
