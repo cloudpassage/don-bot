@@ -4,6 +4,16 @@ Changelog
 
 v0.19.1
 -------
+
+Fix
+~~~
+- Fix missing server counts in groups list. [Ash Wilson]
+
+  Update halocelery pin to v0.8.1
+  Closes #69
+
+Other
+~~~~~
 - Typo in halo.py. [ddilts]
 
   Specifically under help_text
