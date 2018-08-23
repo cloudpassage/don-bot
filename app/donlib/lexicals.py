@@ -1,4 +1,5 @@
 import re
+from halocelery.apputils import Utility as hc_util
 
 
 class Lexicals(object):
@@ -45,8 +46,8 @@ class Lexicals(object):
                 break
         q_string = "QUERY>> " + message
         i_string = "TYPE>> " + retval
-        print(q_string.encode('utf-8', 'ignore'))
-        print(i_string)
+        hc_util.log_stdout(q_string.encode('utf-8', 'ignore'))
+        hc_util.log_stdout(i_string)
         return retval
 
     @classmethod
@@ -74,5 +75,5 @@ class Lexicals(object):
         else:
             retval = ""
         t_string = "TARGET>> " + retval
-        print(t_string)
+        hc_util.log_stdout(t_string)
         return retval

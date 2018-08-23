@@ -5,6 +5,7 @@ import time
 from slackclient import SlackClient
 from slackclient.server import SlackConnectionError
 from socket import error as SocketError
+from halocelery.apputils import Utility as hc_util
 
 
 class Slack(object):
@@ -33,7 +34,7 @@ class Slack(object):
             up_msg = u'Don-Bot 👹 v%s started' % ver
             self.client.rtm_send_message(self.channel, up_msg)
         else:
-            print("Can't wake up!")
+            hc_util.log_stderr("Can't wake up!")
         while True:
             time.sleep(1)
             mymessages = []
@@ -42,11 +43,11 @@ class Slack(object):
                 mymessages = Slack.get_my_messages(self.botname, messages)
             # This covers many common hiccups we see with Slack.
             except SocketError:
-                print("Caught SocketError... attempting to reconnect")
+                hc_util.log_stderr("Caught SocketError... attempting to reconnect")  # NOQA
                 self.client.rtm_connect(auto_reconnect=True)
             # This happens when Slack RTM API has trouble. Wait and retry.
             except SlackConnectionError as e:
-                print("Encountered SlackConnectionError: %s" % e)
+                hc_util.log_stderr("Encountered SlackConnectionError: %s" % e)
                 time.sleep(5)
                 self.client.rtm_connect(auto_reconnect=True)
             if len(mymessages) > 0:
@@ -78,7 +79,7 @@ class Slack(object):
         """Slack looks at the file header to determine type"""
         file_ext = self.get_file_extension_for_content(report)
         filename = "Halo_Cortex_Content%s" % file_ext
-        print("Uploading %s" % filename)
+        hc_util.log_stdout("Uploading %s" % filename)
         self.client.api_call("files.upload",
                              initial_comment=comment,
                              channels=channel,
@@ -121,13 +122,13 @@ class Slack(object):
         current_channel_info = self.get_channel_info(current_channel_id)
         requester = self.get_user_info(message["user"])
         if Slack.request_in_safe_chan(safe_channel_info, current_channel_info):
-            print("Request is in safe channel")
+            hc_util.log_stdout("Request is in safe channel")
             return True
         elif Slack.requester_is_in_safe_chan(requester, safe_channel_info):
-            print("Requester is a member of a safe channel")
+            hc_util.log_stdout("Requester is a member of a safe channel")
             return True
         else:
-            print("User is not entitled...\n  %s" % str(message))
+            hc_util.log_stderr("User is not entitled...\n  %s" % str(message))
             return False
 
     def get_channel_info(self, channel):

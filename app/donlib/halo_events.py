@@ -3,6 +3,7 @@ consumption of events, only providing information to the iterator when it's
 been ordered correctly."""
 
 import cloudpassage
+from halocelery.apputils import Utility as hc_util
 
 
 class HaloEvents(object):
@@ -14,7 +15,7 @@ class HaloEvents(object):
         self.halo_api_port = config.halo_api_port
         self.ua = config.ua
         self.start_timestamp = self.starting_event_time()
-        print("Event Collector: Starting timestamp: " + self.start_timestamp)
+        hc_util.log_stdout("Event Collector: Starting timestamp: " + self.start_timestamp)  # NOQA
 
     def __iter__(self):
         """This allows us to iterate through the events stream."""
