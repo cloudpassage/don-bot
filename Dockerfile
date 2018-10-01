@@ -39,7 +39,9 @@ ARG RUN_INTEGRATION_TESTS
 # Up to root to add additional packages
 USER root
 
-RUN apt-get install -y expect
+RUN apt-get update && \
+    apt-get install -y \
+        expect
 
 RUN pip install \
     pytest==3.1.1 \
@@ -96,7 +98,9 @@ ENV HALO_API_PORT=443
 # Up to root to add additional packages
 USER root
 
-RUN apt-get install -y expect
+RUN apt-get update && \
+    apt-get install -y \
+        expect
 
 # Drop in the app code
 COPY app/ /app/
