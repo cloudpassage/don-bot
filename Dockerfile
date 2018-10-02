@@ -35,35 +35,38 @@ ENV HALO_API_PORT=443
 ARG HALO_API_KEY
 ARG HALO_API_SECRET_KEY
 ARG RUN_INTEGRATION_TESTS
+ARG CC_TEST_REPORTER_ID
 
 # Up to root to add additional packages
 USER root
 
-RUN apt-get install -y expect
+RUN apt-get update && \
+    apt-get install -y \
+        curl \
+        expect \
+        git
 
 RUN pip install \
     pytest==3.1.1 \
     python-dotenv==0.8.2 \
-    codeclimate-test-reporter==0.2.0 \
     pytest-cover==3.0.0
 
 # Drop in the app code
-COPY app/ /app/
+COPY . /app/
 
 # Setup for manual library installation
 RUN mkdir /src/
 WORKDIR /src/
-
 
 COPY --from=downloader /app/halocelery.tar.gz /src/halocelery/halocelery.tar.gz
 
 RUN cd halocelery && \
     tar -zxvf ./halocelery.tar.gz && \
     cd /src/ && \
-    mv ./halocelery /app
+    mv ./halocelery /app/app/
 
 
-WORKDIR /app
+WORKDIR /app/app
 
 RUN pip install -r requirements.txt
 
@@ -77,9 +80,18 @@ RUN echo $RUN_INTEGRATION_TESTS
 # If RUN_INTEGRATION_TESTS is set, run integration tests.
 RUN if [ "$RUN_INTEGRATION_TESTS" = "True" ] ; \
     then echo "Run all tests" && \
-        py.test --cov-report term-missing --cov=donlib --cov=cortexlib /app/test/ ;  \
+        curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter; \
+        chmod +x ./cc-test-reporter; \
+        ./cc-test-reporter before-build; \
+        py.test \
+            --cov-report term-missing \
+            --cov-report xml \
+            --cov=donlib \
+            --cov=cortexlib \
+            /app/app/test/;  \
+        ./cc-test-reporter after-build; \
     else echo Not running integration tests!. && \
-        py.test /app/test/unit ; \
+        py.test /app/app/test/unit ; \
     fi
 
 
@@ -96,7 +108,9 @@ ENV HALO_API_PORT=443
 # Up to root to add additional packages
 USER root
 
-RUN apt-get install -y expect
+RUN apt-get update && \
+    apt-get install -y \
+        expect
 
 # Drop in the app code
 COPY app/ /app/
