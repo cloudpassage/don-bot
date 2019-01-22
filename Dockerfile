@@ -46,11 +46,6 @@ RUN apt-get update && \
         expect \
         git
 
-RUN pip install \
-    pytest==3.1.1 \
-    python-dotenv==0.8.2 \
-    pytest-cover==3.0.0
-
 # Drop in the app code
 COPY . /app/
 
@@ -68,7 +63,7 @@ RUN cd halocelery && \
 
 WORKDIR /app/app
 
-RUN pip install -r requirements.txt
+RUN pip install -r requirements-test.txt
 
 # Now take ownership and drop to non-root user
 RUN chown -R ${APP_USER}:$APP_GROUP /app
