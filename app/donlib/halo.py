@@ -1,9 +1,9 @@
 import cloudpassage
 import os
 import requests
-from formatter import Formatter
-from urlparse import urljoin
-from utility import Utility as util
+from .formatter import Formatter
+from urllib.parse import urljoin
+from .utility import Utility as util
 from halocelery.apputils import Utility as hc_util
 
 

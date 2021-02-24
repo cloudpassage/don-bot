@@ -1,6 +1,6 @@
 import os
 import re
-from utility import Utility
+from .utility import Utility
 from halocelery.apputils import Utility as hc_util
 
 
@@ -113,7 +113,7 @@ class ConfigHelper(object):
                                self.quarantine_trigger_events)
             sanity = False
         # Check that quarantine group name is a string
-        if not isinstance(self.quarantine_group_name, basestring):
+        if not isinstance(self.quarantine_group_name, str):
             hc_util.log_stderr("Quarantine group name \"%s\" failed sanity check." %  # NOQA
                                self.quarantine_group_name)
             sanity = False
@@ -130,7 +130,7 @@ class ConfigHelper(object):
         """Sanity check for IP blocker configuration."""
         sanity = True
         # Check that trigger group names is a list
-        if not isinstance(self.ip_zone_name, basestring):
+        if not isinstance(self.ip_zone_name, str):
             hc_util.log_stderr("IP Blocker IP zone name failed sanity check.")
             sanity = False
         # Check that trigger events is a list

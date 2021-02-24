@@ -1,8 +1,8 @@
 # Get the halocelery component
-FROM docker.io/halotools/python-sdk:ubuntu-16.04_sdk-1.1.4 as downloader
+FROM docker.io/halotools/python-sdk:ubuntu-18.04_sdk-latest_py-3.6 as downloader
 MAINTAINER toolbox@cloudpassage.com
 
-ARG HALOCELERY_BRANCH=v0.8.1
+ARG HALOCELERY_BRANCH=v0.9
 
 RUN apt-get update && \
     apt-get install -y \
@@ -24,7 +24,7 @@ RUN cd halocelery && \
 #####################################
 # Unit and integration tests run in a separate step.
 
-FROM docker.io/halotools/python-sdk:ubuntu-16.04_sdk-1.1.4
+FROM docker.io/halotools/python-sdk:ubuntu-18.04_sdk-latest_py-3.6
 MAINTAINER toolbox@cloudpassage.com
 
 ENV SLACK_ICON_URL=http://www.cloudpassage.com/wp-content/uploads/2016/12/don-operator.png
@@ -63,7 +63,7 @@ RUN cd halocelery && \
 
 WORKDIR /app/app
 
-RUN pip install -r requirements-test.txt
+RUN pip3 install -r requirements-test.txt
 
 # Now take ownership and drop to non-root user
 RUN chown -R ${APP_USER}:$APP_GROUP /app
@@ -93,7 +93,7 @@ RUN if [ "$RUN_INTEGRATION_TESTS" = "True" ] ; \
 #####################################
 # Building the final container image
 
-FROM docker.io/halotools/python-sdk:ubuntu-16.04_sdk-1.1.4
+FROM docker.io/halotools/python-sdk:ubuntu-18.04_sdk-latest_py-3.6
 MAINTAINER toolbox@cloudpassage.com
 
 ENV SLACK_ICON_URL=http://www.cloudpassage.com/wp-content/uploads/2016/12/don-operator.png
@@ -125,7 +125,7 @@ RUN cd halocelery && \
 
 WORKDIR /app
 
-RUN pip install -r requirements.txt
+RUN pip3 install -r requirements.txt
 
 # Now take ownership and drop to non-root user
 RUN chown -R ${APP_USER}:$APP_GROUP /app

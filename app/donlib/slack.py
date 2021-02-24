@@ -30,7 +30,7 @@ class Slack(object):
         """This wraps the RTM client, and yields messages"""
         if self.client.rtm_connect(auto_reconnect=True):
             time.sleep(3)
-            ver = unicode(self.product_version)
+            ver = str(self.product_version)
             up_msg = u'Don-Bot 👹 v%s started' % ver
             self.client.rtm_send_message(self.channel, up_msg)
         else:
