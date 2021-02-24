@@ -4,6 +4,8 @@ MAINTAINER toolbox@cloudpassage.com
 
 ARG HALOCELERY_BRANCH=v0.9
 
+ARG DEBIAN_FRONTEND=noninteractive
+
 RUN apt-get update && \
     apt-get install -y \
         git
@@ -36,6 +38,8 @@ ARG HALO_API_KEY
 ARG HALO_API_SECRET_KEY
 ARG RUN_INTEGRATION_TESTS
 ARG CC_TEST_REPORTER_ID
+
+ARG DEBIAN_FRONTEND=noninteractive
 
 # Up to root to add additional packages
 USER root
@@ -100,6 +104,8 @@ ENV SLACK_ICON_URL=http://www.cloudpassage.com/wp-content/uploads/2016/12/don-op
 ENV HALO_API_HOSTNAME=api.cloudpassage.com
 ENV HALO_API_PORT=443
 
+ARG DEBIAN_FRONTEND=noninteractive
+
 # Up to root to add additional packages
 USER root
 
@@ -134,4 +140,4 @@ USER ${APP_USER}
 
 WORKDIR /app
 
-CMD ["unbuffer", "python", "/app/runner.py"]
+CMD ["unbuffer", "python3", "/app/runner.py"]
