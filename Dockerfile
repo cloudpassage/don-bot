@@ -2,7 +2,7 @@
 FROM docker.io/halotools/python-sdk:ubuntu-18.04_sdk-latest_py-3.6 as downloader
 MAINTAINER toolbox@cloudpassage.com
 
-ARG HALOCELERY_BRANCH=v0.9
+ARG HALOCELERY_BRANCH=v0.9.1
 
 ARG DEBIAN_FRONTEND=noninteractive
 
