@@ -26,15 +26,19 @@ class ConfigHelper(object):
         self.halo_api_secret_key = os.getenv("HALO_API_SECRET_KEY", "HARDSTOP")
         self.halo_api_host = os.getenv("HALO_API_HOSTNAME", "HARDSTOP")
         self.halo_api_port = os.getenv("HALO_API_PORT", "HARDSTOP")
+
         self.ua = ConfigHelper.get_ua_string()
         self.product_version = ConfigHelper.get_product_version()
+
         # Slack configs
         self.slack_api_token = os.getenv("SLACK_API_TOKEN", "HARDSTOP")
         self.slack_username = os.getenv("SLACK_USERNAME", "donbot")
         self.slack_icon_url = os.getenv("SLACK_ICON_URL", "")
         self.slack_channel = os.getenv("SLACK_CHANNEL", "halo")
+
         # Flower host for task status reporting
         self.flower_host = os.getenv("FLOWER_HOST")
+
         # IP Blocker configs
         self.ip_zone_name = os.getenv("IPBLOCKER_IP_ZONE_NAME", "")
         self.ipblocker_enable = Utility.bool_from_env("IPBLOCKER_ENABLED")
@@ -42,6 +46,7 @@ class ConfigHelper(object):
             "IPBLOCKER_TRIGGER_EVENTS")
         self.ipblocker_trigger_only_on_critical = Utility.bool_from_env(
             "IPBLOCKER_TRIGGER_ONLY_ON_CRITICAL")
+
         # Quarantine configs
         self.quarantine_enable = Utility.bool_from_env("QUARANTINE_ENABLED")
         self.quarantine_trigger_group_names = Utility.list_from_env(
@@ -51,8 +56,10 @@ class ConfigHelper(object):
         self.quarantine_trigger_only_on_critical = Utility.bool_from_env(
             "QUARANTINE_TRIGGER_ONLY_ON_CRITICAL")
         self.quarantine_group_name = os.getenv("QUARANTINE_GROUP_NAME", "")
+
         # Event collector configs
         self.monitor_events = os.getenv("MONITOR_EVENTS", "no")
+
         self.suppress_events = os.getenv("SUPPRESS_EVENTS_IN_CHANNEL", "")
         self.max_threads = 5  # Max threads to be used by event collector
         self.halo_batch_size = 5  # Pagination depth for event collector

@@ -130,7 +130,7 @@ def daemon_speaker(config):
             halo_results = halo.interrogate(halo_query, target)
             util.log_stdout("DAEMON_SPEAKER: Results object type:%s" %
                             type(halo_results))
-            if isinstance(halo_results, (str, unicode)):
+            if isinstance(halo_results, (str, str)):
                 slack_outbound.append((channel, halo_results))
             else:
                 util.log_stdout("DAEMON_SPEAKER: queueing up async job")

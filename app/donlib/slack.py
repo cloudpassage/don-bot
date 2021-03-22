@@ -96,10 +96,10 @@ class Slack(object):
         return good
 
     def get_id_for_channel(self, channel_name):
-        all_channels = self.client.api_call("channels.list")
-        all_groups = self.client.api_call("groups.list")
+        all_channels = self.client.api_call("conversations.list", types="public_channel")
+        all_groups = self.client.api_call("conversations.list", types="private_channel")
         chan_groups = list(all_channels["channels"])
-        chan_groups.extend(all_groups["groups"])
+        chan_groups.extend(all_groups["channels"])
         for channel in chan_groups:
             if channel["name"] == channel_name:
                 return channel["id"]
@@ -118,13 +118,14 @@ class Slack(object):
             return False
         safe_channel_id = self.get_id_for_channel(self.channel)
         safe_channel_info = self.get_channel_info(safe_channel_id)
+        safe_channel_members = self.get_channel_members(safe_channel_id)
         current_channel_id = message["channel"]
         current_channel_info = self.get_channel_info(current_channel_id)
         requester = self.get_user_info(message["user"])
         if Slack.request_in_safe_chan(safe_channel_info, current_channel_info):
             hc_util.log_stdout("Request is in safe channel")
             return True
-        elif Slack.requester_is_in_safe_chan(requester, safe_channel_info):
+        elif Slack.requester_is_in_safe_chan(requester, safe_channel_members):
             hc_util.log_stdout("Requester is a member of a safe channel")
             return True
         else:
@@ -133,7 +134,9 @@ class Slack(object):
 
     def get_channel_info(self, channel):
         """Get channel metadata"""
-        ref = {"group": "groups.info",
+
+        """deprecated slack api methods"""
+        '''ref = {"group": "groups.info",
                "channel": "channels.info"}
         if channel.startswith("G"):
             target = "group"
@@ -141,10 +144,19 @@ class Slack(object):
             return self.get_dm_info(channel)
         else:
             target = "channel"
-        return self.client.api_call(ref[target], channel=channel)[target]
+        #return self.client.api_call(ref[target], channel=channel)[target]'''
+
+        return self.client.api_call("conversations.info", channel=channel)
+
+    def get_channel_members(self, channel):
+        """Get channel members"""
+        return self.client.api_call("conversations.members", channel=channel)
 
     def get_dm_info(self, channel):
-        for x in self.client.api_call("im.list")["ims"]:
+        """deprecated slack api methods"""
+        #for x in self.client.api_call("im.list")["ims"]:
+
+        for x in self.client.api_call("conversations.list", types="public_channel,private_channel,mpim,im")["ims"]:
             if x["id"] == channel:
                 return x
         return {}
@@ -157,7 +169,7 @@ class Slack(object):
     def request_in_safe_chan(cls, safe_chan, current_chan):
         """Compares message's channel ID against the safe channel's ID"""
         result = False
-        if safe_chan["id"] == current_chan["id"]:
+        if safe_chan["channel"]["id"] == current_chan["channel"]["id"]:
             result = True
         return result
 

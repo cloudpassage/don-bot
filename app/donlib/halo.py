@@ -166,24 +166,26 @@ class Halo(object):
             return "Slack integration is disabled.  CLI access only."
         if self.monitor_events == 'yes':
             events = "Monitoring Halo events"
-            conf = ("IP-Blocker Configuration\n" +
-                    "------------------------\n" +
-                    "IPBLOCKER_ENABLED=%s\n" % (self.config.ipblocker_enable) +
-                    "IPBLOCKER_IP_ZONE_NAME=%s\n" % (self.config.ip_zone_name) +  # NOQA
-                    "IPBLOCKER_TRIGGER_EVENTS=%s\n" % (self.config.ipblocker_trigger_events) +  # NOQA
-                    "IPBLOCKER_TRIGGER_ONLY_ON_CRITICAL=%s\n\n" % (self.config.ipblocker_trigger_only_on_critical) +  # NOQA
-                    "Quarantine Configuration\n" +
-                    "------------------------\n" +
-                    "QUARANTINE_ENABLED=%s\n" % (self.config.quarantine_enable) +  # NOQA
-                    "QUARANTINE_TRIGGER_GROUP_NAMES=%s\n" % (self.config.quarantine_trigger_group_names) +  # NOQA
-                    "QUARANTINE_TRIGGER_EVENTS=%s\n" % (self.config.quarantine_trigger_events) +  # NOQA
-                    "QUARANTINE_TRIGGER_ONLY_ON_CRITICAL=%s\n" % (self.config.quarantine_trigger_only_on_critical) +  # NOQA
-                    "QUARANTINE_GROUP_NAME=%s\n\n" % (self.config.quarantine_group_name) +  # NOQA
-                    "Event Suppression Configuration\n" +
-                    "-------------------------------\n" +
-                    "SUPPRESS_EVENTS_IN_CHANNEL=%s\n" % (self.config.suppress_events))  # NOQA
         else:
             events = "NOT monitoring Halo events"
+
+        conf = ("IP-Blocker Configuration\n" +
+                "------------------------\n" +
+                "IPBLOCKER_ENABLED=%s\n" % (self.config.ipblocker_enable) +
+                "IPBLOCKER_IP_ZONE_NAME=%s\n" % (self.config.ip_zone_name) +  # NOQA
+                "IPBLOCKER_TRIGGER_EVENTS=%s\n" % (self.config.ipblocker_trigger_events) +  # NOQA
+                "IPBLOCKER_TRIGGER_ONLY_ON_CRITICAL=%s\n\n" % (self.config.ipblocker_trigger_only_on_critical) +  # NOQA
+                "Quarantine Configuration\n" +
+                "------------------------\n" +
+                "QUARANTINE_ENABLED=%s\n" % (self.config.quarantine_enable) +  # NOQA
+                "QUARANTINE_TRIGGER_GROUP_NAMES=%s\n" % (self.config.quarantine_trigger_group_names) +  # NOQA
+                "QUARANTINE_TRIGGER_EVENTS=%s\n" % (self.config.quarantine_trigger_events) +  # NOQA
+                "QUARANTINE_TRIGGER_ONLY_ON_CRITICAL=%s\n" % (self.config.quarantine_trigger_only_on_critical) +  # NOQA
+                "QUARANTINE_GROUP_NAME=%s\n\n" % (self.config.quarantine_group_name) +  # NOQA
+                "Event Suppression Configuration\n" +
+                "-------------------------------\n" +
+                "SUPPRESS_EVENTS_IN_CHANNEL=%s\n" % (self.config.suppress_events))  # NOQA
+
         retval = "%s\nHalo channel: #%s\n%s\n" % (events,
                                                   self.slack_channel,
                                                   conf)
