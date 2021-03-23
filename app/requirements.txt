@@ -1,6 +1,6 @@
-boto3==1.4.3
-celery[redis]==4.2.0rc4
-docker==2.6.1
-flower==0.9.2
-python-magic==0.4.15
-slackclient==1.2.1
+boto3==1.17.34
+celery[redis]==5.0.5
+docker==4.4.4
+flower==0.9.7
+python-magic==0.4.22
+slackclient==2.9.3

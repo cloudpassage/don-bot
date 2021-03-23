@@ -29,15 +29,13 @@ RUN cd halocelery && \
 FROM docker.io/halotools/python-sdk:ubuntu-18.04_sdk-latest_py-3.6
 MAINTAINER toolbox@cloudpassage.com
 
-ENV SLACK_ICON_URL=http://www.cloudpassage.com/wp-content/uploads/2016/12/don-operator.png
-ENV HALO_API_HOSTNAME=api.cloudpassage.com
-ENV HALO_API_PORT=443
+ENV SLACK_ICON_URL='http://www.cloudpassage.com/wp-content/uploads/2016/12/don-operator.png'
+ENV HALO_API_HOSTNAME='api.cloudpassage.com'
+ENV HALO_API_PORT='443'
 
 # These arguments allow integration testing with the Halo API
 ARG HALO_API_KEY
 ARG HALO_API_SECRET_KEY
-ARG RUN_INTEGRATION_TESTS
-ARG CC_TEST_REPORTER_ID
 
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -74,35 +72,15 @@ RUN chown -R ${APP_USER}:$APP_GROUP /app
 
 USER ${APP_USER}
 
-RUN echo $RUN_INTEGRATION_TESTS
-
-# If RUN_INTEGRATION_TESTS is set, run integration tests.
-RUN if [ "$RUN_INTEGRATION_TESTS" = "True" ] ; \
-    then echo "Run all tests" && \
-        curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter; \
-        chmod +x ./cc-test-reporter; \
-        ./cc-test-reporter before-build; \
-        py.test \
-            --cov-report term-missing \
-            --cov-report xml \
-            --cov=donlib \
-            --cov=cortexlib \
-            /app/app/test/;  \
-        ./cc-test-reporter after-build; \
-    else echo Not running integration tests!. && \
-        py.test /app/app/test/unit ; \
-    fi
-
-
 #####################################
 # Building the final container image
 
 FROM docker.io/halotools/python-sdk:ubuntu-18.04_sdk-latest_py-3.6
 MAINTAINER toolbox@cloudpassage.com
 
-ENV SLACK_ICON_URL=http://www.cloudpassage.com/wp-content/uploads/2016/12/don-operator.png
-ENV HALO_API_HOSTNAME=api.cloudpassage.com
-ENV HALO_API_PORT=443
+ENV SLACK_ICON_URL='http://www.cloudpassage.com/wp-content/uploads/2016/12/don-operator.png'
+ENV HALO_API_HOSTNAME='api.cloudpassage.com'
+ENV HALO_API_PORT='443'
 
 ARG DEBIAN_FRONTEND=noninteractive
 
