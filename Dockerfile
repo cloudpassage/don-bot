@@ -2,7 +2,7 @@
 FROM docker.io/halotools/python-sdk:ubuntu-18.04_sdk-latest_py-3.6 as downloader
 MAINTAINER toolbox@cloudpassage.com
 
-ARG HALOCELERY_BRANCH=v0.9.1
+ARG HALOCELERY_BRANCH=v0.9.2
 
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -36,6 +36,8 @@ ENV HALO_API_PORT='443'
 # These arguments allow integration testing with the Halo API
 ARG HALO_API_KEY
 ARG HALO_API_SECRET_KEY
+ARG RUN_INTEGRATION_TESTS
+ARG CC_TEST_REPORTER_ID
 
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -71,6 +73,26 @@ RUN pip3 install -r requirements-test.txt
 RUN chown -R ${APP_USER}:$APP_GROUP /app
 
 USER ${APP_USER}
+
+RUN echo $RUN_INTEGRATION_TESTS
+
+# If RUN_INTEGRATION_TESTS is set, run integration tests.
+RUN if [ "$RUN_INTEGRATION_TESTS" = "True" ] ; \
+    then echo "Run all tests" && \
+        curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter; \
+        chmod +x ./cc-test-reporter; \
+        ./cc-test-reporter before-build; \
+        py.test \
+            --cov-report term-missing \
+            --cov-report xml \
+            --cov=donlib \
+            --cov=cortexlib \
+            /app/app/test/;  \
+        ./cc-test-reporter after-build; \
+    else echo Not running integration tests!. && \
+        py.test /app/app/test/unit ; \
+    fi
+
 
 #####################################
 # Building the final container image

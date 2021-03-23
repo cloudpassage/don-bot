@@ -3,4 +3,4 @@ celery[redis]==5.0.5
 docker==4.4.4
 flower==0.9.7
 python-magic==0.4.22
-slackclient==2.9.3
+slackclient==1.2.1
