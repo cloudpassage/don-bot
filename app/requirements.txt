@@ -1,6 +1,6 @@
 boto3==1.17.34
 celery[redis]==5.0.5
 docker==4.4.4
-flower==0.9.7
+flower==1.2.0
 python-magic==0.4.22
 slackclient==1.2.1
